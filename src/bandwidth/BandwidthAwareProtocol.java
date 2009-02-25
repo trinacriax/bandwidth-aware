@@ -31,30 +31,44 @@ public class BandwidthAwareProtocol extends BandwidthAwareTransport implements C
         }
         sender = (BandwidthAwareProtocol) bm.sender.getProtocol(pid);
         receiver = (BandwidthAwareProtocol) bm.receiver.getProtocol(pid);
+        if (sender.getDebug() >= 1) {
+                System.out.println("Bandwidth Management Protocol Starts....."+CommonState.getTime());
+            }
         switch (bm.getMessage()) {
             case BandwidthMessage.UPD_UP: {
                 if (sender.getUploadConnections().getSize() == 0) {
-                    if (sender.getDebug() >= 6) {
-                        System.out.println("\t\tIl nodo non ha connessioni attive in upload " + sender.getUploadConnections().getAll());
+                    if (sender.getDebug() >= 1) {
+                        System.out.println("\tIl nodo non ha connessioni attive in upload " + sender.getUploadConnections().getAll());
                     }
                     return;
                 }
-                if (sender.getDebug() >= 5) {
-                    System.out.println("\t\t>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> AGGIORNAMENTO TABELLA BANDE Sender " + bm.sender.getID());
+                BandwidthConnectionElement cet = new BandwidthConnectionElement(bm.sender.getID(), bm.receiver.getID(), Math.abs(bm.getBandwidth()), bm.getStart(), CommonState.getTime(),-1);
+                if (sender.getDebug() >= 2) {
+                    System.out.println("\tTry to remove connection " + cet);
                 }
-                BandwidthConnectionElement cet = new BandwidthConnectionElement(bm.sender.getID(), bm.receiver.getID(), Math.abs(bm.getBandwidth()), CommonState.getTime());
+                if (sender.getDebug() >= 1) {
+                    System.out.println("\t>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> AGGIORNAMENTO TABELLA BANDE Sender " + bm.sender.getID()+" Upload "+sender.getUpload());
+                }                                
+                if(sender.getDebug() >4){
+                    System.out.println("SENDER CONNECTION LIST \\\\\\\\\\\\\\\\\\");
+                    for (int i = 0; i < sender.getUploadConnections().getSize(); i++){
+                        System.out.println(sender.getUploadConnections().getElement(i));
+                    }
+                    System.out.println("/////////////////////////////////");
+                }
+
                 BandwidthConnectionElement det = sender.getUploadConnections().remConnection(cet);
                 if (det != null && cet.equals(det)) {
-                    if (sender.getDebug() >= 5) {
+                    if (sender.getDebug() >= 2) {
                         System.out.println("\t\tRimossa connessione " + det);
                     }
                     long newUp = sender.getUpload() + bm.getBandwidth();
                     sender.setUpload(newUp);
-                } else if (sender.getDebug() >= 5) {
+                } else if (sender.getDebug() >= 1) {
                     System.out.println("\t\tNon  stata rimossa alcuna connessione " + cet);
                 }
-                if (sender.getDebug() >= 5) {
-                    System.out.println("\t\t<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< FINE AGGIORNAMENTO TABELLA BANDE Sender");
+                if (sender.getDebug() >= 1) {
+                    System.out.println("\t<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< FINE AGGIORNAMENTO TABELLA BANDE Sender "+bm.getSender().getID()+" Upload "+sender.getUpload());
                 }
                 
                 if (receiver.getDownloadConnections().getSize() == 0) {
@@ -63,28 +77,38 @@ public class BandwidthAwareProtocol extends BandwidthAwareTransport implements C
                     }
                     return;
                 }
-                if (sender.getDebug() >= 5) {
-                    System.out.println("\t\t>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> AGGIORNAMENTO TABELLA BANDE Receiver " + bm.receiver.getID());
+                if (sender.getDebug() >= 1) {
+                    System.out.println("\t>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> AGGIORNAMENTO TABELLA BANDE Receiver " + bm.receiver.getID()+" Download "+receiver.getDownload());
                 }
-                cet = new BandwidthConnectionElement(bm.sender.getID(), bm.receiver.getID(), Math.abs(bm.getBandwidth()), CommonState.getTime());
+                cet = new BandwidthConnectionElement(bm.sender.getID(), bm.receiver.getID(), Math.abs(bm.getBandwidth()), bm.getStart(),CommonState.getTime(),-1);
+                if(receiver.getDebug() >4){
+                    System.out.println("RECEIVER CONNECTION LIST \\\\\\\\\\\\\\\\\\ ");
+                    for (int i = 0; i < receiver.getDownloadConnections().getSize(); i++){
+                        System.out.println(receiver.getDownloadConnections().getElement(i));
+                    }
+                    System.out.println("/////////////////////////////////");
+                }
+
                 det = receiver.getDownloadConnections().remConnection(cet);
                 if (det != null && cet.equals(det)) {
-                    if (sender.getDebug() >= 5) {
+                    if (sender.getDebug() >= 2) {
                         System.out.println("\t\tRimossa connessione " + det);
                     }
                     long newDw = receiver.getDownload()+ bm.getBandwidth();
                     receiver.setDownload(newDw);
-                } else if (sender.getDebug() >= 5) {
+                } else if (sender.getDebug() >= 1) {
                     System.out.println("\t\tNon  stata rimossa alcuna connessione " + cet);
                 }
-                if (sender.getDebug() >= 5) {
-                    System.out.println("\t\t<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< FINE AGGIORNAMENTO TABELLA BANDE Receiver");
+                if (sender.getDebug() >= 1) {
+                    System.out.println("\t<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< FINE AGGIORNAMENTO TABELLA BANDE Receiver " + bm.receiver.getID()+" Download "+receiver.getDownload());
                 }
                 return;
             }
         }
 
-
+            if (sender.getDebug() >= 1) {
+                System.out.println("Bandwidth Management Protocol Ends.....");
+            }
     }
 }
 

@@ -52,7 +52,7 @@ public class BandwidthConnectionElement {
 
     
     public boolean equals(BandwidthConnectionElement ce) {
-        if ((ce.senderid == this.senderid) && (ce.receiverid == this.receiverid) && //(ce.txid== this.txid) &&
+        if ((ce.senderid == this.senderid) && (ce.receiverid == this.receiverid) && (ce.start_time== this.start_time) &&
                 (ce.bandwidth == this.bandwidth) && (ce.end_time == this.end_time)) {
             return true;
         } else {

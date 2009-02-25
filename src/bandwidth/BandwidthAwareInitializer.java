@@ -148,6 +148,10 @@ public class BandwidthAwareInitializer implements Control {
             }
             bwa.setUpload(upload);
             bwa.setDownload(download);
+            bwa.setUploadMax(upload);
+            bwa.setDownloadMax(download);
+            bwa.setUploadMin((int)(upload/4));
+            bwa.setDownloadMin((int)(download/4));
             bwa.initialize();
 //            System.out.println("\t\t>>> Upload = " + prot.getUpload() + "\n\tDownload = " + prot.getDownload());
         }
