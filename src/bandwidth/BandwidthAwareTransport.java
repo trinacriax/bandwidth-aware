@@ -10,7 +10,6 @@ import peersim.core.CommonState;
 import peersim.edsim.EDSimulator;
 import java.util.Vector;
 import java.util.ArrayList;
-import peersim.transport.Transport;
 
 /**
  *
@@ -25,7 +24,7 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
     private long download_min;
     private long download_max;
     private int debug;
-    public final static int FAILED = 1;
+    
     private BandwidthConnectionList upload_connection_list;
     private BandwidthConnectionList download_connection_list;
 
@@ -152,13 +151,12 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
             if (this.debug >= 4) {
                 System.out.println("Attention!! Node " + src.getID() + " has upload bw less than up_min that is " + sender.getUploadMin());
             }
-            return this.FAILED;
+            return BandwidthMessage.NO_UP;
         } else if (receiver.getDownload() < receiver.getDownloadMin()) {
             if (this.debug >= 3) {
                 System.out.println("Attention!! Node " + rcv.getID() + " has download bw less than down_min that is " + receiver.getDownloadMin());
             }
-
-            return this.FAILED;
+            return BandwidthMessage.NO_DOWN;
         }
         Vector elements = new Vector();
         long bandwidth, delay;
@@ -465,8 +463,7 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
                                 header.clear();
                                 header = null;
                                 elements = null;
-                                finish = BandwidthMessage.NO_UP;
-                                return finish;
+                                return BandwidthMessage.NO_UP;
                             }
                         } while ((uploadNextTime != baseTime) && (up_i < sender.upload_connection_list.getSize() - 1));
                     } else {
@@ -623,8 +620,7 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
 //                                    System.out.println("::: Sender " + src.getID() + " tempo in push " + sender.getTimePush());
 //                                }
 
-//                                delay = ((TransportInterleave) src.getProtocol(FastConfig.getTransport(pid))).sendControl(rcv, src, new BandwidthMessage(chunkid, rcv, Message.NO_DOWNLOAD_BANDWIDTH_PUSH), pid);
-                                finish = BandwidthMessage.NO_DOWN;
+//                                delay = ((TransportInterleave) src.getProtocol(FastConfig.getTransport(pid))).sendControl(rcv, src, new BandwidthMessage(chunkid, rcv, Message.NO_DOWNLOAD_BANDWIDTH_PUSH), pid);                                
                                 if (this.debug >= 5) {
                                     System.out.println("::: Receiver " + rcv.getID() + " in futuro non ha banda in download per accettare il push. Spedisce NO_DOWNLOAD_BW_PUSH al Sender " + src.getID() + " mex rivuto al tempo " +
                                             (CommonState.getTime() + delay));
@@ -632,7 +628,7 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
                                 sender.setUpload(initupload);
                                 receiver.setDownload(initdownload);
 //                                sender.addFailPush();
-                                return finish;
+                                return BandwidthMessage.NO_DOWN;
 
                             }
                         } while ((downloadNextTime != baseTime) && (dw_i < receiver.getDownloadConnections().getSize() - 1));
