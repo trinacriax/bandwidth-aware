@@ -25,6 +25,17 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
     private long download_max;
     private int debug;
     
+    private int active_upload;
+    private int active_download;
+    private int passive_upload;
+    private int passive_download;
+    private int active_up;
+    private int active_dw;
+    private int passive_up;
+    private int passive_dw;
+
+
+    
     private BandwidthConnectionList upload_connection_list;
     private BandwidthConnectionList download_connection_list;
 
@@ -47,6 +58,17 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
         bat.download_max = new Long(0);
 
         bat.debug = new Integer(0);
+
+        bat.active_download = new Integer(0);
+        bat.active_dw = new Integer(0);
+        bat.active_upload = new Integer(0);
+        bat.active_up = new Integer(0);
+        bat.passive_download = new Integer(0);
+        bat.passive_dw = new Integer(0);
+        bat.passive_upload = new Integer(0);
+        bat.passive_up = new Integer(0);
+
+
         bat.upload_connection_list = new BandwidthConnectionList();
         bat.download_connection_list = new BandwidthConnectionList();
         return bat;
@@ -55,6 +77,8 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
     public void reset() {
         this.upload = this.upload_max = this.upload_min = 0;
         this.download = this.download_max = this.download_min = 0;
+        this.active_up = this.active_upload = this.passive_up = this.passive_upload ;
+        this.active_dw = this.active_download = this.passive_dw = this.passive_download ;
         this.debug = 0;
         this.upload_connection_list = this.download_connection_list = null;
     }
@@ -120,6 +144,193 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
 
     public long getDownloadMax() {
         return this.download_max;
+    }    
+
+     /**
+     * Numero di trasmissioni in upload attualmente attive nello stato attivo
+     * del nodo
+     */
+    public int getActiveUp() {
+        return this.active_up;
+    }
+
+    /**
+     * Aggiunge una trasmissione in upload a quelle attive stato attivo del nodo
+     */
+    public void addActiveUp() {
+        this.active_up++;
+    }
+
+    /**
+     * Rimuove una trasmissione in upload a quelle attive stato attivo del nodo
+     */
+    public void remActiveUp() {
+        this.active_up--;
+    }
+
+    /**
+     * Reset trasmissioni in upload attive
+     */
+    public void resetActiveUp() {
+        this.active_up = 0;
+    }
+
+    /**
+     * Numero di trasmissioni in download attualmente attive stato attivo del
+     * nodo
+     */
+    public int getActiveDw() {
+        return this.active_dw;
+    }
+
+    /**
+     * Numero di trasmissioni in download attualmente attive stato attivo del
+     * nodo
+     */
+    public void addActiveDw() {
+        this.active_dw++;
+    }
+
+    /**
+     * Rimuove una trasmissione in download a quelle attive stato attivo del
+     * nodo
+     */
+    public void remActiveDw() {
+        this.active_dw--;
+    }
+
+    /**
+     * Reset trasmissione in download attive
+     */
+    public void resetActiveDw() {
+        this.active_dw = 0;
+    }
+
+    /**
+     * Numero di trasmissioni in upload attualmente attive stato passivo del
+     * nodo
+     */
+    public int getPassiveUp() {
+        return this.passive_up;
+    }
+
+    /**
+     * Aggiunge una trasmissione in upload attualmente attive stato passivo del
+     * nodo
+     */
+    public void addPassiveUp() {
+        this.passive_up++;
+    }
+
+    /**
+     * Rimuove una trasmissioni in upload attualmente attive stato passivo del
+     * nodo
+     */
+    public void remPassiveUp() {
+        this.passive_up--;
+    }
+
+     /**
+     * Reset trasmissione in upload passive
+     */
+    public void resetPassiveUp() {
+        this.passive_up= 0;
+    }
+
+    /**
+     * Numero di trasmissioni in download attualmente attive stato passivo del
+     * nodo
+     */
+    public int getPassiveDw() {
+        return this.passive_dw;
+    }
+
+    /**
+     * Aggiunge uno al numero di trasmissioni in download attualmente attive
+     * stato passivo del nodo
+     */
+    public void addPassiveDw() {
+        this.passive_dw++;
+    }
+
+    /**
+     * Rimuove una trasmissioni in download attualmente attive stato passivo del
+     * nodo
+     */
+    public void remPassiveDw() {
+        this.passive_dw--;
+    }
+
+     /**
+     * Reset trasmissione in download passive
+     */
+    public void resetPassiveDw() {
+        this.passive_dw = 0;
+    }
+
+
+    /**
+     * Imposta il numero massimo di trasmissioni in upload attive con stato del
+     * nodo attivo
+     */
+    public void setActiveUpload(int active_upload) {
+        this.active_upload = active_upload;
+    }
+
+    /**
+     * Restituisce il numero massimo di trasmissioni in upload attive con stato
+     * del nodo attivo
+     */
+    public int getActiveUpload() {
+        return this.active_upload;
+    }
+
+    /**
+     * Imposta il numero massimo di trasmissioni in download attive con stato
+     * del nodo attivo
+     */
+    public void setActiveDownload(int active_download) {
+        this.active_download = active_download;
+    }
+
+    /**
+     * Restituisce il numero massimo di trasmissioni in download attive con
+     * stato del nodo attivo
+     */
+    public int getActiveDownload() {
+        return this.active_download;
+    }
+
+    /**
+     * Imposta il numero massimo di trasmissioni in upload attive con stato del
+     * nodo passivo
+     */
+    public void setPassiveUpload(int passive_upload) {
+        this.passive_upload = passive_upload;
+    }
+
+    /**
+     * Restituisce il numero massimo di trasmissioni in upload attive con stato
+     * del nodo passivo
+     */
+    public int getPassiveUpload() {
+        return this.passive_upload;
+    }
+
+    /**
+     * Imposta il numero massimo di trasmissioni in download attive con stato
+     * del nodo passivo
+     */
+    public void setPassiveDownload(int passive_download) {
+        this.passive_download = passive_download;
+    }
+
+    /**
+     * Restituisce il numero massimo di trasmissioni in download attive con
+     * stato del nodo passivo
+     */
+    public int getPassiveDownload() {
+        return this.passive_download;
     }
 
     public BandwidthConnectionList getUploadConnections() {
@@ -137,7 +348,10 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
     }
 
     public String toString(){
-        return " Upload: "+ this.upload+ " ["+this.upload_min+":"+this.upload_max+"]; Download "+this.download+" ["+this.download_min+":"+this.download_max+"] ";
+        String result = "\n\t>> Upload: "+ this.upload+ " ["+this.upload_min+":"+this.upload_max+"]; Download "+this.download+" ["+this.download_min+":"+this.download_max+"] ";
+        result += "\n\t>>>ActUp " + this.getActiveUp() + "/" + this.getActiveUpload() + ", ActDw " + this.getActiveDw() + "/" + this.getActiveDownload() + ", ";
+        result += "\n\t>>>PasUp " + this.getPassiveUp() + "/" + this.getPassiveUpload() + ", PasDw " + this.getPassiveDw() + "/" + this.getPassiveDownload();
+        return result;
 
     }
 

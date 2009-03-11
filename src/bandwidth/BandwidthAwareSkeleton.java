@@ -30,6 +30,11 @@ public interface BandwidthAwareSkeleton {
 
     public void fluctuationDownload();
 
+    public void setActiveUpload(int active_upload);
+    public void setActiveDownload(int active_download);
+    public void setPassiveUpload(int passive_upload);
+    public void setPassiveDownload(int passive_download);
+
     public void reset();
 
     public void initialize();
