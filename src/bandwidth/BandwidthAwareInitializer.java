@@ -35,6 +35,9 @@ public class BandwidthAwareInitializer implements Control {
     private static final String PAR_PASSIVE_UPLOAD = "passive_upload";
     private static final String PAR_PASSIVE_DOWNLOAD = "passive_download";
 
+    private static final String PAR_SRC_UP = "srcup";
+    private static final String PAR_SRC_DOWN = "srcdw";
+
     private static final String PAR_DEBUG = "debug";
 
     // ------------------------------------------------------------------------
@@ -55,6 +58,9 @@ public class BandwidthAwareInitializer implements Control {
     private int passive_upload;
     private int passive_download;
 
+    private int srcup;
+    private int srcdw;
+
     // 
     // ------------------------------------------------------------------------
     // Constructor
@@ -70,6 +76,8 @@ public class BandwidthAwareInitializer implements Control {
         passive_upload = Configuration.getInt(prefix + "." + PAR_PASSIVE_UPLOAD, 1);
         passive_download = Configuration.getInt(prefix + "." + PAR_PASSIVE_DOWNLOAD, 1);
         debug = Configuration.getInt(prefix + "." + PAR_DEBUG);
+        srcup = Configuration.getInt(prefix + "." + PAR_SRC_UP);
+        srcdw = Configuration.getInt(prefix + "." + PAR_SRC_DOWN);
         String bandwidths[] = Configuration.getString(prefix + "." + PAR_UP_BAND, "").split(",");
         this.UploadBandwidth = new int[bandwidths.length];
         for (int i = 0; i < bandwidths.length; i++) {
@@ -110,23 +118,33 @@ public class BandwidthAwareInitializer implements Control {
             bwa.setActiveDownload(active_download);
             bwa.setPassiveUpload(passive_upload);
             bwa.setPassiveDownload(passive_download);
-            long upload = this.UploadBandwidth[0];
-            long download = this.DownloadBandwidth[0];
-            long upmax = this.UploadBandwidth[this.UploadBandwidth.length - 1];
-            long banda = CommonState.r.nextLong(((long) (upmax)));
-            for (int j = 0; j < this.BandwidthProb.length - 1; j++) {
-                if(debug > 6)
-                    System.out.println("\t" + j + ") " + banda + " > " + (upmax * this.BandwidthProb[j]));
-                if (banda > upmax * this.BandwidthProb[j]) {
+            long upload = 0;
+            long download = 0;
+            if(debug > 6)
+                System.out.println("\tNode index "+aNode.getIndex());
+            if(i == Network.size() - 1){
+                upload = srcup;
+                download = srcdw;                
+            }
+            else{
+                upload = this.UploadBandwidth[0];
+                download = this.DownloadBandwidth[0];
+                long upmax = this.UploadBandwidth[this.UploadBandwidth.length - 1];
+                long banda = CommonState.r.nextLong(((long) (upmax)));
+                for (int j = 0; j < this.BandwidthProb.length - 1; j++) {
                     if(debug > 6)
-	    				System.out.println("\tUpMax="+this.UploadBandwidth[j+1]+ " UpMin="+((long)(this.UploadBandwidth[j+1]/4))+ " Upload="+this.UploadBandwidth[j+1]+
-	    						"if(debug > 6)\n\tDwMax="+this.DownloadBandwidth[j+1]+ " DwMin="+((long)(this.DownloadBandwidth[j+1]/4))+ " Download="+ (this.DownloadBandwidth[j+1]));
-                    upload = this.UploadBandwidth[j + 1];
-                    download = this.DownloadBandwidth[j + 1];
-                } else {
-                    upload = this.UploadBandwidth[j];
-                    download = this.DownloadBandwidth[j];
-                    j = this.BandwidthProb.length;
+                        System.out.println("\t" + j + ") " + banda + " > " + (upmax * this.BandwidthProb[j]));
+                    if (banda > upmax * this.BandwidthProb[j]) {
+                        if(debug > 6)
+                            System.out.println("\tUpMax="+this.UploadBandwidth[j+1]+ " UpMin="+((long)(this.UploadBandwidth[j+1]/4))+ " Upload="+this.UploadBandwidth[j+1]+
+                                    "if(debug > 6)\n\tDwMax="+this.DownloadBandwidth[j+1]+ " DwMin="+((long)(this.DownloadBandwidth[j+1]/4))+ " Download="+ (this.DownloadBandwidth[j+1]));
+                        upload = this.UploadBandwidth[j + 1];
+                        download = this.DownloadBandwidth[j + 1];
+                    } else {
+                        upload = this.UploadBandwidth[j];
+                        download = this.DownloadBandwidth[j];
+                        j = this.BandwidthProb.length;
+                    }
                 }
             }
             bwa.setUpload(upload);
