@@ -24,7 +24,6 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
     private long download_min;
     private long download_max;
     private int debug;
-    
     private int active_upload;
     private int active_download;
     private int passive_upload;
@@ -33,9 +32,6 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
     private int active_dw;
     private int passive_up;
     private int passive_dw;
-
-
-    
     private BandwidthConnectionList upload_connection_list;
     private BandwidthConnectionList download_connection_list;
 
@@ -77,8 +73,8 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
     public void reset() {
         this.upload = this.upload_max = this.upload_min = 0;
         this.download = this.download_max = this.download_min = 0;
-        this.active_up = this.active_upload = this.passive_up = this.passive_upload ;
-        this.active_dw = this.active_download = this.passive_dw = this.passive_download ;
+        this.active_up = this.active_upload = this.passive_up = this.passive_upload;
+        this.active_dw = this.active_download = this.passive_dw = this.passive_download;
         this.debug = 0;
         this.upload_connection_list = this.download_connection_list = null;
     }
@@ -144,9 +140,9 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
 
     public long getDownloadMax() {
         return this.download_max;
-    }    
+    }
 
-     /**
+    /**
      * Numero di trasmissioni in upload attualmente attive nello stato attivo
      * del nodo
      */
@@ -230,11 +226,11 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
         this.passive_up--;
     }
 
-     /**
+    /**
      * Reset trasmissione in upload passive
      */
     public void resetPassiveUp() {
-        this.passive_up= 0;
+        this.passive_up = 0;
     }
 
     /**
@@ -261,13 +257,12 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
         this.passive_dw--;
     }
 
-     /**
+    /**
      * Reset trasmissione in download passive
      */
     public void resetPassiveDw() {
         this.passive_dw = 0;
     }
-
 
     /**
      * Imposta il numero massimo di trasmissioni in upload attive con stato del
@@ -347,14 +342,20 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
     public void fluctuationDownload() {
     }
 
-    public String toString(){
-        String result = "\n\t>> Upload: "+ this.upload+ " ["+this.upload_min+":"+this.upload_max+"]; Download "+this.download+" ["+this.download_min+":"+this.download_max+"] ";
+    public String toString() {
+        String result = "\n\t>> Upload: " + this.upload + " [" + this.upload_min + ":" + this.upload_max + "]; Download " + this.download + " [" + this.download_min + ":" + this.download_max + "] ";
         result += "\n\t>>>ActUp " + this.getActiveUp() + "/" + this.getActiveUpload() + ", ActDw " + this.getActiveDw() + "/" + this.getActiveDownload() + ", ";
         result += "\n\t>>>PasUp " + this.getPassiveUp() + "/" + this.getPassiveUpload() + ", PasDw " + this.getPassiveDw() + "/" + this.getPassiveDownload();
         return result;
 
     }
-
+    /**
+     *  Metodo utilizzato per calcolare i tempi di trasmissione dei dati. Utilizza il priority sharing: la prima
+     *  trasmissione che arriva prende tutto, la successiva prende il resto e cosi` via, con il limite sulla banda minima
+     *  ossia una trasmissione non puo` andare con la velocita di banda minima (dovrebbe dipendere dalla mole di dati da trasmettere)
+     *  Da rifinire il meccanismo di aggiornamento della banda quando mando un upload negativo e successivamente uno positivo x la stessa
+     *  quantita` di banda (doppi download)
+     */
     public long send(long data_bits, Node src, Node rcv, int pid) {
         long finish = -1;
         BandwidthAwareTransport sender = ((BandwidthAwareTransport) (src.getProtocol(pid)));
@@ -375,23 +376,17 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
         Vector elements = new Vector();
         long bandwidth, delay;
         bandwidth = delay = 0;
-
         int up_i, dw_i;
         up_i = dw_i = 0;
-
         ArrayList header = new ArrayList();
         BandwidthConnectionElement cupload, cdownload;
-
         long uploadBusy, uploadStartTime, uploadNextTime, uploadResidualTime;
         uploadBusy = uploadStartTime = uploadNextTime = uploadResidualTime = 0;
-
         long downloadBusy, downloadStartTime, downloadNextTime, downloadResidualTime;
         downloadBusy = downloadNextTime = downloadResidualTime = 0;
-
         long residuo = data_bits;
         long banda_up, banda_dw, old_up, old_dw;
         old_up = old_dw = 0;
-
         banda_up = sender.getUpload();
         if (sender.getUploadConnections().getSize() == 0) {
             uploadResidualTime = -1;
@@ -402,7 +397,6 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
             uploadNextTime = cupload.getEnd();
             uploadResidualTime = uploadNextTime - CommonState.getTime();
         }
-
         banda_dw = receiver.getDownload();
         if (receiver.getDownloadConnections().getSize() == 0) {
             downloadResidualTime = -1;
@@ -413,31 +407,25 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
             downloadNextTime = cdownload.getEnd();
             downloadResidualTime = downloadNextTime - CommonState.getTime();
         }
-
         long baseTime = CommonState.getTime();
         long tableTime, mexTime;
         tableTime = mexTime = 0;
-
-//        header.add(new BwEvent(src, rcv, new BandwidthMessage(chunkid, src, Message.START_PUSH), mexTime));
         int size = sender.upload_connection_list.getSize();
         long lastUpTime = 0;
         if (size > 0) {
             BandwidthConnectionElement cent = sender.upload_connection_list.getElement(size - 1);
             lastUpTime = cent.getEnd();
         }
-
         size = receiver.getDownloadConnections().getSize();
         long lastDwTime = 0;
         if (size > 0) {
             BandwidthConnectionElement cent = receiver.getDownloadConnections().getElement(size - 1);
             lastDwTime = cent.getEnd();
         }
-
         if (this.debug >= 5) {
             System.out.println("------------------------------------------------------ INIZIO GESTIONE BANDE PUSH ------------------------------------------------------ ");
             System.out.println("Tempo fine ultimo Upload: " + lastUpTime + " e Download " + lastDwTime);
         }
-
         if (this.debug >= 10) {
             if (sender.upload_connection_list.getSize() > 0) {
                 System.out.println(">>> Sender ");
@@ -456,14 +444,12 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
                 System.out.println("<<<< Receiver ");
             }
         }
-
         boolean flag = true;
         while (residuo > 0) {
             bandwidth = Math.min(banda_up, banda_dw);
             if (this.debug >= 5) {
                 System.out.println("...Time " + baseTime + ". Bits to transmit: " + residuo + ". BW Sender : " + banda_up + ", BW Receiver : " + banda_dw + " TX Banda " + bandwidth);
             }
-
             //Hanno entrambi la tabella vuota.
             if ((uploadResidualTime == -1 && downloadResidualTime == -1)) {
                 mexTime = Math.round((residuo / ((double) bandwidth)) * 1000);
@@ -481,21 +467,19 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
                     System.out.println("\t1 Aggiungo in upload e download l'elemento " + element.toString());
                 }
                 element = null;
-
                 if (flag) {
                     if (this.debug >= 5) {
                         System.out.println("1 >>> Tolgo direttamente la banda " + bandwidth + " al tempo " + baseTime + " per restituirla al tempo " + tableTime);
                     }
                     old_up = sender.getUpload();
                     old_dw = receiver.getDownload();
-
                     sender.setUpload(sender.getUpload() - bandwidth);
                     receiver.setDownload(receiver.getDownload() - bandwidth);
                     flag = false;
                 } else {
                     if (this.debug >= 5) {
                         System.out.println("1 >>> Tolgo la banda con messaggio " + bandwidth + " al tempo " + baseTime);
-                    }//+ " per restituirla al tempo "+ tableTime );
+                    }
                     mexTime = baseTime - CommonState.getTime();
                     if (this.debug >= 5) {
                         System.out.println("\tSpedisco Update Upload a " + src.getID() + " per " + (-1 * bandwidth) + " riceve al tempo " + baseTime + " MexTime " + mexTime);
@@ -503,9 +487,7 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
                     if (this.debug >= 5) {
                         System.out.println("\tSpedisco Update Download a " + rcv.getID() + " per " + (-1 * bandwidth) + " riceve al tempo " + baseTime + " MexTime " + mexTime);
                     }
-                    //System.out.println("ADDING 1");
                     header.add(new BwEvent(src, src, new BandwidthMessage(src, rcv, BandwidthMessage.UPD_UP, (-1 * bandwidth), baseTime), mexTime));
-//                    header.add(new BwEvent(src,rcv,new BandwidthMessage(chunkid, src, Message.UPDATE_DOWNLOAD, (-1 * bandwidth)),mexTime));
                 }
                 mexTime = tableTime - CommonState.getTime();
                 if (this.debug >= 5) {
@@ -514,9 +496,7 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
                 if (this.debug >= 5) {
                     System.out.println("\tSpedisco Update Download a " + rcv.getID() + " per restituire " + bandwidth + " al tempo " + tableTime + " MexTime " + mexTime);
                 }
-                //System.out.println("ADDING 1");
                 header.add(new BwEvent(src, src, new BandwidthMessage(src, rcv, BandwidthMessage.UPD_UP, bandwidth, baseTime), mexTime));
-//                header.add(new BwEvent(src,rcv,new BandwidthMessage(chunkid, src, Message.UPDATE_DOWNLOAD, bandwidth),mexTime));
             } // Il sender ha un upload in corso ed  ( il receive ha un download in corso che finisce dopo l'upload || non ha alcun download in corso)
             else if (uploadResidualTime != -1 && (uploadResidualTime < downloadResidualTime || downloadResidualTime == -1)) {
                 if (this.debug >= 5) {
@@ -554,9 +534,7 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
                         if (this.debug >= 5) {
                             System.out.println("\tSpedisco Update Download a " + rcv.getID() + " per " + (-1 * bandwidth) + " ricezione " + baseTime + " MexTime " + mexTime);
                         }
-                        //System.out.println("ADDING 1");
-                        header.add(new BwEvent(src, src, new BandwidthMessage(src, rcv, BandwidthMessage.UPD_UP, (-1 * bandwidth),baseTime), mexTime));
-//                        header.add(new BwEvent(src,rcv,new BandwidthMessage(chunkid, src, Message.UPDATE_DOWNLOAD, (-1 * bandwidth)),mexTime));
+                        header.add(new BwEvent(src, src, new BandwidthMessage(src, rcv, BandwidthMessage.UPD_UP, (-1 * bandwidth), baseTime), mexTime));
                     }
                     mexTime = tableTime - CommonState.getTime();
                     if (this.debug >= 5) {
@@ -565,15 +543,10 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
                     if (this.debug >= 5) {
                         System.out.println("\tSpedisco Update Download a " + rcv.getID() + " per " + bandwidth + " al tempo " + tableTime + " MexTime " + (tableTime - CommonState.getTime()));
                     }
-                    //System.out.println("ADDING 1");
-                    header.add(new BwEvent(src, src, new BandwidthMessage(src, rcv, BandwidthMessage.UPD_UP, bandwidth,baseTime), mexTime));
-//                    header.add(new BwEvent(src,rcv,new BandwidthMessage(chunkid, src, Message.UPDATE_DOWNLOAD, bandwidth),mexTime));
-
+                    header.add(new BwEvent(src, src, new BandwidthMessage(src, rcv, BandwidthMessage.UPD_UP, bandwidth, baseTime), mexTime));
                     if (this.debug >= 5) {
                         System.out.println("La trasmissione di " + residuo + " finisce prima di " + uploadResidualTime + ", ci mette " + txTime + ", aggiungo elemento per il tempo " + tableTime);
                     }
-                    //System.out.println("ADDING 1");
-//                    header.add(new BwEvent(src, src, new BandwidthMessage(src, rcv, BandwidthMessage.UPD_UP, bandwidth,baseTime), mexTime));
                     finish = mexTime;
                     residuo = 0;
                 } else {
@@ -609,9 +582,7 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
                         if (this.debug >= 5) {
                             System.out.println("\tSpedisco Update Download a " + rcv.getID() + " per " + (-1 * bandwidth) + " ricezione " + baseTime + " MexTime " + mexTime);
                         }
-                        //System.out.println("ADDING 1");
-                        header.add(new BwEvent(src, src, new BandwidthMessage(src, rcv, BandwidthMessage.UPD_UP, (-1 * bandwidth),baseTime), mexTime));
-//                        header.add(new BwEvent(src, rcv, new BandwidthMessage(chunkid, src, Message.UPDATE_DOWNLOAD, (-1 * bandwidth)), mexTime));
+                        header.add(new BwEvent(src, src, new BandwidthMessage(src, rcv, BandwidthMessage.UPD_UP, (-1 * bandwidth), baseTime), mexTime));
                     }
                     mexTime = tableTime - CommonState.getTime();
                     if (this.debug >= 5) {
@@ -620,9 +591,7 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
                     if (this.debug >= 5) {
                         System.out.println("\tSpedisco Update Download a " + rcv.getID() + " per " + bandwidth + " ricezione " + tableTime + " MexTime " + (tableTime - CommonState.getTime()));
                     }
-                    //System.out.println("ADDING 1");
-                    header.add(new BwEvent(src, src, new BandwidthMessage(src, rcv, BandwidthMessage.UPD_UP, bandwidth,baseTime), mexTime));
-//                    header.add(new BwEvent(src, rcv, new BandwidthMessage(chunkid, src, Message.UPDATE_DOWNLOAD, bandwidth), mexTime));
+                    header.add(new BwEvent(src, src, new BandwidthMessage(src, rcv, BandwidthMessage.UPD_UP, bandwidth, baseTime), mexTime));
                     baseTime = uploadNextTime;
                     if (this.debug >= 5) {
                         System.out.println("Aggiorno la banda " + banda_up + " aggiungo " + uploadBusy);
@@ -661,19 +630,14 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
                                     System.out.println("::: Nodo " + src.getID() + " in futuro ha la banda in upload tutta occupata. Non puo` proseguire con l'upload dei  dati al Nodo " +
                                             rcv.getID());
                                 }
-//                                sender.remActiveUp();
-//                                delay = ((TransportInterleave) src.getProtocol(FastConfig.getTransport(pid))).sendControl(src, rcv, new BandwidthMessage(chunkid, src, Message.NO_UPLOAD_BANDWIDTH_PUSH), pid);
                                 if (this.debug >= 5) {
                                     System.out.println("--> Nodo " + src.getID() + " notifica a " + rcv.getID() + " che non ha più banda in Upload per fare il PUSH, MexTX " + CommonState.getTime() + " MexRX " + (CommonState.getTime() + delay));
                                 }
-//                                delay = sender.getSwitchTime();
                                 if (this.debug >= 5) {
                                     System.out.println("--- Nodo " + src.getID() + " SWITCH to PUSHi2 al tempo " + (CommonState.getTime() + delay));
                                 }
-//                                ((TransportInterleave) src.getProtocol(FastConfig.getTransport(pid))).sendControl(src, src, new BandwidthMessage(null, src, Message.SWITCH_PUSH), delay, pid);
                                 sender.setUpload(initupload);
                                 receiver.setDownload(initdownload);
-//                                sender.addFailPush();
                                 header.clear();
                                 header = null;
                                 elements = null;
@@ -702,11 +666,9 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
                         System.out.println("\t4 Aggiungo l'elemento " + element.toString());
                     }
                     element = null;
-
                     if (flag) {
                         old_up = sender.getUpload();
                         old_dw = receiver.getDownload();
-
                         sender.setUpload(sender.getUpload() - bandwidth);
                         receiver.setDownload(receiver.getDownload() - bandwidth);
                         flag = false;
@@ -724,9 +686,7 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
                         if (this.debug >= 5) {
                             System.out.println("\tSpedisco Update Download a " + rcv.getID() + " per " + (-1 * bandwidth) + " ricezione " + baseTime + " MexTime " + mexTime);
                         }
-                        //System.out.println("ADDING 1");
-                        header.add(new BwEvent(src, src, new BandwidthMessage(src, rcv, BandwidthMessage.UPD_UP, (-1 * bandwidth),baseTime), mexTime));
-//                        header.add(new BwEvent(src, rcv, new BandwidthMessage(chunkid, src, Message.UPDATE_DOWNLOAD, (-1 * bandwidth)), mexTime));
+                        header.add(new BwEvent(src, src, new BandwidthMessage(src, rcv, BandwidthMessage.UPD_UP, (-1 * bandwidth), baseTime), mexTime));
                     }
                     mexTime = tableTime - CommonState.getTime();
                     if (this.debug >= 5) {
@@ -735,28 +695,22 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
                     if (this.debug >= 5) {
                         System.out.println("\tSpedisco Update Download a " + rcv.getID() + " per " + bandwidth + " al tempo " + tableTime);
                     }
-                    //System.out.println("ADDING 1");
-                    header.add(new BwEvent(src, src, new BandwidthMessage(src, rcv, BandwidthMessage.UPD_UP, bandwidth,baseTime), mexTime));
-//                    header.add(new BwEvent(src, rcv, new BandwidthMessage(chunkid, src, Message.UPDATE_DOWNLOAD, bandwidth), mexTime));
+                    header.add(new BwEvent(src, src, new BandwidthMessage(src, rcv, BandwidthMessage.UPD_UP, bandwidth, baseTime), mexTime));
                     if (this.debug >= 5) {
                         System.out.println("La trasmissione di " + residuo + " finisce prima di " + downloadResidualTime + ", ci mette " + txTime + ", aggiungo elemento per il tempo " + baseTime);
                     }
-                    //System.out.println("ADDING 1");
-//                    header.add(new BwEvent(src, src, new BandwidthMessage(src, rcv, BandwidthMessage.UPD_UP, bandwidth), mexTime));
                     finish = mexTime;
                     residuo = 0;
                 } else {
                     //la trasmissione non può finire prima del download pendente, occorre spezzarla in almeno due parti
                     residuo = residuo - Math.round(((double) bandwidth) * downloadResidualTime / 1000);
                     tableTime = downloadNextTime;
-
                     BandwidthConnectionElement element = new BandwidthConnectionElement(src.getID(), rcv.getID(), bandwidth, baseTime, tableTime, CommonState.r.nextLong());
                     elements.add(element);
                     if (this.debug >= 5) {
                         System.out.println("\t5 Aggiungo l'elemento " + element.toString());
                     }
                     element = null;
-
                     if (flag) {
                         old_up = sender.getUpload();
                         old_dw = receiver.getDownload();
@@ -778,23 +732,16 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
                         if (this.debug >= 5) {
                             System.out.println("\tSpedisco Update Download a " + rcv.getID() + " per " + (-1 * bandwidth) + " al tempo " + mexTime);
                         }
-                        //System.out.println("ADDING 1");
-                        header.add(new BwEvent(src, src, new BandwidthMessage(src, rcv, BandwidthMessage.UPD_UP, (-1 * bandwidth),baseTime), mexTime));
-//                        header.add(new BwEvent(src, rcv, new BandwidthMessage(chunkid, src, Message.UPDATE_DOWNLOAD, (-1 * bandwidth)),mexTime));
+                        header.add(new BwEvent(src, src, new BandwidthMessage(src, rcv, BandwidthMessage.UPD_UP, (-1 * bandwidth), baseTime), mexTime));
                     }
                     mexTime = tableTime - CommonState.getTime();
-//                    if (this.debug >= 5) {
-//                        System.out.println(" per restituirla al tempo " + tableTime);
-//                    }
                     if (this.debug >= 5) {
                         System.out.println("\tSpedisco Update Upload a " + src.getID() + " per " + bandwidth + " al tempo " + tableTime);
                     }
                     if (this.debug >= 5) {
                         System.out.println("\tSpedisco Update Download a " + rcv.getID() + " per " + bandwidth + " al tempo " + tableTime);
                     }
-                    //System.out.println("ADDING 1");
-                    header.add(new BwEvent(src, src, new BandwidthMessage(src, rcv, BandwidthMessage.UPD_UP, bandwidth,baseTime), mexTime));
-//                    header.add(new BwEvent(src,rcv,new BandwidthMessage(chunkid, src, Message.UPDATE_DOWNLOAD, bandwidth),mexTime));
+                    header.add(new BwEvent(src, src, new BandwidthMessage(src, rcv, BandwidthMessage.UPD_UP, bandwidth, baseTime), mexTime));
                     baseTime = downloadNextTime;
                     if (this.debug >= 5) {
                         System.out.println("Aggiorno download da " + banda_dw + " aggiungo " + downloadBusy);
@@ -829,21 +776,13 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
                                 if (this.debug >= 5) {
                                     System.out.println("Non va bene, quando aggiorno la banda questa va in negativo - download, vuol dire che in futuro ho tutta la banda occupata");
                                 }
-//                                receiver.remPassiveDw();
-//                                if (this.debug >= 5) {
-//                                    System.out.println("::: Sender " + src.getID() + " tempo in push " + sender.getTimePush());
-//                                }
-
-//                                delay = ((TransportInterleave) src.getProtocol(FastConfig.getTransport(pid))).sendControl(rcv, src, new BandwidthMessage(chunkid, rcv, Message.NO_DOWNLOAD_BANDWIDTH_PUSH), pid);                                
                                 if (this.debug >= 5) {
                                     System.out.println("::: Receiver " + rcv.getID() + " in futuro non ha banda in download per accettare il push. Spedisce NO_DOWNLOAD_BW_PUSH al Sender " + src.getID() + " mex rivuto al tempo " +
                                             (CommonState.getTime() + delay));
                                 }
                                 sender.setUpload(initupload);
                                 receiver.setDownload(initdownload);
-//                                sender.addFailPush();
                                 return BandwidthMessage.NO_DOWN;
-
                             }
                         } while ((downloadNextTime != baseTime) && (dw_i < receiver.getDownloadConnections().getSize() - 1));
                     } else {
@@ -851,9 +790,7 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
                     }
                 }
             }
-//			System.out.println("Sender "+src.getID()+" ActUp "+sender.getActiveUp()+" 4Receiver "+rcv.getID()+" PasDw "+
-//					receiver.getPassiveDw());
-        }        
+        }
         if (!elements.isEmpty()) {
             if (this.debug >= 5) {
                 System.out.println("Inserisco i seguenti elementi nelle tabelle di upload e download: ");
@@ -869,49 +806,22 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
             }
         }
         elements.clear();
-
-        Node ss, rr;
-        ss = rr = null;
-        BandwidthMessage iimm;
-        iimm = null;
+        Node rr = null;
         long mmtt;
         mmtt = 0;
         if (this.debug >= 10) {
             System.out.println("Aggiungo " + header.size() + " eventi in coda:");
         }
-
         while (!header.isEmpty()) {
             BwEvent ee = (BwEvent) header.remove(0);
-            ss = ee.getsrc();
             rr = ee.getrcv();
-//            iimm = ee.getIm();
             mmtt = ee.getTime();
-            if(mmtt < 0){
-                System.err.println("NEGATIVE TIME!! "+ ee);
+            if (mmtt < 0) {
+                System.err.println("NEGATIVE TIME!! " + ee);
             }
-//            if (iimm.getMessage() == Message.START_PUSH) {
-//                mmtt = ((TransportInterleave) src.getProtocol(FastConfig.getTransport(pid))).sendControl(ss, rr, iimm, pid);
-//            } else {
-//                boolean aflag = true;
-//                for (int i = 0 ; i<header.size();i++ ){
-//                    BwEvent tmp = (BwEvent)header.get(i);
-//                    if(tmp.getrcv() == rr && tmp.getsrc() == ss && tmp.getTime() == mmtt && iimm.getBandwidth() == -1*tmp.getIm().getBandwidth()){
-//                        aflag = false;
-//                        header.remove(i);
-//                        ConnectionElement ce = senedr
-//
-//                    }
-//                }
-//                if (aflag)            
-//                ((Transport) src.getProtocol(FastConfig.getTransport(pid))).send(ss, rr, iimm, mmtt, pid);
-//            }
-            BandwidthMessage bme = (BandwidthMessage)ee.getBWM();
+            BandwidthMessage bme = (BandwidthMessage) ee.getBWM();
             if (this.debug >= 5) {
-//                System.out.print("\tSender " + ss.getID() );
-//                System.out.print("\tReceiver " + rr.getID());
-//                System.out.print("\tMex: " + iimm.toString());
-//                System.out.println("\tMexTime " + mmtt);
-                System.out.println(ee.toString() + " >> "+bme.toString());
+                System.out.println(ee.toString() + " >> " + bme.toString());
             }
 
             EDSimulator.add(mmtt, ee.getBWM(), rr, pid);
@@ -924,10 +834,9 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
             System.out.println(">>>>>>>>>>>> Tabella Receiver <<<<<<<<<<< ");
             System.out.println(receiver.getDownloadConnections().getAll());
         }
-
         if (this.debug >= 5) {
-            System.out.println("Sender "+ src.getID()+" >> "+ sender.toString());
-            System.out.println("Receiver "+ rcv.getID()+" >> "+ receiver.toString());
+            System.out.println("Sender " + src.getID() + " >> " + sender.toString());
+            System.out.println("Receiver " + rcv.getID() + " >> " + receiver.toString());
             System.out.println("---------------------------------------------------------- FINE GESTIONE BANDE ---------------------------------------------------------- ");
         }
         return finish;
@@ -964,8 +873,8 @@ class BwEvent {
         return time;
     }
 
-    public String toString(){
-        return "Source "+ src.getID()+ " Receiver "+dest.getID()+" Mex "+ bwm.getClass()+" Time "+ time;
+    public String toString() {
+        return "Source " + src.getID() + " Receiver " + dest.getID() + " Mex " + bwm.getClass() + " Time " + time;
     }
 }
 
