@@ -75,9 +75,9 @@ public class BandwidthAwareInitializer implements Control {
         active_download = Configuration.getInt(prefix + "." + PAR_ACTIVE_DOWNLOAD, 1);
         passive_upload = Configuration.getInt(prefix + "." + PAR_PASSIVE_UPLOAD, 1);
         passive_download = Configuration.getInt(prefix + "." + PAR_PASSIVE_DOWNLOAD, 1);
-        debug = Configuration.getInt(prefix + "." + PAR_DEBUG);
-        srcup = Configuration.getInt(prefix + "." + PAR_SRC_UP);
-        srcdw = Configuration.getInt(prefix + "." + PAR_SRC_DOWN);
+        debug = Configuration.getInt(prefix + "." + PAR_DEBUG, 0);
+        srcup = Configuration.getInt(prefix + "." + PAR_SRC_UP,-1);
+        srcdw = Configuration.getInt(prefix + "." + PAR_SRC_DOWN,-1);
         String bandwidths[] = Configuration.getString(prefix + "." + PAR_UP_BAND, "").split(",");
         this.UploadBandwidth = new int[bandwidths.length];
         for (int i = 0; i < bandwidths.length; i++) {
@@ -122,7 +122,7 @@ public class BandwidthAwareInitializer implements Control {
             long download = 0;
             if(debug > 6)
                 System.out.println("\tNode index "+aNode.getIndex());
-            if(i == Network.size() - 1){
+            if(i == Network.size() - 1 && this.srcup != -1 ){
                 upload = srcup;
                 download = srcdw;                
             }
