@@ -349,6 +349,13 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
         return result;
 
     }
+
+
+    //The control-message send should be implemented in this class.
+    //public long sendControl(Node src, Node rcv,int pid)
+
+
+
     /**
      *  Metodo utilizzato per calcolare i tempi di trasmissione dei dati. Utilizza il priority sharing: la prima
      *  trasmissione che arriva prende tutto, la successiva prende il resto e cosi` via, con il limite sulla banda minima

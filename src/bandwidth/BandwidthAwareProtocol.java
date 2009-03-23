@@ -1,10 +1,5 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package bandwidth;
 
-import peersim.config.*;
 import peersim.core.*;
 import peersim.cdsim.*;
 import peersim.edsim.*;
@@ -98,7 +93,6 @@ public class BandwidthAwareProtocol extends BandwidthAwareTransport implements C
                     if (sender.getDebug() >= 1) {
                         System.out.println("\t>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> AGGIORNAMENTO TABELLA BANDE Receiver " + bm.receiver.getID() + " Download " + receiver.getDownload());
                     }
-//                    cet = new BandwidthConnectionElement(bm.sender.getID(), bm.receiver.getID(), Math.abs(bm.getBandwidth()), bm.getStart(), CommonState.getTime(), -1);
                     if (receiver.getDebug() > 4) {
                         System.out.println("RECEIVER CONNECTION LIST \\\\\\\\\\\\\\\\\\ ");
                         for (int i = 0; i < receiver.getDownloadConnections().getSize(); i++) {
@@ -106,7 +100,6 @@ public class BandwidthAwareProtocol extends BandwidthAwareTransport implements C
                         }
                         System.out.println("/////////////////////////////////");
                     }
-
                     det = receiver.getDownloadConnections().remConnection(cet);
                     if (det != null && cet.equals(det)) {
                         if (sender.getDebug() >= 2) {
