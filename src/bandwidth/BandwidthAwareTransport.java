@@ -343,9 +343,10 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
     }
 
     public String toString() {
-        String result = "\n\t>> Upload: " + this.upload + " [" + this.upload_min + ":" + this.upload_max + "]; Download " + this.download + " [" + this.download_min + ":" + this.download_max + "] ";
-        result += "\n\t>>>ActUp " + this.getActiveUp() + "/" + this.getActiveUpload() + ", ActDw " + this.getActiveDw() + "/" + this.getActiveDownload() + ", ";
-        result += "\n\t>>>PasUp " + this.getPassiveUp() + "/" + this.getPassiveUpload() + ", PasDw " + this.getPassiveDw() + "/" + this.getPassiveDownload();
+        String result = "\n\t>> Upload: " + this.upload + " [" + this.upload_min + ":" + this.upload_max + "] - ";
+        result += "Active " + this.getActiveUp() + "(" + this.getActiveUpload() + ")" + " Passive " + this.getPassiveUp() + "(" + this.getPassiveUpload()+")";
+        result += "\n\t<< Download: " + this.download + " [" + this.download_min + ":" + this.download_max + "] - ";
+        result += "Active " + this.getActiveDw() + "(" + this.getActiveDownload()+")"+" Passive " + this.getPassiveDw() + "(" + this.getPassiveDownload()+")";
         return result;
 
     }
@@ -363,7 +364,7 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
      *  Da rifinire il meccanismo di aggiornamento della banda quando mando un upload negativo e successivamente uno positivo x la stessa
      *  quantita` di banda (doppi download)
      */
-    public long send(long data_bits, Node src, Node rcv, int pid) {
+    public long sendData(long data_bits, Node src, Node rcv, int pid) {
         long finish = -1;
         BandwidthAwareTransport sender = ((BandwidthAwareTransport) (src.getProtocol(pid)));
         BandwidthAwareTransport receiver = ((BandwidthAwareTransport) (rcv.getProtocol(pid)));
