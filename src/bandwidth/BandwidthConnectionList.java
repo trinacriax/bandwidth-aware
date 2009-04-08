@@ -17,11 +17,13 @@ public class BandwidthConnectionList {
         } else {
             BandwidthConnectionElement tmp;
             long finish_ce = ce.getEnd();
-            long actual_ce;
+            long start_ce = ce.getStart();
+            long actual_ce, actual_se;
             this.connection_list.addLast(ce);
             for (int i = 0; i < this.connection_list.size(); i++) {
                 actual_ce = ((BandwidthConnectionElement) this.connection_list.get(i)).getEnd();
-                if (finish_ce <= actual_ce) {
+                actual_se = ((BandwidthConnectionElement) this.connection_list.get(i)).getStart();
+                if (finish_ce <= actual_ce && start_ce <=actual_se) {
                     for (int j = this.connection_list.size() - 1; j > i; j--) {
                         tmp = ((BandwidthConnectionElement) this.connection_list.get(j - 1));
                         this.connection_list.set(j, tmp);
