@@ -69,7 +69,7 @@ public class BandwidthAwareInitializer implements Control {
     /**
      * Creates a new instance and read parameters from the config file.
      */
-    public BandwidthAwareInitializer(String prefix) {
+    public BandwidthAwareInitializer(String prefix) {        
         pid = Configuration.getPid(prefix + "." + PAR_PROT);
         active_upload = Configuration.getInt(prefix + "." + PAR_ACTIVE_UPLOAD, 1);
         active_download = Configuration.getInt(prefix + "." + PAR_ACTIVE_DOWNLOAD, 1);
@@ -80,26 +80,27 @@ public class BandwidthAwareInitializer implements Control {
         srcdw = Configuration.getInt(prefix + "." + PAR_SRC_DOWN,-1);
         String bandwidths[] = Configuration.getString(prefix + "." + PAR_UP_BAND, "").split(",");
         this.UploadBandwidth = new int[bandwidths.length];
+        System.err.println("Init Bandwidth!");
         for (int i = 0; i < bandwidths.length; i++) {
             this.UploadBandwidth[i] = Integer.parseInt(bandwidths[i]);
-            if(debug>5)
-                System.out.println("UPBW ["+i+"] =" + this.UploadBandwidth[i]);
+//            if(debug>5)
+                System.err.println("\tUPBW ["+i+"] =" + this.UploadBandwidth[i]);
         }
         bandwidths = null;
         bandwidths = Configuration.getString(prefix + "." + PAR_DOWN_BAND, "").split(",");
         this.DownloadBandwidth = new int[bandwidths.length];
         for (int i = 0; i < bandwidths.length; i++) {
             this.DownloadBandwidth[i] = Integer.parseInt(bandwidths[i]);
-            if(debug>5)
-                System.out.println("DOWNBW ["+i+"] =" + this.DownloadBandwidth[i]);
+//            if(debug>5)
+                System.err.println("\tDOWNBW ["+i+"] =" + this.DownloadBandwidth[i]);
         }
         bandwidths = null;
         bandwidths = Configuration.getString(prefix + "." + PAR_UP_PROB, "").split(",");
         this.BandwidthProb = new double[bandwidths.length];
         for (int i = 0; i < bandwidths.length; i++) {
             this.BandwidthProb[i] = Double.parseDouble(bandwidths[i]);
-            if(debug>5)
-                System.out.println("BWPROB ["+i+"] =" + this.BandwidthProb[i]);
+//            if(debug>5)
+                System.err.println("\tBWPROB ["+i+"] =" + this.BandwidthProb[i]);
         }
         bandwidths = null;
     }

@@ -1,7 +1,7 @@
 package bandwidth;
 
 import java.util.LinkedList;
-
+import peersim.core.Node;
 public class BandwidthConnectionList {
 
     protected LinkedList connection_list;
@@ -18,20 +18,35 @@ public class BandwidthConnectionList {
             BandwidthConnectionElement tmp;
             long finish_ce = ce.getEnd();
             long start_ce = ce.getStart();
-            long actual_ce, actual_se;
+            long actual_fe, actual_se;
             this.connection_list.addLast(ce);
             for (int i = 0; i < this.connection_list.size(); i++) {
-                actual_ce = ((BandwidthConnectionElement) this.connection_list.get(i)).getEnd();
+                actual_fe = ((BandwidthConnectionElement) this.connection_list.get(i)).getEnd();
                 actual_se = ((BandwidthConnectionElement) this.connection_list.get(i)).getStart();
-                if (finish_ce <= actual_ce && start_ce <=actual_se) {
+                if (finish_ce < actual_fe) {                    
                     for (int j = this.connection_list.size() - 1; j > i; j--) {
                         tmp = ((BandwidthConnectionElement) this.connection_list.get(j - 1));
                         this.connection_list.set(j, tmp);
                     }
                     this.connection_list.set(i, ce);
-                    return;
+                    return;                    
+                }
+                else if(finish_ce == actual_fe){
+                        for (; start_ce > actual_se && i < this.connection_list.size(); i++) {
+                            actual_fe = ((BandwidthConnectionElement) this.connection_list.get(i)).getEnd();
+                            actual_se = ((BandwidthConnectionElement) this.connection_list.get(i)).getStart();
+                        }
+                        for (int j = this.connection_list.size() - 1; j > i; j--) {
+                            tmp = ((BandwidthConnectionElement) this.connection_list.get(j - 1));
+                            this.connection_list.set(j, tmp);
+                        }
+                        if(i>= this.connection_list.size())
+                            i--;
+                        this.connection_list.set(i, ce);
+                        return;
                 }
             }
+                
         }
     }
     
@@ -54,6 +69,18 @@ public class BandwidthConnectionList {
         return null;
     }
 
+    public BandwidthConnectionElement getRecord(Node s, Node r){
+        BandwidthConnectionElement bce = null;
+        if(connection_list.isEmpty())
+            return bce;
+        for (int i = 0; i < this.connection_list.size(); i++) {
+            bce = (BandwidthConnectionElement)this.connection_list.get(i);
+            if(bce.getSenderid() == s.getID() && bce.getReceiverid() == r.getID() )
+                i=this.connection_list.size();
+        }
+        return bce;
+    }
+    
     public BandwidthConnectionElement getFirstEnd() {
         BandwidthConnectionElement tmp;
         if (this.connection_list.isEmpty()) {

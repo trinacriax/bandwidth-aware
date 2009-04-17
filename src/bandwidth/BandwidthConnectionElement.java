@@ -49,7 +49,11 @@ public class BandwidthConnectionElement {
     public long getTxId(){
         return this.txid;
     }
-
+    public void setStarttime(long value)
+    {this.start_time = value; }
+    
+    public void setEndtime(long value)
+    {this.end_time = value; }
     
     public boolean equals(BandwidthConnectionElement ce) {
         if ((ce.senderid == this.senderid) && (ce.receiverid == this.receiverid) && (ce.start_time== this.start_time) &&
