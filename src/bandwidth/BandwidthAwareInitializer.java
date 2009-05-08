@@ -4,10 +4,8 @@ package bandwidth;
  *
  * @author ax
  */
-
 import peersim.config.*;
 import peersim.core.*;
-
 
 public class BandwidthAwareInitializer implements Control {
 
@@ -29,21 +27,17 @@ public class BandwidthAwareInitializer implements Control {
     private static final String PAR_UP_BAND = "uploadBw";
     private static final String PAR_DOWN_BAND = "downloadBw";
     private static final String PAR_UP_PROB = "bandwidthPr";
-
     private static final String PAR_ACTIVE_UPLOAD = "active_upload";
     private static final String PAR_ACTIVE_DOWNLOAD = "active_download";
     private static final String PAR_PASSIVE_UPLOAD = "passive_upload";
     private static final String PAR_PASSIVE_DOWNLOAD = "passive_download";
-
     private static final String PAR_SRC_UP = "srcup";
     private static final String PAR_SRC_DOWN = "srcdw";
-
     private static final String PAR_DEBUG = "debug";
 
     // ------------------------------------------------------------------------
     // Fields
     // ------------------------------------------------------------------------
-
     /**Protocol Identifier */
     private final int pid;
     /**Value uses for debugging*/
@@ -52,12 +46,10 @@ public class BandwidthAwareInitializer implements Control {
     private int UploadBandwidth[];
     private int DownloadBandwidth[];
     private double BandwidthProb[];
-
     private int active_upload;
     private int active_download;
     private int passive_upload;
     private int passive_download;
-
     private int srcup;
     private int srcdw;
 
@@ -65,50 +57,66 @@ public class BandwidthAwareInitializer implements Control {
     // ------------------------------------------------------------------------
     // Constructor
     // ------------------------------------------------------------------------
-
     /**
      * Creates a new instance and read parameters from the config file.
      */
-    public BandwidthAwareInitializer(String prefix) {        
+    public BandwidthAwareInitializer(String prefix) {
         pid = Configuration.getPid(prefix + "." + PAR_PROT);
         active_upload = Configuration.getInt(prefix + "." + PAR_ACTIVE_UPLOAD, 1);
         active_download = Configuration.getInt(prefix + "." + PAR_ACTIVE_DOWNLOAD, 1);
         passive_upload = Configuration.getInt(prefix + "." + PAR_PASSIVE_UPLOAD, 1);
         passive_download = Configuration.getInt(prefix + "." + PAR_PASSIVE_DOWNLOAD, 1);
         debug = Configuration.getInt(prefix + "." + PAR_DEBUG, 0);
-        srcup = Configuration.getInt(prefix + "." + PAR_SRC_UP,-1);
-        srcdw = Configuration.getInt(prefix + "." + PAR_SRC_DOWN,-1);
+        srcup = Configuration.getInt(prefix + "." + PAR_SRC_UP, -1);
+        srcdw = Configuration.getInt(prefix + "." + PAR_SRC_DOWN, -1);
+//        if(debug>5)
+//        System.err.println("Src: Up " + srcup + " Dw " + srcdw);
         String bandwidths[] = Configuration.getString(prefix + "." + PAR_UP_BAND, "").split(",");
-        this.UploadBandwidth = new int[bandwidths.length];
-        System.err.println("Init Bandwidth!");
-        for (int i = 0; i < bandwidths.length; i++) {
-            this.UploadBandwidth[i] = Integer.parseInt(bandwidths[i]);
+        if (bandwidths.length == 1) {
+            this.UploadBandwidth = new int[bandwidths.length];
+            System.err.println("Init Bandwidth! " + this.UploadBandwidth.length);
+            this.UploadBandwidth[0] = (int) Configuration.getDouble(prefix + "." + PAR_UP_BAND, -1);
+//            System.err.println("UP " + this.UploadBandwidth[0]);
+            this.DownloadBandwidth = new int[bandwidths.length];
+            this.DownloadBandwidth[0] = (int) Configuration.getDouble(prefix + "." + PAR_DOWN_BAND, -1);
+//            System.err.println("DW " + this.DownloadBandwidth[0]);
+            this.BandwidthProb = new double[bandwidths.length];
+            this.BandwidthProb[0] = 1;
+        } else {
+            this.UploadBandwidth = new int[bandwidths.length];
+            System.err.println("Init Bandwidth! " + this.UploadBandwidth.length);
+            for (int i = 0; i < bandwidths.length; i++) {
+                if (debug > 5) {
+                    System.err.println("\tUPBW [" + i + "] =" + bandwidths[i]);
+                }
+
+                this.UploadBandwidth[i] = (int) Double.parseDouble(bandwidths[i]);
 //            if(debug>5)
-                System.err.println("\tUPBW ["+i+"] =" + this.UploadBandwidth[i]);
-        }
-        bandwidths = null;
-        bandwidths = Configuration.getString(prefix + "." + PAR_DOWN_BAND, "").split(",");
-        this.DownloadBandwidth = new int[bandwidths.length];
-        for (int i = 0; i < bandwidths.length; i++) {
-            this.DownloadBandwidth[i] = Integer.parseInt(bandwidths[i]);
+                System.err.println("\tUPBW [" + i + "] =" + this.UploadBandwidth[i]);
+            }
+            bandwidths = null;
+            bandwidths = Configuration.getString(prefix + "." + PAR_DOWN_BAND, "").split(",");
+            this.DownloadBandwidth = new int[bandwidths.length];
+            for (int i = 0; i < bandwidths.length; i++) {
+                this.DownloadBandwidth[i] = (int) Double.parseDouble(bandwidths[i]);
 //            if(debug>5)
-                System.err.println("\tDOWNBW ["+i+"] =" + this.DownloadBandwidth[i]);
-        }
-        bandwidths = null;
-        bandwidths = Configuration.getString(prefix + "." + PAR_UP_PROB, "").split(",");
-        this.BandwidthProb = new double[bandwidths.length];
-        for (int i = 0; i < bandwidths.length; i++) {
-            this.BandwidthProb[i] = Double.parseDouble(bandwidths[i]);
+                System.err.println("\tDOWNBW [" + i + "] =" + this.DownloadBandwidth[i]);
+            }
+            bandwidths = null;
+            bandwidths = Configuration.getString(prefix + "." + PAR_UP_PROB, "").split(",");
+            this.BandwidthProb = new double[bandwidths.length];
+            for (int i = 0; i < bandwidths.length; i++) {
+                this.BandwidthProb[i] = Double.parseDouble(bandwidths[i]);
 //            if(debug>5)
-                System.err.println("\tBWPROB ["+i+"] =" + this.BandwidthProb[i]);
+                System.err.println("\tBWPROB [" + i + "] =" + this.BandwidthProb[i]);
+            }
+            bandwidths = null;
         }
-        bandwidths = null;
     }
 
     // ------------------------------------------------------------------------
     // Methods
     // ------------------------------------------------------------------------
-    
     public boolean execute() {
         for (int i = 0; i < Network.size(); i++) {
             Node aNode = Network.get(i);
@@ -121,24 +129,26 @@ public class BandwidthAwareInitializer implements Control {
             bwa.setPassiveDownload(passive_download);
             long upload = 0;
             long download = 0;
-            if(debug > 6)
-                System.out.println("\tNode index "+aNode.getIndex());
-            if(i == Network.size() - 1 && this.srcup != -1 ){
-                upload = srcup;
-                download = srcdw;                
+            if (debug > 6) {
+                System.out.println("\tNode index " + aNode.getIndex());
             }
-            else{
+            if (i == Network.size() - 1 && this.srcup != -1) {
+                upload = srcup;
+                download = srcdw;
+            } else {
                 upload = this.UploadBandwidth[0];
                 download = this.DownloadBandwidth[0];
                 long upmax = this.UploadBandwidth[this.UploadBandwidth.length - 1];
                 long banda = CommonState.r.nextLong(((long) (upmax)));
                 for (int j = 0; j < this.BandwidthProb.length - 1; j++) {
-                    if(debug > 6)
+                    if (debug > 6) {
                         System.out.println("\t" + j + ") " + banda + " > " + (upmax * this.BandwidthProb[j]));
+                    }
                     if (banda > upmax * this.BandwidthProb[j]) {
-                        if(debug > 6)
-                            System.out.println("\tUpMax="+this.UploadBandwidth[j+1]+ " UpMin="+((long)(this.UploadBandwidth[j+1]/4))+ " Upload="+this.UploadBandwidth[j+1]+
-                                    "if(debug > 6)\n\tDwMax="+this.DownloadBandwidth[j+1]+ " DwMin="+((long)(this.DownloadBandwidth[j+1]/4))+ " Download="+ (this.DownloadBandwidth[j+1]));
+                        if (debug > 6) {
+                            System.out.println("\tUpMax=" + this.UploadBandwidth[j + 1] + " UpMin=" + ((long) (this.UploadBandwidth[j + 1] / 4)) + " Upload=" + this.UploadBandwidth[j + 1] +
+                                    "if(debug > 6)\n\tDwMax=" + this.DownloadBandwidth[j + 1] + " DwMin=" + ((long) (this.DownloadBandwidth[j + 1] / 4)) + " Download=" + (this.DownloadBandwidth[j + 1]));
+                        }
                         upload = this.UploadBandwidth[j + 1];
                         download = this.DownloadBandwidth[j + 1];
                     } else {
@@ -152,14 +162,14 @@ public class BandwidthAwareInitializer implements Control {
             bwa.setDownload(download);
             bwa.setUploadMax(upload);
             bwa.setDownloadMax(download);
-            int minup = (int)(upload*.2);
-            int mindw = (int)(download*.2);
+            int minup = (int) (upload * .2);
+            int mindw = (int) (download * .2);
             bwa.setUploadMin(minup);
             bwa.setDownloadMin(mindw);
             bwa.initialize();
-            if(debug > 6){
-                System.out.println("\t\t>>> Upload Max : " + upload+" Current "+ upload + " Min " + minup);
-                System.out.println("\t\t>>> Download Max : " + download+" Current "+ download + " Min " + mindw);
+            if (debug > 6) {
+                System.out.println("\t\t>>> Upload Max : " + upload + " Current " + upload + " Min " + minup);
+                System.out.println("\t\t>>> Download Max : " + download + " Current " + download + " Min " + mindw);
             }
         }
         this.UploadBandwidth = this.DownloadBandwidth = null;
