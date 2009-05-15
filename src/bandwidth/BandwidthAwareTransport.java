@@ -822,18 +822,21 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
             for (int j = 0; j < elements.size(); j++) {
                 cet = ((BandwidthConnectionElement) elements.get(j));
                 if (this.debug >= 5) {
-                    System.out.println("\tPP " + cet + "; ");
+                    System.out.println("\tSender Element " + cet + "; ");
                 }
                 long ee = cet.getEnd();
                 long ss = cet.getStart();
-                if(j > 0)
-                    ss += eedelay;
-                ee +=eedelay;
-                if (this.debug >= 5) {
-                    System.out.println("\tDD " + cet + "; ");
-                }
                 sender.getUploadConnections().addConnection(cet);
-                receiver.getDownloadConnections().addConnection(cet);
+//                if(j > 0)
+                ss += eedelay;
+                ee +=eedelay;
+                BandwidthConnectionElement bet = new BandwidthConnectionElement(cet.senderid, cet.receiverid, cet.bandwidth,ss,ee,cet.txid);
+                if (this.debug >= 5) {
+                    System.out.println("\tReceiver Element " + bet + "; ");
+                }
+                
+//                sender.getUploadConnections().addConnection(cet);
+                receiver.getDownloadConnections().addConnection(bet);
             }
         }
         elements.clear();
@@ -854,18 +857,18 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
                 System.err.println("NEGATIVE TIME!! " + ee);
             }            
             BandwidthMessage bme = (BandwidthMessage) ee.getBWM();
-            long ss = bme.getStart();
-            if(zzz){
-                ss += eedelay;
-                zzz = false;
-            }
-            mmtt +=eedelay;
-            bme.setStart(ss);
             if (this.debug >= 5) {
-                System.out.println(ee.toString() + " >> " + bme.toString());
+                System.out.println("EVENT SS " + ee.toString() + " >> " + bme.toString()+" "+mmtt);
             }
             EDSimulator.add(mmtt, ee.getBWM(), rr, pid);
-//            header.remove(0);
+            BandwidthMessage br = (BandwidthMessage)ee.getBWM();            
+            br = new BandwidthMessage(br.getSender(), br.getReceiver(), br.UPD_DOWN, br.getBandwidth(), (br.getStart()+eedelay));
+            mmtt+=eedelay;
+            BwEvent re = new BwEvent(ee.getsrc(), ee.getrcv(), br, mmtt);
+            if (this.debug >= 5) {
+                System.out.println("EVENT RR " + re.toString() + " >> " + br.toString()+" "+mmtt);
+            }
+            EDSimulator.add(mmtt, br, rr, pid);
         }
         header.clear();
         header = null;
