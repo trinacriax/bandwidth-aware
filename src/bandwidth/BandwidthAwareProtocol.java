@@ -74,7 +74,7 @@ public class BandwidthAwareProtocol extends BandwidthAwareTransport implements C
                         BandwidthConnectionElement det = sender.getUploadConnections().remConnection(cet);
                         if (det != null && cet.equals(det)) {
                             if (sender.getDebug() >= 1) {
-                                System.out.println("\t\tRimossa connessione " + det);
+                                System.out.println("\t\tRimossa connessione " + det.toString());
                             }
                             long newUp = sender.getUpload() + bm.getBandwidth();
                             sender.setUpload(newUp);
