@@ -1,4 +1,4 @@
-package bandwidth;
+package bandwidth.test;
 
 import java.io.*;
 import java.util.zip.GZIPOutputStream;

@@ -1,4 +1,4 @@
-package bandwidth;
+package bandwidth.test;
 /**
  *
  * This class is very similar to (@link peersim.transport.UniformRandomTrasport)

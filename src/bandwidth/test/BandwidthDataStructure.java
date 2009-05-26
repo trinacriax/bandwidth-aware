@@ -1,6 +1,7 @@
-package bandwidth;
+package bandwidth.test;
 
 
+import bandwidth.core.BandwidthAwareProtocol;
 import peersim.config.FastConfig;
 import peersim.core.*;
 
@@ -730,26 +731,26 @@ public class BandwidthDataStructure implements BandwidthDataSkeleton, Protocol {
     public void setInDown(String chunk) {
         long index = Long.parseLong(chunk.substring(chunk.indexOf(":") + 1,
                 chunk.length()));
-        this.chunk_list[(int) (index)] = Message.IN_DOWNLOAD;
+        this.chunk_list[(int) (index)] = BandwidthInfo.IN_DOWNLOAD;
     }
 
     /**
      * Set a chunk in download
      */
     public void setInDown(long index) {
-        if(this.chunk_list[(int) (index)] == Message.NOT_OWNED)
-            this.chunk_list[(int) (index)] = Message.IN_DOWNLOAD;
+        if(this.chunk_list[(int) (index)] == BandwidthInfo.NOT_OWNED)
+            this.chunk_list[(int) (index)] = BandwidthInfo.IN_DOWNLOAD;
     }
 
     public void resetInDown(long index) {
-        if(this.chunk_list[(int) (index)] == Message.IN_DOWNLOAD)
-            this.chunk_list[(int) (index)] = Message.NOT_OWNED;
+        if(this.chunk_list[(int) (index)] == BandwidthInfo.IN_DOWNLOAD)
+            this.chunk_list[(int) (index)] = BandwidthInfo.NOT_OWNED;
     }
 
     public String bitmap() {
         String res = "";
         for (int i = 0; i < this.chunk_list.length; i++) {
-            res += (this.normalize(this.chunk_list[i]) > Message.OWNED ? "1" : (this.chunk_list[i] == Message.IN_DOWNLOAD) ? "!" : "0") + (i % 10 == 9 ? "," : "");
+            res += (this.normalize(this.chunk_list[i]) > BandwidthInfo.OWNED ? "1" : (this.chunk_list[i] == BandwidthInfo.IN_DOWNLOAD) ? "!" : "0") + (i % 10 == 9 ? "," : "");
         }
         return res;
     }
@@ -764,7 +765,7 @@ public class BandwidthDataStructure implements BandwidthDataSkeleton, Protocol {
             index = this.getLast() + 1;
         }
 //        System.out.println("Adding new  "+index);
-        this.addChunk(index, Message.PUSH_CYCLE);
+        this.addChunk(index, BandwidthInfo.PUSH_CYCLE);
        
         return true;
     }
@@ -779,7 +780,7 @@ public class BandwidthDataStructure implements BandwidthDataSkeleton, Protocol {
     public int getLast() {
         int last = -1;
         for (int i = this.chunk_list.length - 1; i >= 0; i--) {
-            if (normalize(this.chunk_list[i]) > Message.OWNED) {
+            if (normalize(this.chunk_list[i]) > BandwidthInfo.OWNED) {
                 return i;
             }
         }
@@ -818,7 +819,7 @@ public class BandwidthDataStructure implements BandwidthDataSkeleton, Protocol {
         int count = 0;
         while (elements > 0 && count < this.chunk_list.length) {
             int id = (this.chunk_list.length - count - 1);
-            if (this.chunk_list[id] != Message.IN_DOWNLOAD && this.chunk_list[id] != Message.NOT_OWNED && this.last_chunk_pulled != id) {
+            if (this.chunk_list[id] != BandwidthInfo.IN_DOWNLOAD && this.chunk_list[id] != BandwidthInfo.NOT_OWNED && this.last_chunk_pulled != id) {
                 result[index++] = id;
                 elements--;
             }
@@ -833,7 +834,7 @@ public class BandwidthDataStructure implements BandwidthDataSkeleton, Protocol {
     }
 
     public long normalize(long chunktime) {
-        if (chunktime != Message.OWNED && chunktime != Message.NOT_OWNED && chunktime != Message.IN_DOWNLOAD) {
+        if (chunktime != BandwidthInfo.OWNED && chunktime != BandwidthInfo.NOT_OWNED && chunktime != BandwidthInfo.IN_DOWNLOAD) {
             return Math.abs(chunktime);
         } else {
             return chunktime;
@@ -844,7 +845,7 @@ public class BandwidthDataStructure implements BandwidthDataSkeleton, Protocol {
      * 
      * Il metodo restituisce il chunk con l'identificativo passato se posseduto
      * dal nodo, se il chunk è in download restituisce la costante
-     * {@value Message.CHUNK_IN_DOWNLOAD}, altrimenti restituisce null;
+     * {@value BandwidthInfo.CHUNK_IN_DOWNLOAD}, altrimenti restituisce null;
      * 
      * @param index chunk id
      * @return long time at which the node received this chunk
@@ -856,7 +857,7 @@ public class BandwidthDataStructure implements BandwidthDataSkeleton, Protocol {
     public int getChunks(int[] index) {
         int owned = 0;
         for (int i = 0; i < index.length; i++) {
-            if (this.getChunk(index[i]) > Message.OWNED) {
+            if (this.getChunk(index[i]) > BandwidthInfo.OWNED) {
                 owned++;
             }
         }
@@ -875,9 +876,9 @@ public class BandwidthDataStructure implements BandwidthDataSkeleton, Protocol {
      * 
      */
     public boolean addChunk(int chunk, int method) {
-        if ((this.chunk_list[chunk] == Message.NOT_OWNED) || (this.chunk_list[chunk] == Message.IN_DOWNLOAD)) {
+        if ((this.chunk_list[chunk] == BandwidthInfo.NOT_OWNED) || (this.chunk_list[chunk] == BandwidthInfo.IN_DOWNLOAD)) {
             this.chunk_list[chunk] = CommonState.getTime();
-            if (method == Message.PULL_CYCLE) {
+            if (method == BandwidthInfo.PULL_CYCLE) {
                 this.chunk_list[chunk] *= -1;
                 this.chunkpull++;
             } else {
@@ -897,7 +898,7 @@ public class BandwidthDataStructure implements BandwidthDataSkeleton, Protocol {
         int size = 0;
         for (int i = 0; i < this.chunk_list.length; i++) {
 //            System.out.println(normalize(chunk_list[i]) + " i "+i);
-            if (normalize(this.chunk_list[i]) > Message.OWNED) {
+            if (normalize(this.chunk_list[i]) > BandwidthInfo.OWNED) {
                 size++;
             }
         }
@@ -908,7 +909,7 @@ public class BandwidthDataStructure implements BandwidthDataSkeleton, Protocol {
         int least = -1;
         int max_chunk = this.getLast();
         for (int i = 0; i < this.chunk_list.length && i < max_chunk; i++) {
-            if (this.chunk_list[i] == Message.NOT_OWNED) {// && i != this.last_chunk_pulled) {
+            if (this.chunk_list[i] == BandwidthInfo.NOT_OWNED) {// && i != this.last_chunk_pulled) {
                 return i;
             }
         }
@@ -929,7 +930,7 @@ public class BandwidthDataStructure implements BandwidthDataSkeleton, Protocol {
             elements--;
         } else {
             for (int i = 0; i < this.chunk_list.length && i < max_chunk && elements > 0; i++) {
-                if (this.chunk_list[i] == Message.NOT_OWNED) {// && i != this.last_chunk_pulled) {
+                if (this.chunk_list[i] == BandwidthInfo.NOT_OWNED) {// && i != this.last_chunk_pulled) {
                     result[index++] = i;
                     elements--;
                 }
@@ -979,7 +980,7 @@ public class BandwidthDataStructure implements BandwidthDataSkeleton, Protocol {
 ////            Alternate asrc = (Alternate) Network.get(this.getSource()).getProtocol(pid);
 //            candidate = net.getTargetNeighbor();
 //            while (counter > 0 && (candidate.getContactTime() == CommonState.getTime() || candidate.getNeighbor().getIndex() == this.getSource())){//no target node already pushed
-////                    ||(this.cycle == Message.PULL_CYCLE && candidate.getPulltime() == CommonState.getTime()
+////                    ||(this.cycle == BandwidthInfo.PULL_CYCLE && candidate.getPulltime() == CommonState.getTime()
 ////                    ){
 ////            { //no target node already pulled
 ////                    (candidate.getNeighbor().getIndex() == this.getSource() && asrc.getCompleted() <= 0))) {//no Source
@@ -989,7 +990,7 @@ public class BandwidthDataStructure implements BandwidthDataSkeleton, Protocol {
 //            if (this.getDebug() >= 10) {
 //                System.out.println("\tNodo " + node.getID() + " selects candidate " + candidate + " (Source is " + this.getSource() + ") ");
 //            }
-////            if (this.cycle == Message.PUSH_CYCLE) {
+////            if (this.cycle == BandwidthInfo.PUSH_CYCLE) {
 ////                candidate.setPushtime(CommonState.getTime());
 ////            } else {}
 //                candidate.setContactTime(CommonState.getTime());
@@ -997,7 +998,7 @@ public class BandwidthDataStructure implements BandwidthDataSkeleton, Protocol {
 //            return candidate.getNeighbor();
 //        } else if (nk == 1) {//Global about the neighborhood
 //            Node candidate = null;
-//            if (this.cycle == Message.PUSH_CYCLE) {
+//            if (this.cycle == BandwidthInfo.PUSH_CYCLE) {
 //                candidate = this.getPushNeighbor(node, this.getLast(this.getPushWindow()), pid);
 //            } else {
 //                candidate = this.getPullNeighbor(node, this.getLeast(this.getPullWindow()), pid);
@@ -1039,7 +1040,7 @@ public class BandwidthDataStructure implements BandwidthDataSkeleton, Protocol {
 //                if (this.getDebug() >= 8) {
 //                    System.out.print("V[" + i + "]=" + candidate.getID() + " >> (" + chunks_push[k] + ", " + cnd.getChunk(chunks_push[k]) + "); ");
 //                }
-//                if (cnd.getChunk(chunks_push[k]) == Message.NOT_OWNED)// && cnd.getDownload(node)>cnd.getDownloadMin(node) && cnd.getActiveDw()<cnd.getActiveDownload())
+//                if (cnd.getChunk(chunks_push[k]) == BandwidthInfo.NOT_OWNED)// && cnd.getDownload(node)>cnd.getDownloadMin(node) && cnd.getActiveDw()<cnd.getActiveDownload())
 //                {
 //                    flag = false;
 //                }
@@ -1079,7 +1080,7 @@ public class BandwidthDataStructure implements BandwidthDataSkeleton, Protocol {
 //                if (this.getDebug() >= 8) {
 //                    System.out.print("V[" + i + "]=" + candidate.getID() + " >> (" + chunks_pull[k] + ", " + cnd.getChunk(chunks_pull[k]) + "); ");
 //                }
-//                if ((cnd.getChunk(chunks_pull[k]) != Message.NOT_OWNED) && (cnd.getChunk(chunks_pull[k]) != Message.IN_DOWNLOAD)) //                        && cnd.getUpload(candidate)>cnd.getUploadMin(candidate) && cnd.getPassiveUp()<cnd.getPassiveUpload())
+//                if ((cnd.getChunk(chunks_pull[k]) != BandwidthInfo.NOT_OWNED) && (cnd.getChunk(chunks_pull[k]) != BandwidthInfo.IN_DOWNLOAD)) //                        && cnd.getUpload(candidate)>cnd.getUploadMin(candidate) && cnd.getPassiveUp()<cnd.getPassiveUpload())
 //                {
 //                    flag = false;
 //                }

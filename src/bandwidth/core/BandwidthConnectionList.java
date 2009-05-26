@@ -1,4 +1,4 @@
-package bandwidth;
+package bandwidth.core;
 
 import java.util.LinkedList;
 import peersim.core.Node;
@@ -75,7 +75,7 @@ public class BandwidthConnectionList {
             return bce;
         for (int i = 0; i < this.connection_list.size(); i++) {
             bce = (BandwidthConnectionElement)this.connection_list.get(i);
-            if(bce.getSenderid() == s.getID() && bce.getReceiverid() == r.getID() )
+            if(bce.getSender() == s && bce.getReceiver() == r)
                 i=this.connection_list.size();
         }
         return bce;

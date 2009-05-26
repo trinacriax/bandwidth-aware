@@ -1,4 +1,4 @@
-package bandwidth;
+package bandwidth.test;
 
 import peersim.core.Node;
 import java.lang.reflect.*;
@@ -84,7 +84,7 @@ public class BandwidthTesterMessage {
 	}
 	
 	public String getConstantName(Object obj){
-		Field[] myfields = Message.class.getFields();
+		Field[] myfields = BandwidthInfo.class.getFields();
 		String clazz = obj.getClass().toString();
 		if(clazz.indexOf("Integer")!=-1)
 			clazz=" int ";

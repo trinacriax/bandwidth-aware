@@ -7,8 +7,9 @@
  * @author Alessandro Russo
  * @version 1.1
  */
-package bandwidth;
+package bandwidth.test;
 
+import bandwidth.core.BandwidthAwareProtocol;
 import peersim.config.*;
 import peersim.core.*;
 import peersim.cdsim.*;
@@ -70,7 +71,7 @@ public class BandwidthTester extends BandwidthDataStructure implements CDProtoco
             return;
         }
         switch (im.getMessage()) {
-            case Message.SWITCH_PUSH: {
+            case BandwidthInfo.SWITCH_PUSH: {
                 //**************************** PUSH STATE ****************************\\
                 sender = ((BandwidthTester) (node.getProtocol(pid)));
                 //Each switch message has to be sent from a node to itself
@@ -104,7 +105,7 @@ public class BandwidthTester extends BandwidthDataStructure implements CDProtoco
                         int chunktopush = sender.getLast();//source select latest chunk                        
                             peer = Network.get(0);
                             receiver = ((BandwidthTester) (peer.getProtocol(pid)));
-                            BandwidthTesterMessage imm = new BandwidthTesterMessage(chunktopush, node, Message.PUSH);
+                            BandwidthTesterMessage imm = new BandwidthTesterMessage(chunktopush, node, BandwidthInfo.PUSH);
                             this.send(node, peer, imm, pid);
                             if (sender.getDebug() >= 2) {
                                 System.out.println(CommonState.getTime() + "\t\tNode " + node.getID() + " PUSHes chunk " + imm.getChunkids() + " to Node " + peer.getID() +
@@ -222,7 +223,7 @@ public class BandwidthTester extends BandwidthDataStructure implements CDProtoco
 //                    return;
 //                }
             }
-            case Message.PUSH: //************************************* N O D O   R E C E I V E    P U S H   ******************************************
+            case BandwidthInfo.PUSH: //************************************* N O D O   R E C E I V E    P U S H   ******************************************
             {
                 receiver = (BandwidthTester) (node.getProtocol(pid));
                 if (receiver.getDebug() >= 2) {
@@ -231,8 +232,8 @@ public class BandwidthTester extends BandwidthDataStructure implements CDProtoco
 
                 }
                 int chunktopush = -1;
-                long response = Message.OWNED; //nella proposta di push i chunk sono ordinati in modo descrescente
-                for (int i = 0; i < im.getChunks().length && response != Message.NOT_OWNED; i++) {//recupera il chunk con id più alto che manca al nodo target tra quelli proposti dal sender
+                long response = BandwidthInfo.OWNED; //nella proposta di push i chunk sono ordinati in modo descrescente
+                for (int i = 0; i < im.getChunks().length && response != BandwidthInfo.NOT_OWNED; i++) {//recupera il chunk con id più alto che manca al nodo target tra quelli proposti dal sender
                     chunktopush = im.getChunks()[i];
                     response = receiver.getChunk(chunktopush);
                 }
@@ -241,29 +242,29 @@ public class BandwidthTester extends BandwidthDataStructure implements CDProtoco
                     if (receiver.getDebug() >= 3) {
                         System.out.println("\tREFUSE - it has either reached the max number of passive downloads " + receiver.getPassiveDw(node) + "/" + receiver.getPassiveDownload(node) + " no more bandwidth in download");
                     }
-                    BandwidthTesterMessage imm = new BandwidthTesterMessage(chunktopush, node, Message.NO_DOWNLOAD_BANDWIDTH_PUSH);
+                    BandwidthTesterMessage imm = new BandwidthTesterMessage(chunktopush, node, BandwidthInfo.NO_DOWNLOAD_BANDWIDTH_PUSH);
                     long delay = this.send(node, im.getSender(), imm, pid);
                     if (receiver.getDebug() >= 4) {
                         System.out.println("\tNode " + node.getID() + " sends " + imm.getMessageID() + " to " + im.getSender().getID() + " MexRx " + (CommonState.getTime() + delay));
                     }
                 } //************************** NODO POSSIEDE IL CHUNK OPPURE E' IN DOWNLOAD DA UN ALTRO NODO*****************************
-                else if (response != Message.NOT_OWNED || response == Message.IN_DOWNLOAD) {
+                else if (response != BandwidthInfo.NOT_OWNED || response == BandwidthInfo.IN_DOWNLOAD) {
                     //il Nodo ha quel chunk
                     if (receiver.getDebug() >= 3) {
                         System.out.println("\tREFUSE - chunk owned or in download (" + response + "). #Chunks " + receiver.getSize());
                     }
                     //applicare tecniche di completamento: es il receiver propone il chunk nel caso in cui abbia il chunk che sender vuole push			
-                    BandwidthTesterMessage imm = new BandwidthTesterMessage(chunktopush, node, Message.NO_CHUNK_OWNED);
+                    BandwidthTesterMessage imm = new BandwidthTesterMessage(chunktopush, node, BandwidthInfo.NO_CHUNK_OWNED);
                     long delay = this.send(node, im.getSender(), imm, pid);
                     if (receiver.getDebug() >= 4) {
                         System.out.println("\tNode " + node.getID() + " sends " + imm.getMessageID() + " to " + im.getSender().getID() + " MexRx " + (CommonState.getTime() + delay));
                     }
                 } //************************** NODO NON HA IL CHUNK ED ACCETTA IL PUSH ****************************
-                else if (response == Message.NOT_OWNED) {
+                else if (response == BandwidthInfo.NOT_OWNED) {
                     if (receiver.getDebug() >= 3) {
                         System.out.println("\tNode " + node.getID() + " accepts chunk " + chunktopush + " from " + im.getSender().getID());
                     }
-                    BandwidthTesterMessage imm = new BandwidthTesterMessage(chunktopush, node, Message.OK_PUSH);
+                    BandwidthTesterMessage imm = new BandwidthTesterMessage(chunktopush, node, BandwidthInfo.OK_PUSH);
                     long delay = this.send(node, im.getSender(), imm, pid);
                     receiver.addPassiveDw(node);
                     receiver.setInDown(chunktopush);
@@ -281,7 +282,7 @@ public class BandwidthTester extends BandwidthDataStructure implements CDProtoco
                 return;
             }
             //************************************* N O D E   R I C E V E    O K    P E R   I L   P U S H ******************************************
-            case Message.OK_PUSH: {	//Receiver ha accetta il PUSH di sender sul chunk
+            case BandwidthInfo.OK_PUSH: {	//Receiver ha accetta il PUSH di sender sul chunk
                 sender = ((BandwidthTester) (node.getProtocol(pid)));
                 receiver = ((BandwidthTester) (im.getSender().getProtocol(pid)));
                 int chunktopush = im.getChunks()[0];
@@ -292,7 +293,7 @@ public class BandwidthTester extends BandwidthDataStructure implements CDProtoco
                             " rec-OK_PUSH from " + im.getSender().getID() + " for chunk " + chunktopush + "(" + response + ")");
                 }
                 //***********************************SENDER HA IL CHUNK RICHIESTO *************************************			
-                if (response != Message.NOT_OWNED && response != Message.IN_DOWNLOAD) {
+                if (response != BandwidthInfo.NOT_OWNED && response != BandwidthInfo.IN_DOWNLOAD) {
                     BandwidthAwareProtocol bap = (BandwidthAwareProtocol) node.getProtocol(sender.getBandwidth());
                     long eedelay = 0;
                     long result = bap.sendData(sender.getChunkSize(), node, im.getSender(), eedelay, sender.getBandwidth());
@@ -322,14 +323,14 @@ public class BandwidthTester extends BandwidthDataStructure implements CDProtoco
                             System.out.println("\tNode " + node.getID() + " SWITCH to PUSHa (" + sender.getPushAttempt() + "/" + sender.getPushRetry() + ") at time " + CommonState.getTime() + " MexRX " + (CommonState.getTime() + delay));
                         }
 
-                        this.send(node, node, new BandwidthTesterMessage(null, node, Message.SWITCH_PUSH), delay, pid);
+                        this.send(node, node, new BandwidthTesterMessage(null, node, BandwidthInfo.SWITCH_PUSH), delay, pid);
                         sender.addFailPush();
                     } else {
-                        long delay = this.send(node, im.getSender(), new BandwidthTesterMessage(chunktopush, node, Message.START_PUSH), pid);
+                        long delay = this.send(node, im.getSender(), new BandwidthTesterMessage(chunktopush, node, BandwidthInfo.START_PUSH), pid);
                         delay += result;
-                        this.send(node, im.getSender(), new BandwidthTesterMessage(chunktopush, node, Message.FINISH_PUSH), delay, pid);
+                        this.send(node, im.getSender(), new BandwidthTesterMessage(chunktopush, node, BandwidthInfo.FINISH_PUSH), delay, pid);
                         delay += sender.getSwitchTime();
-                        this.send(node, node, new BandwidthTesterMessage(null, node, Message.SWITCH_PUSH), delay, pid);
+                        this.send(node, node, new BandwidthTesterMessage(null, node, BandwidthInfo.SWITCH_PUSH), delay, pid);
                         if (sender.getDebug() >= 4) {
                             System.out.println("\tNode " + node.getID() + " sends START_PUSH m:" + chunktopush + " to " + im.getSender().getID() + " MexRx " + (CommonState.getTime() + eedelay));
                         }
@@ -351,7 +352,7 @@ public class BandwidthTester extends BandwidthDataStructure implements CDProtoco
                 sender = receiver = null;
                 return;
             }
-            case Message.START_PUSH: {
+            case BandwidthInfo.START_PUSH: {
                 receiver = ((BandwidthTester) (node.getProtocol(pid)));
                 long chunktopush = im.getChunks()[0];
                 if (receiver.getDebug() >= 1) {
@@ -362,7 +363,7 @@ public class BandwidthTester extends BandwidthDataStructure implements CDProtoco
                 sender = receiver = null;
                 return;
             }
-            case Message.FINISH_PUSH://il receiver riceve il messaggio di fine PUSH		
+            case BandwidthInfo.FINISH_PUSH://il receiver riceve il messaggio di fine PUSH
             {
                 sender = ((BandwidthTester) (im.getSender().getProtocol(pid)));
                 receiver = ((BandwidthTester) (node.getProtocol(pid)));
@@ -373,8 +374,8 @@ public class BandwidthTester extends BandwidthDataStructure implements CDProtoco
                 sender.remActiveUp(im.getSender());
                 sender.addSuccessUpload();
                 if (receiver.getCycle() == -1) {//e` la prima attivazione.
-                    receiver.setCycle(Message.PUSH_CYCLE);
-                    this.send(node, node, new BandwidthTesterMessage(null, node, Message.SWITCH_PUSH), receiver.getSwitchTime(), pid);
+                    receiver.setCycle(BandwidthInfo.PUSH_CYCLE);
+                    this.send(node, node, new BandwidthTesterMessage(null, node, BandwidthInfo.SWITCH_PUSH), receiver.getSwitchTime(), pid);
                     if (sender.getDebug() >= 4) {
                         System.out.println("\t>>Node " + node.getID() + " has just been ACTIVATED!!! SWITCH PUSH at time " + (CommonState.getTime() + receiver.getSwitchTime()));
                     }
@@ -389,14 +390,14 @@ public class BandwidthTester extends BandwidthDataStructure implements CDProtoco
                     }
                 }
                 receiver.remPassiveDw(node);
-                receiver.addChunk(chunktopush, Message.PUSH_CYCLE);
+                receiver.addChunk(chunktopush, BandwidthInfo.PUSH_CYCLE);
                 if (receiver.getDebug() >= 6) {
                     System.out.println("\tSender " + im.getSender().getID() + " " + sender.getConnections() + "\n\t---  Receiver " + node.getID() + " " + receiver.getBwInfo(node) + " " + receiver.getConnections());
                 }
                 sender = receiver = null;
                 return;
             }
-            case Message.NO_CHUNK_OWNED: {                //Il Nodo possiede già il chunk che si vuole pushare
+            case BandwidthInfo.NO_CHUNK_OWNED: {                //Il Nodo possiede già il chunk che si vuole pushare
                 sender = (BandwidthTester) (node.getProtocol(pid));
                 long chunktopush = im.getChunks()[0];
                 if (sender.getDebug() >= 3) {
@@ -411,11 +412,11 @@ public class BandwidthTester extends BandwidthDataStructure implements CDProtoco
                 if (sender.getDebug() >= 4) {
                     System.out.println("\tNode " + node.getID() + " will SWITCH to PUSHc (" + sender.getPushAttempt() + "/" + sender.getPushRetry() + ") at time " + CommonState.getTime() + " MexRX " + (CommonState.getTime() + delay));
                 }
-                this.send(node, node, new BandwidthTesterMessage(null, node, Message.SWITCH_PUSH), delay, pid);
+                this.send(node, node, new BandwidthTesterMessage(null, node, BandwidthInfo.SWITCH_PUSH), delay, pid);
                 sender = receiver = null;
                 return;
             }
-            case Message.NO_DOWNLOAD_BANDWIDTH_PUSH: {
+            case BandwidthInfo.NO_DOWNLOAD_BANDWIDTH_PUSH: {
                 sender = ((BandwidthTester) (node.getProtocol(pid)));
                 if (sender.getDebug() >= 3) {
                     System.out.println(CommonState.getTime() + "\tNode " + node.getID() + " receives a message from Node " + im.getSender().getID() + " that does not have more download bandwidth");
@@ -426,7 +427,7 @@ public class BandwidthTester extends BandwidthDataStructure implements CDProtoco
                 if (sender.getDebug() >= 4) {
                     System.out.println("\tNode " + node.getID() + " will SWITCH to PUSHd (" + sender.getPushAttempt() + "/" + sender.getPushRetry() + ") at time " + CommonState.getTime() + " MexRX " + (CommonState.getTime() + delay));
                 }
-                this.send(node, node, new BandwidthTesterMessage(null, node, Message.SWITCH_PUSH), delay, pid);
+                this.send(node, node, new BandwidthTesterMessage(null, node, BandwidthInfo.SWITCH_PUSH), delay, pid);
                 sender = receiver = null;
                 return;
             }

@@ -1,4 +1,4 @@
-package bandwidth;
+package bandwidth.test;
 
 
 public interface BandwidthDataSkeleton {

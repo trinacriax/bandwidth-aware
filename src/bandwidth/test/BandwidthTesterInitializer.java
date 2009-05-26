@@ -1,4 +1,4 @@
-package bandwidth;
+package bandwidth.test;
 
 import peersim.config.*;
 import peersim.core.*;
@@ -67,7 +67,7 @@ public class BandwidthTesterInitializer implements Control {
             zbt = (BandwidthTester) Network.get(p).getProtocol(pid);
         for(int i = 0; i < 10-p; i++){
             if(p==0)
-                zbt.chunk_list[i] = Message.NOT_OWNED;
+                zbt.chunk_list[i] = BandwidthInfo.NOT_OWNED;
                 else
 
                     zbt.chunk_list[i] = 1000;
@@ -77,9 +77,9 @@ public class BandwidthTesterInitializer implements Control {
 
 //        BandwidthAwareProtocol zbp = (BandwidthAwareProtocol) zero.getProtocol(bandwidthp);
 //        zbp.sendData(chunksize, Network.get(1), zero, 0, bandwidthp);
-        EDSimulator.add(100, new BandwidthTesterMessage(null, source, Message.SWITCH_PUSH, 0L), source, pid);
-        EDSimulator.add(200, new BandwidthTesterMessage(null, Network.get(1), Message.SWITCH_PUSH, 0L), Network.get(1), pid);
-        EDSimulator.add(350, new BandwidthTesterMessage(null, Network.get(2), Message.SWITCH_PUSH, 0L), Network.get(2), pid);
+        EDSimulator.add(100, new BandwidthTesterMessage(null, source, BandwidthInfo.SWITCH_PUSH, 0L), source, pid);
+        EDSimulator.add(200, new BandwidthTesterMessage(null, Network.get(1), BandwidthInfo.SWITCH_PUSH, 0L), Network.get(1), pid);
+        EDSimulator.add(350, new BandwidthTesterMessage(null, Network.get(2), BandwidthInfo.SWITCH_PUSH, 0L), Network.get(2), pid);
         System.err.print("finished\n");
         return false;
     }

@@ -1,5 +1,7 @@
-package bandwidth;
+package bandwidth.core;
 
+import bandwidth.test.BandwidthMessage;
+import bandwidth.*;
 import peersim.core.*;
 import peersim.cdsim.*;
 import peersim.edsim.*;
@@ -50,7 +52,7 @@ public class BandwidthAwareProtocol extends BandwidthAwareTransport implements C
                         }
                     } else {
                         sender.setUpdate(false);
-                        BandwidthConnectionElement cet = new BandwidthConnectionElement(bm.sender.getID(), bm.receiver.getID(), bm.getBandwidth(), bm.getStart(), CommonState.getTime(), -1);
+                        BandwidthConnectionElement cet = new BandwidthConnectionElement(bm.sender, bm.receiver, bm.getBandwidth(), bm.getStart(), CommonState.getTime(), -1);
                         if (sender.getDebug() >= 6) {
                             System.out.println("\tTry to remove connection " + cet);
                         }
@@ -58,17 +60,17 @@ public class BandwidthAwareProtocol extends BandwidthAwareTransport implements C
                             System.out.println("\t>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> AGGIORNAMENTO TABELLA BANDE Sender " + bm.sender.getID() + " Upload " + sender.getUpload());
                         }
                         if (sender.getDebug() >= 6) {
-                            System.out.println("SENDER CONNECTION LIST \\\\\\\\\\\\\\\\\\");
+//                            System.out.println("\t/ SENDER CONNECTION LIST --------------------------------");
                             for (int i = 0; i < sender.getUploadConnections().getSize(); i++) {
-                                System.out.println(sender.getUploadConnections().getElement(i));
+                                System.out.println("\t"+sender.getUploadConnections().getElement(i));
                             }
-                            System.out.println("/////////////////////////////////");
+                            System.out.println("\t\\ ------------------------------------------------------------------------------------------------ /");
                         }
 
                         BandwidthConnectionElement det = sender.getUploadConnections().remConnection(cet);
                         if (det != null && cet.equals(det)) {
                             if (sender.getDebug() >= 6) {
-                                System.out.println("\t\tRimossa connessione " + det.toString());
+                                System.out.println("\tRimossa connessione in Upload " + det.toString());
                             }
                             long newUp = sender.getUpload() + bm.getBandwidth();
                             sender.setUpload(newUp);
@@ -98,7 +100,7 @@ public class BandwidthAwareProtocol extends BandwidthAwareTransport implements C
                         }
                     }else {
                     receiver.setUpdate(false);
-                    BandwidthConnectionElement cet = new BandwidthConnectionElement(bm.sender.getID(), bm.receiver.getID(), bm.getBandwidth(), bm.getStart(), CommonState.getTime(), -1);
+                    BandwidthConnectionElement cet = new BandwidthConnectionElement(bm.sender, bm.receiver, bm.getBandwidth(), bm.getStart(), CommonState.getTime(), -1);
                     if (sender.getDebug() >= 6) {
                         System.out.println("\tTry to remove connection " + cet);
                     }
@@ -112,16 +114,16 @@ public class BandwidthAwareProtocol extends BandwidthAwareTransport implements C
                         System.out.println("\t>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> AGGIORNAMENTO TABELLA BANDE Receiver " + bm.receiver.getID() + " Download " + receiver.getDownload());
                     }
                     if (receiver.getDebug() > 6) {
-                        System.out.println("RECEIVER CONNECTION LIST \\\\\\\\\\\\\\\\\\ ");
+//                        System.out.println("\t/ RECEIVER CONNECTION LIST  --------------------------------");
                         for (int i = 0; i < receiver.getDownloadConnections().getSize(); i++) {
-                            System.out.println(receiver.getDownloadConnections().getElement(i));
+                            System.out.println("\t"+receiver.getDownloadConnections().getElement(i));
                         }
-                        System.out.println("/////////////////////////////////");
+                        System.out.println("\t\\ ------------------------------------------------------------------------------------------------ /");
                     }
                     BandwidthConnectionElement det = receiver.getDownloadConnections().remConnection(cet);
                     if (det != null && cet.equals(det)) {
                         if (sender.getDebug() >= 6) {
-                            System.out.println("\t`\tRimossa connessione " + det);
+                            System.out.println("\tRimossa connessione in Download " + det);
                         }
                         long newDw = receiver.getDownload() + bm.getBandwidth();
                         receiver.setDownload(newDw);

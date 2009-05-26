@@ -1,6 +1,6 @@
-package bandwidth;
+package bandwidth.test;
 
-public interface Message {
+public interface BandwidthInfo {
 	/**
 	 * COSTANTI PER LA GESTIONE DEI CICLI DEL NODO
 	 */
