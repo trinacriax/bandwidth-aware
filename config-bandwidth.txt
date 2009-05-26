@@ -1,0 +1,124 @@
+### Simulation seed
+SEED 1563623562356234
+### MAX Simulation time
+CYCLE SIZE*CHUNKS*NEW_CHUNK_DELAY
+### Verbosity level
+DEBUG 8
+
+### Number of nodes in the network
+SIZE 4
+### Number of chunks to transmit
+CHUNKS 10
+### Chunk size in bits
+CHUNK_SIZE BUSOURCE*NEW_CHUNK_DELAY/1000
+### Time in milliseconds to produce a new chunk
+NEW_CHUNK_DELAY 500
+### Nodes degree
+DEGREE 16
+### Message delay: min and max
+MINDELAY 2
+MAXDELAY 10
+### Observer Step in milliseconds
+OBSERVER_STEP 10000
+## Time in millisecond needed for a node to switch between states:
+## push -> pull and vice-versa
+SWITCHTIME 1
+### Maximum number of push and pull attempts
+PUSHRETRY 1
+PULLRETRY 1
+## Dropping rate [0:1]
+## Currently, this protocol does not implement any form of "message recovery"
+## therefor we are working on reliable channel.
+DROP 0
+## Maximum number of active connections in upload and download
+## Active means that the node issues either a push or pull to a target node
+## push for upload and pull for download.
+ACT_UP 4
+ACT_DW 4
+## Maximum number of passice connections in upload and download
+## Passive means that the node is the target node which receives either a push or pull request
+## therefor it will either receive a chunk via push or satisfy a pull request.
+PAS_DW 100
+PAS_UP 4
+
+## Window size for either push or pull active message,
+## the node either proposes PUSH_WIN chunks in push
+## or PULL_WIN for pull
+PUSH_WIN 4
+PULL_WIN 4
+
+## Source Bandwitdth
+BUSOURCE 2000000
+BDSOURCE 10*BUSOURCE
+
+## Muliplicative factor than the source rate
+BUMULT 1.25
+BUPEERS BUMULT*BUSOURCE
+BDPEERS 10*BUPEERS
+
+
+#- - - - -  - P R O T O C O L S - - - - -  -#
+#############Random Generator#############
+#random p4s.util.RandomRLC
+random.seed SEED
+##########Simulator parameter#########
+network.size SIZE
+
+simulation.endtime CYCLE
+simulation.experiments 1
+simulation.timebits 16
+simulation.logtime OBSERVER-STEP
+simulation.stdout PrintLogs
+
+## Overlay network used
+protocol.link peersim.core.IdleProtocol
+protocol.link.capacity DEGREE
+
+## Protocol used for chunks distribution
+protocol.int BandwidthTester
+protocol.int.linkable link
+protocol.int.transport urt
+
+## Transport protocol used
+protocol.urt UniformRandomTransportTimed
+protocol.urt.mindelay MINDELAY
+protocol.urt.maxdelay MAXDELAY
+
+## Bandwidth protocol used
+protocol.bwp bandwidth.BandwidthAwareProtocol
+
+#- - - - - - I N I T I A L I Z E R S - - - - -  -#
+## Overlay network initializer
+init.rndlink WireKOutUnd
+init.rndlink.k DEGREE
+init.rndlink.protocol link
+
+## Bandwidth protocol initializer
+init.bwi bandwidth.BandwidthAwareInitializer
+init.bwi.protocol bwp
+init.bwi.debug DEBUG
+## CDF of bandwidth distribution
+## separeted by commas:
+## 128000,180000,290000
+## 0.3,0.7,1
+init.bwi.uploadBw BUPEERS #,180000,256000
+init.bwi.downloadBw BDPEERS #,640000,640000
+init.bwi.bandwidthPr 1 #0.3,0.7,1
+init.bwi.active_upload ACT_UP
+init.bwi.active_download ACT_DW
+init.bwi.passive_upload PAS_UP
+init.bwi.passive_download PAS_DW
+## the following two parameters indicate the source upload/download bandwidth
+## download is useless at the source, but it exists :)
+init.bwi.srcup BUSOURCE
+init.bwi.srcdw BDSOURCE
+
+## Chunk distribution protocol initializer
+init.ii BandwidthTesterInitializer
+init.ii.protocol int
+init.ii.bandwidth bwp
+init.ii.chunks CHUNKS
+init.ii.chunk_size CHUNK_SIZE
+init.ii.debug DEBUG
+## Initializers order
+include.init rndlink bwi ii
