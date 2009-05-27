@@ -51,7 +51,7 @@ public class BandwidthTesterInitializer implements Control {
     // ------------------------------------------------------------------------
     public boolean execute() {
         System.err.print("- >> Alternate Initializer: Start...");
-        Node source = Network.get(Network.size() - 1);//the source is always the last node.
+//        Node source = Network.get(Network.size() - 1);//the source is always the last node.
         for (int i = 0; i < Network.size(); i++) {
             Node aNode = Network.get(i);
             BandwidthDataSkeleton prot = (BandwidthDataSkeleton) aNode.getProtocol(pid);
@@ -74,12 +74,11 @@ public class BandwidthTesterInitializer implements Control {
         }
             System.out.println("Node "+p+" > " +zbt.bitmap());
         }
-
-//        BandwidthAwareProtocol zbp = (BandwidthAwareProtocol) zero.getProtocol(bandwidthp);
-//        zbp.sendData(chunksize, Network.get(1), zero, 0, bandwidthp);
-        EDSimulator.add(100, new BandwidthTesterMessage(null, source, BandwidthInfo.SWITCH_PUSH, 0L), source, pid);
-        EDSimulator.add(200, new BandwidthTesterMessage(null, Network.get(1), BandwidthInfo.SWITCH_PUSH, 0L), Network.get(1), pid);
-        EDSimulator.add(350, new BandwidthTesterMessage(null, Network.get(2), BandwidthInfo.SWITCH_PUSH, 0L), Network.get(2), pid);
+        EDSimulator.add(10, new BandwidthTesterMessage(null, Network.get(1), BandwidthInfo.SWITCH_PUSH, 0L), Network.get(1), pid);
+        EDSimulator.add(50, new BandwidthTesterMessage(null, Network.get(2), BandwidthInfo.SWITCH_PUSH, 0L), Network.get(2), pid);
+        EDSimulator.add(30, new BandwidthTesterMessage(null, Network.get(3), BandwidthInfo.SWITCH_PUSH, 0L), Network.get(3), pid);
+        EDSimulator.add(40, new BandwidthTesterMessage(null, Network.get(4), BandwidthInfo.SWITCH_PUSH, 0L), Network.get(4), pid);
+        EDSimulator.add(424, new BandwidthTesterMessage(null, Network.get(5), BandwidthInfo.SWITCH_PUSH, 0L), Network.get(5), pid);
         System.err.print("finished\n");
         return false;
     }

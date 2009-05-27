@@ -162,8 +162,8 @@ public class BandwidthAwareInitializer implements Control {
             bwa.setDownload(download);
             bwa.setUploadMax(upload);
             bwa.setDownloadMax(download);
-            int minup = (int) (upload * .2);
-            int mindw = (int) (download * .2);
+            int minup = (int) (upload * .20);
+            int mindw = (int) (download * .10);
             bwa.setUploadMin(minup);
             bwa.setDownloadMin(mindw);
             bwa.initialize();

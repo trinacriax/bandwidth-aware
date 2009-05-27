@@ -76,9 +76,33 @@ public class BandwidthConnectionList {
         for (int i = 0; i < this.connection_list.size(); i++) {
             bce = (BandwidthConnectionElement)this.connection_list.get(i);
             if(bce.getSender() == s && bce.getReceiver() == r)
-                i=this.connection_list.size();
+                return bce;
         }
-        return bce;
+        return null;
+    }
+
+    public BandwidthConnectionElement getRecord(Node s, Node r, long txid, long end){
+        BandwidthConnectionElement bce = null;
+        if(connection_list.isEmpty())
+            return bce;
+        for (int i = 0; i < this.connection_list.size(); i++) {
+            bce = (BandwidthConnectionElement)this.connection_list.get(i);
+            if(bce.getSender() == s && bce.getReceiver() == r && bce.getTxId() == txid && bce.getStart() == end)
+                return bce;
+        }
+        return null;
+    }
+
+    public BandwidthConnectionElement getRecordE(Node s, Node r, long startTime, long bandwidth ){
+        BandwidthConnectionElement bce = null;
+        if(connection_list.isEmpty())
+            return bce;
+        for (int i = 0; i < this.connection_list.size(); i++) {
+            bce = (BandwidthConnectionElement)this.connection_list.get(i);
+            if(bce.getSender() == s && bce.getReceiver() == r && bce.getStart() == startTime && bce.getBandwidth() == bandwidth)
+                return bce;
+        }
+        return null;
     }
     
     public BandwidthConnectionElement getFirstEnd() {

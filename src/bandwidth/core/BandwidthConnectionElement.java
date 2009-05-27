@@ -10,6 +10,7 @@ public class BandwidthConnectionElement {
     long start_time;
     long end_time;
     long txid;
+    boolean check;
 
     public BandwidthConnectionElement(Node sender, Node receiver, long band, long end, long txid) {
         this(sender, receiver, band, 0, end, txid);
@@ -26,6 +27,7 @@ public class BandwidthConnectionElement {
         this.start_time = start;
         this.end_time = end;
         this.txid = txid;
+        this.check = false;
     }
 
     public Node getSender() {
@@ -56,6 +58,14 @@ public class BandwidthConnectionElement {
     
     public void setEndtime(long value)
     {this.end_time = value; }
+
+    public void setCheck(){
+        this.check =!check;
+    }
+
+    public boolean getCheck(){
+        return this.check;
+    }
     
     public boolean equals(BandwidthConnectionElement ce) {
         if ((ce.sender.getIndex() == this.sender.getIndex()) && (ce.receiver.getIndex() == this.receiver.getIndex()) && (ce.start_time== this.start_time) &&
@@ -69,7 +79,7 @@ public class BandwidthConnectionElement {
 
     public String toString() {
         return "| Src " + this.sender.getIndex() + " | Rec " + this.receiver.getIndex() + " | TxID  " + this.txid+
-                " | Bwd " + this.bandwidth + " | Start " + this.start_time + " | End " + this.end_time+"|";
+                " | Bwd " + this.bandwidth + " | Start " + this.start_time + " | End " + this.end_time+" | "+this.check+" |";
     }
 
     public String getValues() {

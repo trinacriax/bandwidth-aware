@@ -9,6 +9,7 @@
  */
 package bandwidth.test;
 
+import bandwidth.core.BandwidthMessage;
 import bandwidth.core.BandwidthAwareProtocol;
 import peersim.config.*;
 import peersim.core.*;
