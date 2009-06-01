@@ -81,6 +81,18 @@ public class BandwidthConnectionList {
         return null;
     }
 
+    public BandwidthConnectionElement getRecordT(Node s, Node r,long txid){
+        BandwidthConnectionElement bce = null;
+        if(connection_list.isEmpty())
+            return bce;
+        for (int i = 0; i < this.connection_list.size(); i++) {
+            bce = (BandwidthConnectionElement)this.connection_list.get(i);
+            if(bce.getSender() == s && bce.getReceiver() == r && bce.getTxId() == txid)
+                return bce;
+        }
+        return null;
+    }
+
     public BandwidthConnectionElement getRecord(Node s, Node r, long txid, long end){
         BandwidthConnectionElement bce = null;
         if(connection_list.isEmpty())

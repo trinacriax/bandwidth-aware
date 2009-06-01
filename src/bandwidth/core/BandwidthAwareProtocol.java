@@ -81,9 +81,18 @@ public class BandwidthAwareProtocol extends BandwidthAwareTransport implements C
                         }
                         long newUp = sender.getUpload() + bm.getBandwidth();
                         sender.setUpload(newUp, det);
+
                     } else if (sender.getDebug() >= 6) {
                         System.out.println("\t\tNon  stata rimossa alcuna connessione " + cet);
                     }
+
+//                    det = sender.getUploadConnections().getRecordT(det.getSender(), det.getReceiver(), det.getTxId());
+//                    if (det == null) {
+//                        if (sender.getDebug() >= 6) {
+//                            System.out.println("\t\tNo more connection between " + bm.getSender().getIndex() + " and " + bm.getReceiver().getIndex() + ".");
+//                        }
+//                        sender.remActiveUp();
+//                    }
                     if (sender.getDebug() >= 6) {
                         System.out.println("\t<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<  UPDATING DONE < SENDER " + bm.getSender().getID() + " Upload " + sender.getUpload() + " (" + sender.getUploadBUF() + ")");
                     }
@@ -148,6 +157,13 @@ public class BandwidthAwareProtocol extends BandwidthAwareTransport implements C
                     } else if (sender.getDebug() >= 6) {
                         System.out.println("\t\tNon e stata rimossa alcuna connessione " + cet);
                     }
+                    det = receiver.getDownloadConnections().getRecordT(det.getSender(), det.getReceiver(), det.getTxId());
+//                    if (det == null) {
+//                        if (sender.getDebug() >= 6) {
+//                            System.out.println("\t\tNo more connection between " + bm.getSender().getIndex() + " and " + bm.getReceiver().getIndex() + ".");
+//                        }
+//                        receiver.rem
+//                    }
                     if (sender.getDebug() >= 6) {
                         System.out.println("\t<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<  UPDATING DONE > RECEIVER " + bm.receiver.getID() + " Download " + receiver.getDownload() + " (" + receiver.getDownloadBUF() + ")");
                     }

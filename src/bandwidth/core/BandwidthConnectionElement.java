@@ -76,6 +76,7 @@ public class BandwidthConnectionElement {
         }
 
     }
+    
 
     public String toString() {
         return "| Src " + this.sender.getIndex() + " | Rec " + this.receiver.getIndex() + " | TxID  " + this.txid+
