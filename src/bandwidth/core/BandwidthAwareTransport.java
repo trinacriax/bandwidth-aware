@@ -4,13 +4,13 @@
  */
 package bandwidth.core;
 
-import bandwidth.*;
+//import bandwidth.*;
 import peersim.core.Protocol;
 import peersim.core.Node;
 import peersim.core.CommonState;
 import peersim.edsim.EDSimulator;
 import java.util.Vector;
-import java.util.ArrayList;
+//import java.util.ArrayList;
 
 /**
  *
@@ -111,25 +111,25 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
 //    }
 
     public void setUpload(long _upload) {
-        System.out.println("Update upload "+_upload);
+//        System.out.println("Update upload "+_upload);
         if (_upload < 0) {
             upload_buf += _upload;
-            System.out.println("Update buf "+this.upload_buf);
+//            System.out.println("Update buf "+this.upload_buf);
             this.upload = 0;
-            System.out.println("Update "+this.upload);
+//            System.out.println("Update "+this.upload);
         } else {
             if (upload_buf < 0) {
-                System.out.println("Uploadbuf < 0 ");
+//                System.out.println("Uploadbuf < 0 ");
                 upload_buf = upload_buf + _upload;
                 if(upload_buf>0){
                     this.upload += upload_buf;
                     upload_buf = 0;
                 }
                 
-                System.out.println("1UPLOAD  "+this.upload);
+//                System.out.println("1UPLOAD  "+this.upload);
             } else {
                 this.upload = _upload;
-                System.out.println("2UPLOAD  "+this.upload);
+//                System.out.println("2UPLOAD  "+this.upload);
             }
         }
     }
@@ -137,9 +137,9 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
     public void setUpload(long _upload, BandwidthConnectionElement bce) {
         bce = this.upload_connection_list.getRecord(bce.getSender(), bce.getReceiver(), bce.getTxId(), bce.getEnd());
         if (bce!= null && bce.getStart() == CommonState.getTime() && !bce.check) {            
-            System.out.print("UU Sto aggiungendo banda, quando tra poco me la tolgono: "+_upload);
+//            System.out.print("UU Sto aggiungendo banda, quando tra poco me la tolgono: "+_upload);
             this.upload_buf += _upload;
-            System.out.println(" UBUF "+this.upload_buf);
+//            System.out.println(" UBUF "+this.upload_buf);
         } else {
             this.setUpload(_upload);
         }
@@ -170,30 +170,30 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
     }
 
     public void setDownload(long _download) {
-        System.out.println("Update download "+_download);
+//        System.out.println("Update download "+_download);
         if (_download < 0) {
 //            if(this.download < _download){
             download_buf += _download;
-            System.out.println("Update buf "+this.download_buf);
+//            System.out.println("Update buf "+this.download_buf);
             this.download = 0;
-            System.out.println("Update "+this.download);
+//            System.out.println("Update "+this.download);
 //            }
 //            else{
 //                this.download -= _download;
 //            }
         } else {
             if (download_buf < 0) {
-                System.out.println("downloadbuf < 0 ");
+//                System.out.println("downloadbuf < 0 ");
                 download_buf = download_buf + _download;
                 if(download_buf>0){
                     this.download += download_buf;
                     download_buf = 0;
                 }
 
-                System.out.println("1download  "+this.download);
+//                System.out.println("1download  "+this.download);
             } else {
                 this.download = _download;
-                System.out.println("2download  "+this.download);
+//                System.out.println("2download  "+this.download);
             }
         }
     }
@@ -201,9 +201,9 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
     public void setDownload(long _download, BandwidthConnectionElement bce) {
         bce = this.download_connection_list.getRecord(bce.getSender(), bce.getReceiver(), bce.getTxId(),bce.getEnd());
         if (bce!=null && bce.getStart() == CommonState.getTime() && !bce.check) {
-            System.out.print("DD Sto aggiungendo banda, quando tra poco me la tolgono: "+_download);
+//            System.out.print("DD Sto aggiungendo banda, quando tra poco me la tolgono: "+_download);
             this.download_buf += _download;
-            System.out.println(" DBUF "+this.download_buf);
+//            System.out.println(" DBUF "+this.download_buf);
         } else {
             this.setDownload(_download);
         }

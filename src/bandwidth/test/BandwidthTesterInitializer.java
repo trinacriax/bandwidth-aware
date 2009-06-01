@@ -79,6 +79,8 @@ public class BandwidthTesterInitializer implements Control {
         EDSimulator.add(30, new BandwidthTesterMessage(null, Network.get(3), BandwidthInfo.SWITCH_PUSH, 0L), Network.get(3), pid);
         EDSimulator.add(40, new BandwidthTesterMessage(null, Network.get(4), BandwidthInfo.SWITCH_PUSH, 0L), Network.get(4), pid);
         EDSimulator.add(424, new BandwidthTesterMessage(null, Network.get(5), BandwidthInfo.SWITCH_PUSH, 0L), Network.get(5), pid);
+        EDSimulator.add(500, new BandwidthTesterMessage(null, Network.get(6), BandwidthInfo.SWITCH_PUSH, 0L), Network.get(6), pid);
+        EDSimulator.add(550, new BandwidthTesterMessage(null, Network.get(7), BandwidthInfo.SWITCH_PUSH, 0L), Network.get(7), pid);
         System.err.print("finished\n");
         return false;
     }
