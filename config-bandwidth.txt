@@ -6,7 +6,7 @@ CYCLE SIZE*CHUNKS*NEW_CHUNK_DELAY
 DEBUG 8
 
 ### Number of nodes in the network
-SIZE 4
+SIZE 8
 ### Number of chunks to transmit
 CHUNKS 10
 ### Chunk size in bits
@@ -54,7 +54,7 @@ BDSOURCE 10*BUSOURCE
 ## Muliplicative factor than the source rate
 BUMULT 1.25
 BUPEERS BUMULT*BUSOURCE
-BDPEERS 10*BUPEERS
+BDPEERS 3.4*BUPEERS
 
 
 #- - - - -  - P R O T O C O L S - - - - -  -#
@@ -85,7 +85,7 @@ protocol.urt.mindelay MINDELAY
 protocol.urt.maxdelay MAXDELAY
 
 ## Bandwidth protocol used
-protocol.bwp bandwidth.BandwidthAwareProtocol
+protocol.bwp BandwidthAwareProtocol
 
 #- - - - - - I N I T I A L I Z E R S - - - - -  -#
 ## Overlay network initializer
@@ -94,7 +94,7 @@ init.rndlink.k DEGREE
 init.rndlink.protocol link
 
 ## Bandwidth protocol initializer
-init.bwi bandwidth.BandwidthAwareInitializer
+init.bwi BandwidthAwareInitializer
 init.bwi.protocol bwp
 init.bwi.debug DEBUG
 ## CDF of bandwidth distribution

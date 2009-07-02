@@ -72,11 +72,13 @@ public class BandwidthAwareInitializer implements Control {
 //        if(debug>5)
 //        System.err.println("Src: Up " + srcup + " Dw " + srcdw);
         String bandwidths[] = Configuration.getString(prefix + "." + PAR_UP_BAND, "").split(",");
+//        System.err.println("String "+Configuration.getString(prefix + "." + PAR_UP_BAND) );
+//        System.err.println("String "+Configuration.getDouble(prefix + "." + PAR_UP_BAND,0));
         if (bandwidths.length == 1) {
             this.UploadBandwidth = new int[bandwidths.length];
-            System.err.println("Init Bandwidth! " + this.UploadBandwidth.length);
+//            System.err.println("Init Bandwidth! " + this.UploadBandwidth.length);
             this.UploadBandwidth[0] = (int) Configuration.getDouble(prefix + "." + PAR_UP_BAND, -1);
-//            System.err.println("UP " + this.UploadBandwidth[0]);
+//            System.err.println("UP " + Configuration.getDouble(prefix + "." + PAR_UP_BAND, -1));
             this.DownloadBandwidth = new int[bandwidths.length];
             this.DownloadBandwidth[0] = (int) Configuration.getDouble(prefix + "." + PAR_DOWN_BAND, -1);
 //            System.err.println("DW " + this.DownloadBandwidth[0]);
@@ -89,7 +91,6 @@ public class BandwidthAwareInitializer implements Control {
                 if (debug > 5) {
                     System.err.println("\tUPBW [" + i + "] =" + bandwidths[i]);
                 }
-
                 this.UploadBandwidth[i] = (int) Double.parseDouble(bandwidths[i]);
 //            if(debug>5)
                 System.err.println("\tUPBW [" + i + "] =" + this.UploadBandwidth[i]);
