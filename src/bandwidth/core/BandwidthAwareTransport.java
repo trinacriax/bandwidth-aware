@@ -1005,6 +1005,7 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
                     if (this.debug >= 5) {
                         System.out.print("\tFirst connection Start " + olds + " Finish " + olde + " Bandwidth " + oldb + " >> MexTime Sender " + mextime);
                     }
+                    System.out.flush();
                     EDSimulator.add(bs.getTime(), bs.getBWM(), bs.getsrc(), pid);
 //                    bolds = bs;
                     finish = mextime;
@@ -1017,19 +1018,28 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
                 } else {
                     cs = cet.getStart() - CommonState.getTime();
                     ce = cet.getEnd() - CommonState.getTime();
-                    cb = cet.getBandwidth();
-                    if (this.debug >= 5) {
-                        System.out.print("\tAt time " + olde + " I'll give " + oldb + " to both sender (" + cs + ") and receiver " + (cs));
-                    }
+                    cb = cet.getBandwidth();                    
                     BandwidthMessage less = new BandwidthMessage(bs.getsrc(), bs.getrcv(), BandwidthMessage.UPD_UP, (-1 * cb), cet.getStart());
+                    if (this.debug >= 5) {
+                        System.out.println("\tIn time " +cet.getStart()+ " I'll rem " + cb + " to  sender (" + cet.getSender().getID()+"\n\t\t"+less );
+                    }
+                    EDSimulator.add(cs, less, bs.getsrc(), pid);                    
+                    less = new BandwidthMessage(bs.getsrc(), bs.getrcv(), BandwidthMessage.UPD_DOWN, (-1 * cb), (cet.getStart()+eedelay));
                     EDSimulator.add(cs, less, bs.getsrc(), pid);
-                    less = new BandwidthMessage(bs.getsrc(), bs.getrcv(), BandwidthMessage.UPD_DOWN, (-1 * cb), cet.getStart());
-                    EDSimulator.add(cs, less, bs.getsrc(), pid);
+                    if (this.debug >= 5) {
+                        System.out.println("\tIn time " + cet.getStart() + "("+cet.getStart()+ " I'll rem " + cb + " to  sender (" + cet.getReceiver().getID()+"\n\t\t"+less );
+                    }
                     finish = ce;
                     BandwidthMessage plus = new BandwidthMessage(bs.getsrc(), bs.getrcv(), BandwidthMessage.UPD_UP, cb, cet.getStart());
                     EDSimulator.add(ce, plus, bs.getsrc(), pid);
-                    plus = new BandwidthMessage(bs.getsrc(), bs.getrcv(), BandwidthMessage.UPD_DOWN, cb, cet.getStart());
-                    EDSimulator.add(ce, plus, bs.getsrc(), pid);
+                    if (this.debug >= 5) {
+                        System.out.println("\tIn time " + cet.getEnd()+ " I'll add " + cb + " to  sender (" + cet.getSender().getID()+"\n\t\t"+plus );
+                    }
+                    plus = new BandwidthMessage(bs.getsrc(), bs.getrcv(), BandwidthMessage.UPD_DOWN, cb, (cet.getStart()+eedelay));
+                    EDSimulator.add((ce+eedelay), plus, bs.getsrc(), pid);
+                    if (this.debug >= 5) {
+                        System.out.println("\tIn time " + (cet.getEnd()+eedelay)+ " I'll add " + cb + " to  sender (" + cet.getReceiver().getID()+"\n\t\t"+plus );
+                    }
                 }
 
             }
