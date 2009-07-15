@@ -102,13 +102,6 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
         this.debug = debug;
     }
 //
-//    public void setUpdate(boolean _value){
-//        this.updating = _value;
-//    }
-//
-//    public boolean getUpdate(){
-//        return this.updating;
-//    }
 
     public void setUpload(long _upload) {
 //        System.out.println("Update upload "+_upload);
@@ -419,6 +412,23 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
         return this.passive_download;
     }
 
+
+    public long getEndUpload(){
+        BandwidthConnectionElement bce = this.upload_connection_list.getFirstEnd();
+        if(bce == null)
+            return 0;
+        else
+            return bce.getEnd();
+    }
+
+    public long getEndDownload(){
+        BandwidthConnectionElement bce = this.download_connection_list.getFirstEnd();
+        if(bce == null)
+            return 0;
+        else
+            return bce.getEnd();
+    }
+
     public BandwidthConnectionList getUploadConnections() {
         return this.upload_connection_list;
     }
@@ -524,8 +534,8 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
             lastDwTime = cent.getEnd();
         }
         if (this.debug >= 5) {
-            System.out.println("------------------------------------------------------ INIZIO GESTIONE BANDE PUSH ------------------------------------------------------ ");
-            System.out.println("Tempo fine ultimo Upload: " + lastUpTime + " e Download " + lastDwTime + " Delay " + eedelay);
+            System.out.println("------------------------------------------------------ BANDWIDTH MANAGEMENT SYSTEM ------------------------------------------------------ ");
+            System.out.println("Next sender upload ends at time: " + lastUpTime + "; Next receiver Download ends " + lastDwTime + " One-Way-Delay " + eedelay+" Bits to transmit are "+residuo);
         }
         if (this.debug >= 10) {
             if (sender.upload_connection_list.getSize() > 0) {
@@ -545,7 +555,13 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
                 System.out.println("<<<< Receiver ");
             }
         }
-        boolean flag = true;                
+        boolean flag = true;
+        if(residuo == 0){
+            if(this.debug >= 4)
+                System.err.println("!!! The application layer request to send ZERO bits");
+            return 1;
+        }
+
         while (residuo > 0) {
             bandwidth = Math.min(banda_up, banda_dw);
             if (this.debug >= 5) {
