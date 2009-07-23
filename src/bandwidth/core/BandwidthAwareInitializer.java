@@ -34,6 +34,9 @@ public class BandwidthAwareInitializer implements Control {
     private static final String PAR_SRC_UP = "srcup";
     private static final String PAR_SRC_DOWN = "srcdw";
     private static final String PAR_DEBUG = "debug";
+    private static final String PAR_BMP = "BMp";
+    private static final String PAR_BMPF = "BMPF";
+    private static final String PAR_BMPL = "BMPL";
 
     // ------------------------------------------------------------------------
     // Fields
@@ -52,6 +55,7 @@ public class BandwidthAwareInitializer implements Control {
     private int passive_download;
     private int srcup;
     private int srcdw;
+    private double bmp;
 
     // 
     // ------------------------------------------------------------------------
@@ -67,10 +71,15 @@ public class BandwidthAwareInitializer implements Control {
         passive_upload = Configuration.getInt(prefix + "." + PAR_PASSIVE_UPLOAD, 1);
         passive_download = Configuration.getInt(prefix + "." + PAR_PASSIVE_DOWNLOAD, 1);
         debug = Configuration.getInt(prefix + "." + PAR_DEBUG, 0);
+        bmp = Configuration.getDouble(PAR_BMP, 1);
+//        bmp = Math.round(bmp*10)/1000.0;
         srcup = Configuration.getInt(prefix + "." + PAR_SRC_UP, -1);
+//        srcup = (int)(Math.round(srcup*bmp));
         srcdw = Configuration.getInt(prefix + "." + PAR_SRC_DOWN, -1);
-//        if(debug>5)
-//        System.err.println("Src: Up " + srcup + " Dw " + srcdw);
+//        srcdw = (int)(Math.round(srcdw*bmp));
+        
+        if(debug>5)
+           System.err.println("Src: Up " + srcup + " Dw " + srcdw+"   BMP "+bmp);
         String bandwidths[] = Configuration.getString(prefix + "." + PAR_UP_BAND, "").split(",");
 //        System.err.println("String "+Configuration.getString(prefix + "." + PAR_UP_BAND) );
 //        System.err.println("String "+Configuration.getDouble(prefix + "." + PAR_UP_BAND,0));
