@@ -71,7 +71,7 @@ public class BandwidthAwareInitializer implements Control {
         passive_upload = Configuration.getInt(prefix + "." + PAR_PASSIVE_UPLOAD, 1);
         passive_download = Configuration.getInt(prefix + "." + PAR_PASSIVE_DOWNLOAD, 1);
         debug = Configuration.getInt(prefix + "." + PAR_DEBUG, 0);
-        bmp = Configuration.getDouble(PAR_BMP, 1);
+        bmp = Configuration.getDouble(PAR_BMP, 1.0);
 //        bmp = Math.round(bmp*10)/1000.0;
         srcup = Configuration.getInt(prefix + "." + PAR_SRC_UP, -1);
 //        srcup = (int)(Math.round(srcup*bmp));
