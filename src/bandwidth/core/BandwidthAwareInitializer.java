@@ -74,15 +74,8 @@ public class BandwidthAwareInitializer implements Control {
         debug = Configuration.getInt(prefix + "." + PAR_DEBUG, 0);
         String _bmp[] = Configuration.getString(prefix + "." + PAR_BMP, "1").split(" ");
         bms = Configuration.getDouble(prefix + "." + PAR_BMS, 1.0D);
-        bms = (Math.ceil(bms * 100.0+1)) / 100.0;
         String _bprob[] = Configuration.getString(prefix + "." + PAR_BW_PROB, "1").split(" ");
-        //        bmp = bmp / 100.0;
-//        srcup = Configuration.getInt(prefix + "." + PAR_SRC_UP, -1);
-//        srcdw = Configuration.getInt(prefix + "." + PAR_SRC_DOWN, -1);
-//        if(debug>5)
-//           System.err.println("Src: Up " + srcup + " Dw " + srcdw+"   BMP "+bmp);
-//        String bandwidths[] = Configuration.getString(prefix + "." + PAR_BMP, "").split(" ");
-        System.err.println("Init Bandwidth. Debug "+debug+" )) # Bmp " + _bmp.length+" Bmb ("+ Configuration.getDouble("BMb") +")");
+        System.err.println("Init Bandwidth. Debug "+debug+" )) # Bmp " + _bmp.length);
         if (_bmp.length == 1) {
             this.UploadBandwidth = new int[_bmp.length];
             this.DownloadBandwidth = new int[_bmp.length];
@@ -90,8 +83,6 @@ public class BandwidthAwareInitializer implements Control {
             bmp = new double[1];
             bmp[0] = Configuration.getDouble(prefix + "." + PAR_BMP, 1);
             System.err.print("Bmp[0] >" + bmp[0] + ">");
-            bmp[0] = (Math.ceil(bmp[0] * 100.0+1)) / 100.0;
-            System.err.print(bmp[0] + " >> ");
             double _upload = Configuration.getDouble(prefix + "." + PAR_UP_BAND, -1);
             srcup = (int) Math.ceil(bms * _upload);
             _upload = Math.round(_upload * bmp[0]);
@@ -117,10 +108,7 @@ public class BandwidthAwareInitializer implements Control {
             for (int i = 0; i < _bmp.length; i++) {
                 bmp[i] = Configuration.getDouble(_bmp[i], 1);
                 System.err.print("Bmp[" + i + "] >" + bmp[i] + ">");
-                bmp[i] = (Math.ceil(bmp[i] * 100.0+1)) / 100.0;
-                System.err.print(bmp[i] + " >> ");
                 this.UploadBandwidth[i] = (int) Math.round(_upload * bmp[i]);
-                ;
                 System.err.print("UPBW [" + i + "] =" + this.UploadBandwidth[i] + "; ");
                 this.DownloadBandwidth[0] = (int) Math.round(_download * bmp[i]);
                 System.err.print("DWBW [" + i + "] =" + this.DownloadBandwidth[i] + "\n");
@@ -138,7 +126,6 @@ public class BandwidthAwareInitializer implements Control {
     // ------------------------------------------------------------------------
     public boolean execute() {
         for (int i = 0; i < Network.size(); i++) {
-//            System.err.print("#EXECUTE bw "+Network.size());
             Node aNode = Network.get(i);
             BandwidthAwareSkeleton bwa = (BandwidthAwareSkeleton) aNode.getProtocol(pid);
             bwa.reset();
