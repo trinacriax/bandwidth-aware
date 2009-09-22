@@ -75,7 +75,7 @@ public class BandwidthAwareInitializer implements Control {
         String _bmp[] = Configuration.getString(prefix + "." + PAR_BMP, "1").split(" ");
         bms = Configuration.getDouble(prefix + "." + PAR_BMS, 1.0D);
         String _bprob[] = Configuration.getString(prefix + "." + PAR_BW_PROB, "1").split(" ");
-        System.err.println("Init Bandwidth. Debug "+debug+" )) # Bmp " + _bmp.length);
+        System.err.println("Init Bandwidth. Debug "+debug);
         if (_bmp.length == 1) {
             this.UploadBandwidth = new int[_bmp.length];
             this.DownloadBandwidth = new int[_bmp.length];

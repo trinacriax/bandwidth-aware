@@ -17,7 +17,10 @@ import java.util.Vector;
  * @author ax
  */
 public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton {
-
+    private double upload_sample;
+    private int sample_counter_up;
+    private double download_sample;
+    private int sample_counter_dw;
     private long upload;
     private long upload_min;
     private long upload_max;
@@ -35,7 +38,6 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
     private int active_dw;
     private int passive_up;
     private int passive_dw;
-//    private boolean updating;
     private BandwidthConnectionList upload_connection_list;
     private BandwidthConnectionList download_connection_list;
 
@@ -49,6 +51,10 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
             bat = (BandwidthAwareTransport) super.clone();
         } catch (CloneNotSupportedException e) {
         }
+        bat.upload_sample = new Double(0.0D);
+        bat.sample_counter_up = new Integer(0);
+        bat.sample_counter_dw = new Integer(0);
+        bat.download_sample = new Double(0.0D);
         bat.upload = new Long(0);
         bat.upload_min = new Long(0);
         bat.upload_max = new Long(0);
@@ -69,22 +75,20 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
         bat.passive_dw = new Integer(0);
         bat.passive_upload = new Integer(0);
         bat.passive_up = new Integer(0);
-
-//        bat.updating = new Boolean(false);
-
         bat.upload_connection_list = new BandwidthConnectionList();
         bat.download_connection_list = new BandwidthConnectionList();
         return bat;
     }
 
     public void reset() {
+        this.upload_sample = this.download_sample = 0.0D;
+        this.sample_counter_up = this.sample_counter_dw = 0;
         this.upload = this.upload_max = this.upload_min = upload_buf = 0;
         this.download = this.download_max = this.download_min = download_buf = 0;
         this.active_up = this.active_upload = this.passive_up = this.passive_upload;
         this.active_dw = this.active_download = this.passive_dw = this.passive_download;
         this.debug = 0;
         this.upload_connection_list = this.download_connection_list = null;
-//        this.updating = false;
     }
 
     public void initialize() {
@@ -101,7 +105,27 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
     public void setDebug(int debug) {
         this.debug = debug;
     }
-//
+
+    public void sampleUpload(){
+        long current_upload_used = this.upload_connection_list.getBandwidthUsage(CommonState.getTime());
+        this.upload_sample += current_upload_used;
+        this.sample_counter_up++;
+    }
+
+    public long getSampledUpload(){
+        return Math.round(Math.ceil((this.upload_sample*1.0)/(this.sample_counter_up*1.0)));
+    }
+
+
+     public void sampleDownload(){
+        long current_download_used = this.download_connection_list.getBandwidthUsage(CommonState.getTime());
+        this.download_sample += current_download_used;
+        this.sample_counter_dw++;
+    }
+
+    public long getSampledDownload(){
+        return Math.round(Math.ceil((this.download_sample*1.0)/(this.sample_counter_dw*1.0)));
+    }
 
     public void setUpload(long _upload) {
 //        System.out.println("Update upload "+_upload);

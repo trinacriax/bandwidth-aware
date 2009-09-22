@@ -26,13 +26,9 @@ public class BandwidthAwareProtocol extends BandwidthAwareTransport implements C
         }
         sender = (BandwidthAwareProtocol) bm.sender.getProtocol(pid);
         receiver = (BandwidthAwareProtocol) bm.receiver.getProtocol(pid);
-//        if (sender.getDebug() >= 4) {
-//            System.out.println(CommonState.getTime() + " BANDWIDTH  MANAGEMENT  MECHANISM " + bm.toString());
-//        }
         switch (bm.getMessage()) {
             case BandwidthMessage.UPD_UP: {
                 if (bm.getBandwidth() < 0) {
-//                        sender.setUpdate(true);
                     if (sender.getDebug() >= 6) {
                         System.out.println("\t>>>>>>>>> " + CommonState.getTime() + " >>>>>>>>>  UPDATING UPLOAD (REM) > SENDER " + bm.sender.getID() + " Upload " + sender.getUpload() + " (" + sender.getUploadBUF() + ")");
                     }
