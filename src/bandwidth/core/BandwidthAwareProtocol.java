@@ -5,6 +5,10 @@ import peersim.cdsim.*;
 import peersim.edsim.*;
 
 /**
+ * Core protocol for bandwidth management system. 
+ * This class implements a priority sharing bandwidth mechanism, 
+ * which leads to give as much resource as possible to first transmission, 
+ * then to the second and so on.
  *
  * @author ax
  */

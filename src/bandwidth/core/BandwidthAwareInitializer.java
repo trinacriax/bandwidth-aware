@@ -19,7 +19,6 @@ public class BandwidthAwareInitializer implements Control {
      * @author Alessandro Russo
      * @version $Revision: 0.01$
      */
-
     // ------------------------------------------------------------------------
     // Constants
     // ------------------------------------------------------------------------
@@ -34,10 +33,6 @@ public class BandwidthAwareInitializer implements Control {
     private static final String PAR_DEBUG = "debug";
     private static final String PAR_BMP = "bmp";//peers' bandwidth multiplicator
     private static final String PAR_BMS = "bms";//source's bandwidth multiplicaotr
-//    private static final String PAR_BMPF = "BMPF";
-//    private static final String PAR_BMPL = "BMPL";
-//    private static final String PAR_SRC_UP = "srcup";
-//    private static final String PAR_SRC_DOWN = "srcdw";
     // ------------------------------------------------------------------------
     // Fields
     // ------------------------------------------------------------------------
@@ -45,17 +40,27 @@ public class BandwidthAwareInitializer implements Control {
     private final int pid;
     /**Value uses for debugging*/
     private final int debug;
-    /***/
+    /**Matrtix for base-upload bandwidth distribution*/
     private int UploadBandwidth[];
+    /**Matrtix for base-download bandwidth distribution*/
     private int DownloadBandwidth[];
+    /**Matrtix for bandwidth distribution*/
     private double BandwidthProb[];
+    /**Active upload*/
     private int active_upload;
+    /**Active download*/
     private int active_download;
+    /**Passive upload*/
     private int passive_upload;
+    /**Passive download*/
     private int passive_download;
+    /**Source upload bandwidth*/
     private int srcup;
+    /**Source download bandwidth*/
     private int srcdw;
+    /**Peers' bandwidth multiplicator*/
     private double bmp[];
+    /**Source bandwidth multiplicator*/
     private double bms;
 
     // 
@@ -75,8 +80,8 @@ public class BandwidthAwareInitializer implements Control {
         String _bmp[] = Configuration.getString(prefix + "." + PAR_BMP, "1").split(" ");
         bms = Configuration.getDouble(prefix + "." + PAR_BMS, 1.0D);
         String _bprob[] = Configuration.getString(prefix + "." + PAR_BW_PROB, "1").split(" ");
-        System.err.println("Init Bandwidth. Debug "+debug);
-        if (_bmp.length == 1) {
+        System.err.println("Init Bandwidth. Debug " + debug);
+        if (_bmp.length == 1) {//BANDWIDTH HOMOGENEOUS NETWORK
             this.UploadBandwidth = new int[_bmp.length];
             this.DownloadBandwidth = new int[_bmp.length];
             this.BandwidthProb = new double[_bmp.length];
@@ -92,11 +97,11 @@ public class BandwidthAwareInitializer implements Control {
             srcdw = (int) Math.ceil(bms * _download);
             _download = Math.round(_download * bmp[0]);
             this.DownloadBandwidth[0] = (int) _download;
-            System.err.print("DW " + this.DownloadBandwidth[0] + "; ");            
+            System.err.print("DW " + this.DownloadBandwidth[0] + "; ");
             this.BandwidthProb[0] = 1;
             System.err.print("Prob " + this.BandwidthProb[0] + ".\n");
 
-        } else {
+        } else {//BANDWIDTH HETEROGENEOUS NETWORK
             this.UploadBandwidth = new int[_bmp.length];
             this.DownloadBandwidth = new int[_bmp.length];
             this.BandwidthProb = new double[_bmp.length];
@@ -118,7 +123,7 @@ public class BandwidthAwareInitializer implements Control {
                 System.err.print("\tBWPROB [" + i + "] =" + this.BandwidthProb[i] + "\n");
             }
         }
-                System.err.print("#Bandwidth init done\n");
+        System.err.print("#Bandwidth init done\n");
     }
 
     // ------------------------------------------------------------------------
@@ -136,23 +141,23 @@ public class BandwidthAwareInitializer implements Control {
             bwa.setPassiveDownload(passive_download);
             long upload = 0;
             long download = 0;
-            if (debug > 6) {
+            if (debug >= 6) {
                 System.out.println("\tNode index " + aNode.getIndex());
             }
-            if (i == Network.size() - 1 && this.srcup != -1) {
+            if (i == Network.size() - 1 && this.srcup != -1) {//set source bandwidth
                 upload = srcup;
                 download = srcdw;
-            } else {
+            } else {//set peers bandwidth.
                 upload = this.UploadBandwidth[0];
                 download = this.DownloadBandwidth[0];
                 long upmax = this.UploadBandwidth[this.UploadBandwidth.length - 1];
                 long banda = CommonState.r.nextLong(((long) (upmax)));
                 for (int j = 0; j < this.BandwidthProb.length - 1; j++) {
-                    if (debug > 6) {
+                    if (debug >= 6) {
                         System.out.println("\t" + j + ") " + banda + " > " + (upmax * this.BandwidthProb[j]));
                     }
                     if (banda > upmax * this.BandwidthProb[j]) {
-                        if (debug > 6) {
+                        if (debug >= 6) {
                             System.out.println("\tUpMax=" + this.UploadBandwidth[j + 1] + " UpMin=" + ((long) (this.UploadBandwidth[j + 1] / 4)) + " Upload=" + this.UploadBandwidth[j + 1] +
                                     "if(debug > 6)\n\tDwMax=" + this.DownloadBandwidth[j + 1] + " DwMin=" + ((long) (this.DownloadBandwidth[j + 1] / 4)) + " Download=" + (this.DownloadBandwidth[j + 1]));
                         }
@@ -174,7 +179,7 @@ public class BandwidthAwareInitializer implements Control {
             bwa.setUploadMin(minup);
             bwa.setDownloadMin(mindw);
             bwa.initialize();
-            if (debug > 6) {
+            if (debug >= 6) {
                 System.out.println("\t\t>>> Upload Max : " + upload + " Current " + upload + " Min " + minup);
                 System.out.println("\t\t>>> Download Max : " + download + " Current " + download + " Min " + mindw);
             }
