@@ -80,6 +80,7 @@ public class BandwidthAwareInitializer implements Control {
         String _bmp[] = Configuration.getString(prefix + "." + PAR_BMP, "1").split(" ");        
         String _bprob[] = Configuration.getString(prefix + "." + PAR_BW_PROB, "1").split(" ");
         System.err.println("Init Bandwidth. Debug " + debug);
+        bms = Configuration.getDouble(prefix + "." + PAR_BMS,0);
         if (_bmp.length == 1) {//BANDWIDTH HOMOGENEOUS NETWORK
             this.UploadBandwidth = new int[_bmp.length];
             this.DownloadBandwidth = new int[_bmp.length];
@@ -88,6 +89,8 @@ public class BandwidthAwareInitializer implements Control {
             bmp[0] = Configuration.getDouble(prefix + "." + PAR_BMP, 1);
             System.err.print("Bmp[0] >" + bmp[0] + ">");
             double _upload = Configuration.getDouble(prefix + "." + PAR_UP_BAND, -1);
+            if(bms == 0)//source has the same bandwidth of peers
+                bms = bmp[0];
             srcup = (int) Math.ceil(bms * _upload);
             _upload = Math.round(_upload * bmp[0]);
             this.UploadBandwidth[0] = (int) _upload;
@@ -107,6 +110,8 @@ public class BandwidthAwareInitializer implements Control {
             System.err.println("Init Bandwidth  " + _bmp.length);
             double _upload = Configuration.getDouble(prefix + "." + PAR_UP_BAND, -1);
             double _download = Configuration.getDouble(prefix + "." + PAR_DOWN_BAND, -1);
+            if(bms == 0)//source has the highest bandwidth available
+                bms = bmp[bmp.length-1];
             srcup = (int) Math.ceil(bms * _upload);
             srcdw = (int) Math.ceil(bms * _download);
             for (int i = 0; i < _bmp.length; i++) {
@@ -119,8 +124,7 @@ public class BandwidthAwareInitializer implements Control {
                 this.BandwidthProb[i] = Double.parseDouble(_bprob[i]);
                 System.err.print("\tBWPROB [" + i + "] =" + this.BandwidthProb[i] + "\n");
             }
-        }
-        bms = Configuration.getDouble(prefix + "." + PAR_BMS, bmp[bmp.length-1]);
+        }        
         System.err.print("#Bandwidth init done\n");
     }
 
