@@ -23,9 +23,9 @@ public class BandwidthAwareInitializer implements Control {
     // Constants
     // ------------------------------------------------------------------------
     private static final String PAR_PROT = "protocol";
-    private static final String PAR_UP_BAND = "uploadBw";
-    private static final String PAR_DOWN_BAND = "downloadBw";
-    private static final String PAR_BW_PROB = "bandwidthPr";
+    private static final String PAR_UP_BAND = "uplink";
+    private static final String PAR_DOWN_BAND = "downlink";
+    private static final String PAR_BW_PROB = "bdist";
     private static final String PAR_ACTIVE_UPLOAD = "active_upload";
     private static final String PAR_ACTIVE_DOWNLOAD = "active_download";
     private static final String PAR_PASSIVE_UPLOAD = "passive_upload";
@@ -77,8 +77,7 @@ public class BandwidthAwareInitializer implements Control {
         passive_upload = Configuration.getInt(prefix + "." + PAR_PASSIVE_UPLOAD, 1);
         passive_download = Configuration.getInt(prefix + "." + PAR_PASSIVE_DOWNLOAD, 1);
         debug = Configuration.getInt(prefix + "." + PAR_DEBUG, 0);
-        String _bmp[] = Configuration.getString(prefix + "." + PAR_BMP, "1").split(" ");
-        bms = Configuration.getDouble(prefix + "." + PAR_BMS, 1.0D);
+        String _bmp[] = Configuration.getString(prefix + "." + PAR_BMP, "1").split(" ");        
         String _bprob[] = Configuration.getString(prefix + "." + PAR_BW_PROB, "1").split(" ");
         System.err.println("Init Bandwidth. Debug " + debug);
         if (_bmp.length == 1) {//BANDWIDTH HOMOGENEOUS NETWORK
@@ -117,12 +116,11 @@ public class BandwidthAwareInitializer implements Control {
                 System.err.print("UPBW [" + i + "] =" + this.UploadBandwidth[i] + "; ");
                 this.DownloadBandwidth[0] = (int) Math.round(_download * bmp[i]);
                 System.err.print("DWBW [" + i + "] =" + this.DownloadBandwidth[i] + "\n");
-//            }                
-//            for (int i = 0; i < bprob.length; i++) {
                 this.BandwidthProb[i] = Double.parseDouble(_bprob[i]);
                 System.err.print("\tBWPROB [" + i + "] =" + this.BandwidthProb[i] + "\n");
             }
         }
+        bms = Configuration.getDouble(prefix + "." + PAR_BMS, bmp[bmp.length-1]);
         System.err.print("#Bandwidth init done\n");
     }
 
