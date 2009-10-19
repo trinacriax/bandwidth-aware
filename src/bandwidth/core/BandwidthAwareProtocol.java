@@ -143,7 +143,7 @@ public class BandwidthAwareProtocol extends BandwidthAwareTransport implements C
                     if (receiver.getDebug() > 6) {
 //                        System.out.println("\t/ RECEIVER CONNECTION LIST  --------------------------------");
                         for (int i = 0; i < receiver.getDownloadConnections().getSize(); i++) {
-                            System.out.println("\t" + receiver.getDownloadConnections().getElement(i));
+                            System.out.println("\t"+i+" - " + receiver.getDownloadConnections().getElement(i));
                         }
                         System.out.println("\t\\ ------------------------------------------------------------------------------------------------ /");
                     }
