@@ -12,18 +12,30 @@ public class BandwidthConnectionList {
      * Collects a set of connection elements
      */
     protected BandwidthConnectionElement[] connection_list;
-//    private int len;
 
     /**
      * Constructor method to initialize the list of connection elements.
      */
     public BandwidthConnectionList() {
         connection_list = new BandwidthConnectionElement[16];
-        for(int i = 0; i< connection_list.length ; i++)
-            this.connection_list[i] = null;
-//        len = new Integer("-1");
     }
-    
+
+
+    /**
+     * Get the number of elements in the list of connections.
+     * @return The number of elements in the list.
+     */
+    public int getSize(){
+        int size = 0;
+        for(int i = 0; i < this.connection_list.length;i++)
+            if(this.connection_list[i]!=null)
+                size++;
+        return size;
+    }
+
+    public boolean  isEmpty(){
+        return (this.getSize()==0);
+    }
 
     /**
      * This methos is used to add a connection element to the current list of connections.
@@ -32,45 +44,50 @@ public class BandwidthConnectionList {
      * @param ce Connection element to be added with all paramenters.
      */
     public void addConnection(BandwidthConnectionElement ce) {
+        System.out.println("is empty "+this.isEmpty()+" >> "+(this.connection_list[this.getSize()]!=null));
         if (this.isEmpty()) {
-//            System.out.print("\nCCAdding " +ce+ " len "+ len + " --> ");
-//            len++;
-//            System.out.println(len+" " +this.connection_list.length);
-            this.connection_list[this.getSize()] = ce;
-        } else if (this.getSize() == this.connection_list.length) {
-            BandwidthConnectionElement[] tmp = new BandwidthConnectionElement[(this.connection_list.length * 2)];
-            System.arraycopy(connection_list, 0, tmp, 0, this.getSize());
-            connection_list = tmp;
-            tmp = null;
-        } else {
+            System.out.println("empty " + this.getSize());
+            this.connection_list[this.getSize()]= ce;
+        } else if(this.connection_list.length == this.getSize()){
+            int lez = (int)Math.ceil(this.getSize()*2.0);
+            System.out.println("Resize " + this.getSize()+"  "+lez);
+            BandwidthConnectionElement[] _connection_list = new BandwidthConnectionElement[lez];
+            System.arraycopy(connection_list, 0, _connection_list, 0, this.getSize());
+            connection_list = _connection_list;
+            System.out.println("ELEMENT "+this.connection_list[this.getSize()-1]);
+            _connection_list = null;
+        }
+        else{
+            System.out.println("In line ");
             BandwidthConnectionElement tmp;
             long finish_ce = ce.getEnd();
             long start_ce = ce.getStart();
-            long actual_fe, actual_se;            
-            this.connection_list[this.getSize()] = ce;
+            long actual_fe, actual_se;
+            
+            this.connection_list[this.getSize()]=(ce);
             for (int i = 0; i < this.getSize(); i++) {
                 actual_fe = ((BandwidthConnectionElement) this.connection_list[i]).getEnd();
                 actual_se = ((BandwidthConnectionElement) this.connection_list[i]).getStart();
                 if (finish_ce < actual_fe) {
-                    for (int j = this.getSize()-1; j > i; j--) {
-                        tmp = ((BandwidthConnectionElement) this.connection_list[j - 1]);
-                        this.connection_list[j] = tmp;
+                    for (int j = this.getSize() - 1; j > i; j--) {
+                        tmp = ((BandwidthConnectionElement) this.connection_list[(j - 1)]);
+                        this.connection_list[j]=tmp;
                     }
-                    this.connection_list[i] = ce;
+                    this.connection_list[i]= ce;
                     return;
                 } else if (finish_ce == actual_fe) {
                     for (; start_ce > actual_se && i < this.getSize(); i++) {
-                        actual_fe = ((BandwidthConnectionElement) this.connection_list[i]).getEnd();
-                        actual_se = ((BandwidthConnectionElement) this.connection_list[i]).getStart();
+                        actual_fe = ((BandwidthConnectionElement) this.connection_list[(i)]).getEnd();
+                        actual_se = ((BandwidthConnectionElement) this.connection_list[(i)]).getStart();
                     }
-                    for (int j = this.getSize()-1; j > i; j--) {
+                    for (int j = this.getSize()- 1; j > i; j--) {
                         tmp = ((BandwidthConnectionElement) this.connection_list[(j - 1)]);
-                        this.connection_list[j] = tmp;
+                        this.connection_list[j]=tmp;
                     }
                     if (i >= this.getSize()) {
                         i--;
                     }
-                    this.connection_list[i] = ce;
+                    this.connection_list[i]=ce;
                     return;
                 }
             }
@@ -85,41 +102,27 @@ public class BandwidthConnectionList {
      * @return Bandwidth connection element just removed, null if no elements with this criteria was found.
      */
     public BandwidthConnectionElement remConnection(BandwidthConnectionElement ce) {
+        System.out.println("CCRemoving"+ce+" s "+this.getSize());
         if (this.isEmpty()) {
             return null;
         } else {
             BandwidthConnectionElement actual;
-            for (int i = 0; i <this.getSize(); i++) {
-                actual = ((BandwidthConnectionElement) this.connection_list[i]);
+            for (int i = 0; i < this.getSize(); i++) {
+                actual = ((BandwidthConnectionElement) this.connection_list[(i)]);
                 if (ce.equals(actual)) {
-//                    System.out.print("CCRemoving "+ actual + " Len " +len);
-                    actual = ((BandwidthConnectionElement) this.connection_list[i]);
+                    actual = ((BandwidthConnectionElement) this.connection_list[(i)]);
                     this.connection_list[i] = null;
-//                    this.len--;
-//                    System.out.println(" --> " +len);
                     this.cleanList();
-                    if (this.getSize() <= Math.round(this.connection_list.length / 4)) {
-//                        System.out.print("CCReducing array "+ this.connection_list.length);
-                        int newsize = Math.max((int)Math.ceil(this.connection_list.length / 2.0),4);
-//                        System.out.print(" new size " + newsize);
-                        BandwidthConnectionElement[] tmp = new BandwidthConnectionElement[newsize];
-                        System.out.print(" tmp = " +tmp);
-                        System.arraycopy(connection_list, 0, tmp, 0, this.getSize());
-                        connection_list = tmp;
-                        tmp = null;
-
-                    }
                     return actual;
                 }
             }
         }
         return null;
     }
-
-    public void cleanList() {
+        public void cleanList() {
         int current = 0;
         int tmp = 0;
-        while (current < this.getSize()) {
+        while (current <= this.getSize()) {
             if (this.connection_list[tmp] != null) {
                 tmp++;
             } else if (this.connection_list[current] != null) {
@@ -128,10 +131,11 @@ public class BandwidthConnectionList {
                 tmp++;
             }
             current++;
-        }        
+        }
 //        len=this.getSize()-1;
 
     }
+
 
     /**
      * Return the first connection element with a given Current node and target node.
@@ -144,8 +148,8 @@ public class BandwidthConnectionList {
         if (this.isEmpty()) {
             return bce;
         }
-        for (int i = 0; i <this.getSize(); i++) {
-            bce = (BandwidthConnectionElement) this.connection_list[i];
+        for (int i = 0; i < this.getSize(); i++) {
+            bce = (BandwidthConnectionElement) this.connection_list[(i)];
             if (bce.getSender() == s && bce.getReceiver() == r) {
                 return bce;
             }
@@ -162,12 +166,11 @@ public class BandwidthConnectionList {
      */
     public BandwidthConnectionElement getRecordT(Node s, Node r, long txid) {
         BandwidthConnectionElement bce = null;
-        System.out.print("CCLen "+ this.connection_list.length+" " +this.isEmpty());
         if (this.isEmpty()) {
             return bce;
         }
-        for (int i = 0; i <this.getSize(); i++) {
-            bce = (BandwidthConnectionElement) this.connection_list[i];
+        for (int i = 0; i < this.getSize(); i++) {
+            bce = (BandwidthConnectionElement) this.connection_list[(i)];
             if (bce.getSender() == s && bce.getReceiver() == r && bce.getTxId() == txid) {
                 return bce;
             }
@@ -188,8 +191,10 @@ public class BandwidthConnectionList {
         if (this.isEmpty()) {
             return bce;
         }
-        for (int i = 0; i <this.getSize(); i++) {
-            bce = (BandwidthConnectionElement) this.connection_list[i];
+        for (int i = 0; i < this.getSize(); i++) {
+            bce = (BandwidthConnectionElement) this.connection_list[(i)];
+            this.cleanList();
+            System.out.println("bce = "+bce+" size "+this.getSize()+" "+this.connection_list[this.getSize()-1]);
             if (bce.getSender() == s && bce.getReceiver() == r && bce.getTxId() == txid && bce.getStart() == end) {
                 return bce;
             }
@@ -210,8 +215,8 @@ public class BandwidthConnectionList {
         if (this.isEmpty()) {
             return bce;
         }
-        for (int i = 0; i <this.getSize(); i++) {
-            bce = (BandwidthConnectionElement) this.connection_list[i];
+        for (int i = 0; i < this.getSize(); i++) {
+            bce = (BandwidthConnectionElement) this.connection_list[(i)];
             if (bce.getSender() == s && bce.getReceiver() == r && bce.getStart() == startTime && bce.getBandwidth() == bandwidth) {
                 return bce;
             }
@@ -244,30 +249,22 @@ public class BandwidthConnectionList {
         } else if (this.getSize() < i) {
             return null;
         } else {
-            BandwidthConnectionElement ce = (BandwidthConnectionElement) this.connection_list[i];
+            BandwidthConnectionElement ce = (BandwidthConnectionElement) this.connection_list[(i)];
 
             return ce;
         }
     }
 
-//    /**
-//     * Get the number of elements in the list of connections.
-//     * @return The number of elements in the list.
-//     */
-//    public int getSize() {
-//        return this.len + 1;
-//    }
 
     /**
      * Gives a printable version of the connection list.
      * @return String containing all the elements in the connection list.
      */
     public String getAll() {
-        String result = "";        
+        String result = "";
         BandwidthConnectionElement ce = null;
-        for (int i = 0; i <this.getSize(); i++) {
-//                        System.out.println("Len "+ len + " " +this.connection_list[len]);
-            ce = (BandwidthConnectionElement) this.connection_list[i];            
+        for (int i = 0; i < this.getSize(); i++) {
+            ce = (BandwidthConnectionElement) this.connection_list[(i)];
             if (i == 0) {
                 result += ce.getLabels() + "\n";
             }
@@ -292,22 +289,4 @@ public class BandwidthConnectionList {
         }
         return band_use;
     }
-
-
-    public int getSize(){
-        int size =0;
-        for(int i = 0; i<this.connection_list.length;i++)
-            if(this.connection_list[i]!=null)
-                size++;
-        return size;
-    }
-
-    public boolean isEmpty(){
-        int size = 0;
-        for(int i = 0; i<this.connection_list.length;i++)
-            if(this.connection_list[i]!=null)
-                size++;
-        return (size==0);
-    }
-    
 }

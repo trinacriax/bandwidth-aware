@@ -6,8 +6,9 @@ package bandwidth.core;
  */
 import peersim.config.*;
 import peersim.core.*;
+import peersim.vector.VectControl;
 
-public class BandwidthAwareInitializer implements Control {
+public class BandwidthAwareInitializer1 extends  VectControl{
 
     /**
      * Initialize the Bandwidth Aware protocol.
@@ -71,13 +72,16 @@ public class BandwidthAwareInitializer implements Control {
     /**
      * Creates a new instance and read parameters from the config file.
      */
-    public BandwidthAwareInitializer(String prefix) {
+    public BandwidthAwareInitializer1(String prefix) {
+        super(prefix);
         pid = Configuration.getPid(prefix + "." + PAR_PROT);
-        active_upload = Configuration.getInt(prefix + "." + PAR_ACTIVE_UPLOAD, 1);
-        active_download = Configuration.getInt(prefix + "." + PAR_ACTIVE_DOWNLOAD, 1);
-        passive_upload = Configuration.getInt(prefix + "." + PAR_PASSIVE_UPLOAD, 1);
-        passive_download = Configuration.getInt(prefix + "." + PAR_PASSIVE_DOWNLOAD, 1);
-        debug = Configuration.getInt(prefix + "." + PAR_DEBUG, 0);
+        active_upload = Integer.valueOf(Configuration.getInt(prefix + "." + PAR_ACTIVE_UPLOAD, 1));
+        active_download =Integer.valueOf(Configuration.getInt(prefix + "." + PAR_ACTIVE_DOWNLOAD, 1));
+        passive_upload = Integer.valueOf(Configuration.getInt(prefix + "." + PAR_PASSIVE_UPLOAD, 1));
+        passive_download = Integer.valueOf(Configuration.getInt(prefix + "." + PAR_PASSIVE_DOWNLOAD, 1));
+        debug = Integer.valueOf(Configuration.getInt(prefix + "." + PAR_DEBUG, 0));
+
+
         String _bmp[] = Configuration.getString(prefix + "." + PAR_BMP, "1").split(" ");        
         String _bprob[] = Configuration.getString(prefix + "." + PAR_BW_PROB, "1").split(" ");
         System.err.println("Init Bandwidth. Debug " + debug);
@@ -187,8 +191,8 @@ public class BandwidthAwareInitializer implements Control {
             bwa.setDownloadMin(mindw);
             bwa.initialize();
             if (debug >= 6) {
-                System.out.println("\t\t>>> Upload Max : " + upload + " Current " + upload + " Min " + minup);
-                System.out.println("\t\t>>> Download Max : " + download + " Current " + download + " Min " + mindw);
+                System.out.println("\t\t>>> Upload Max : " + upload + " Current " + upload + " Min " + minup+" ["+this.active_upload+","+this.passive_upload+"]");
+                System.out.println("\t\t>>> Download Max : " + download + " Current " + download + " Min " + mindw+" ["+this.active_download+","+this.passive_download+"]");
             }
         }
         this.UploadBandwidth = this.DownloadBandwidth = null;
