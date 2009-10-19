@@ -18,7 +18,7 @@
 
 package bandwidth.core;
 
-import peersim.config.*;
+
 import peersim.core.*;
 import peersim.vector.*;
 
