@@ -129,6 +129,15 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
         return Math.round(Math.ceil((this.download_sample*1.0)/(this.sample_counter_dw*1.0)));
     }
 
+    public void initUpload(long _upload){
+        if(this.getUploadMax()==0){
+            this.setUpload(_upload);
+            this.setUploadMax(_upload);
+            this.setUploadMin((long) Math.ceil(_upload * .15));
+            this.initDownload(_upload);
+        }
+    }
+
     public void setUpload(long _upload) {
 //        System.out.println("Update upload "+_upload);
         if (_upload < 0) {
@@ -186,6 +195,14 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
 
     public long getUploadMax() {
         return this.upload_max;
+    }
+
+    public void initDownload(long _download) {
+        if (this.getDownloadMax() == 0) {
+            this.setDownload(_download);
+            this.setDownloadMax(_download);
+            this.setDownloadMin((long) Math.ceil(_download * .15));
+        }
     }
 
     public void setDownload(long _download) {

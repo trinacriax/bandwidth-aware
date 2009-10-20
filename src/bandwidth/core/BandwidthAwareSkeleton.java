@@ -24,6 +24,12 @@ public interface BandwidthAwareSkeleton {
     public void setUpload(long upload);
 
     /**
+     * Initialize upload resources
+     * @param upload
+     */
+    public void initUpload(long upload);
+
+    /**
      * Set current download value.
      * @param download
      */
@@ -52,6 +58,12 @@ public interface BandwidthAwareSkeleton {
      * @param download_max Maximum download.
      */
     public void setDownloadMax(long download_max);
+
+    /**
+     * Initialize download resources
+     * @param download
+     */
+    public void initDownload(long download);
 
     /**
      * Method used for upload fluctuation.
