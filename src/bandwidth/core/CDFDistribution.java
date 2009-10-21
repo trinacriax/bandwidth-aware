@@ -93,13 +93,15 @@ public class CDFDistribution extends VectControl {
      * @return Always return false.
      */
     public boolean execute() {
-
+        if (debug >= 6) {
+                    System.out.println("Executing the setter CDF Distribution.");
+                }
         if (setter.isInteger()) {
             long set_value = 0;
             for (int i = 0; i < Network.size(); ++i) {
                 long val_max = (int) Math.round(this.base_value.intValue() * this.values_multiplier[this.values_multiplier.length - 1]);
                 long _value = CommonState.r.nextLong(((long) (val_max)));
-                for (int j = 0; j < this.values_distribution.length - 1; j++) {
+                for (int j = 0; j < this.values_distribution.length - 1 || (j==0 && this.values_distribution.length==1); j++) {
                     if (_value > val_max * this.values_distribution[j]) {
                         set_value = (int) Math.round(base_value.intValue() * values_multiplier[j + 1]);
                     } else {
@@ -108,7 +110,7 @@ public class CDFDistribution extends VectControl {
                     }
                 }
                 if (debug >= 6) {
-                    System.out.println("Peer " + i + " setter value is " + set_value + ";");
+                    System.out.println("Setting value > " + set_value +" in node "  +i+ ";");
                 }
                 setter.set(i, set_value);
 

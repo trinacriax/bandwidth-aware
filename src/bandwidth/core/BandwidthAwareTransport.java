@@ -199,6 +199,9 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
 
     public void initDownload(long _download) {
         if (this.getDownloadMax() == 0) {
+            if (_download == this.getUploadMax()) {
+                _download = Math.round(this.getActiveUpload() * 2 * _download);
+            }
             this.setDownload(_download);
             this.setDownloadMax(_download);
             this.setDownloadMin((long) Math.ceil(_download * .15));
