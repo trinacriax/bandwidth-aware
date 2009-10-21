@@ -157,7 +157,7 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
     }
 
     /**
-     * Initialize the data structures.
+     * Initialize data structures.
      */
     public void initialize() {
         if (this.upload_connection_list == this.download_connection_list && this.upload_connection_list == null) {
@@ -251,7 +251,7 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
 
     /**
      * Set the minimum upload.
-     * @param _upload_min Minimum upload
+     * @param _upload_min Minimum upload.
      */
     public void setUploadMin(long _upload_min) {
         this.upload_min = _upload_min;
@@ -259,7 +259,7 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
 
     /**
      * Get the minimum upload.
-     * @return Minimum upload
+     * @return Minimum upload.
      */
     public long getUploadMin() {
         return this.upload_min;
@@ -267,7 +267,7 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
 
     /**
      * Set the maximum upload.
-     * @param _upload_max Maximum upload
+     * @param _upload_max Maximum upload.
      */
     public void setUploadMax(long _upload_max) {
         this.upload_max = _upload_max;
@@ -283,7 +283,7 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
 
     /**
      * Initilize the download bandwidth, the minimum and the maximum values.
-     * @param _download Download bandwidth
+     * @param _download Download bandwidth.
      */
     public void initDownload(long _download) {
         if (this.getDownloadMax() == 0) {
@@ -295,7 +295,10 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
             this.setDownloadMin((long) Math.ceil(_download * .15));
         }
     }
-
+/**
+ * Set the current download bandwidth.
+ * @param _download Current download bandwidth.
+ */
     public void setDownload(long _download) {
         if (_download < 0) {
             download_buf += _download;
@@ -313,189 +316,209 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
         }
     }
 
+    /**
+     * Updates the current available download bandwidth:
+     * - adding the resources give back from a (part of) connection which
+     * will be used in the next future from the same tranmission.
+     * @param _download Banwidth to update.
+     * @param bce BandwidthConnectionElement to check.
+     */
     public void setDownload(long _download, BandwidthConnectionElement bce) {
         bce = this.download_connection_list.getRecord(bce.getSender(), bce.getReceiver(), bce.getTxId(), bce.getEnd());
         if (bce != null && bce.getStart() == CommonState.getTime() && !bce.check) {
-//            System.out.print("DD Sto aggiungendo banda, quando tra poco me la tolgono: "+_download);
             this.download_buf += _download;
-//            System.out.println(" DBUF "+this.download_buf);
         } else {
             this.setDownload(_download);
         }
     }
 
+     /**
+     * Return the download buffer which cointains the bandwidth to use in the next future.
+     * @return Download reserved for the next connection.
+     */
     public long getDownloadBUF() {
         return this.download_buf;
     }
-
+/**
+     * Return the current download bandwidth.
+     * @return Current download bandwidth.
+     */
     public long getDownload() {
         return this.download;
     }
-
+ /**
+     * Set the minimum download.
+     * @param _download_min Minimum download.
+     */
     public void setDownloadMin(long _download_min) {
         this.download_min = _download_min;
     }
 
+      /**
+     * Get the minimum download.
+     * @return Minimum download.
+     */
     public long getDownloadMin() {
         return this.download_min;
     }
-
+    /**
+     * Set the maximum download.
+     * @param _dwonload_max Maximum download.
+     */
     public void setDownloadMax(long _download_max) {
         this.download_max = _download_max;
     }
 
+    /**
+     * Get teh maximum download.
+     * @return Maximum download.
+     */
     public long getDownloadMax() {
         return this.download_max;
     }
 
+    //XXX define what means active/passive up/down-load.
     /**
-     * Numero di trasmissioni in upload attualmente attive nello stato attivo
-     * del nodo
+     * Get the number of connections issues by the node that involves the upload.
+     * @return number of connections in upload.
      */
     public int getActiveUp() {
         return this.active_up;
     }
 
     /**
-     * Aggiunge una trasmissione in upload a quelle attive stato attivo del nodo
+     * Add one to the number of active upload.
      */
     public void addActiveUp() {
         this.active_up++;
     }
 
-    /**
-     * Rimuove una trasmissione in upload a quelle attive stato attivo del nodo
-     */
+/**
+ * Remove an active upload.
+ */
     public void remActiveUp() {
         this.active_up--;
     }
 
     /**
-     * Reset trasmissioni in upload attive
+     * Reset the active upload.
      */
     public void resetActiveUp() {
         this.active_up = 0;
     }
 
     /**
-     * Numero di trasmissioni in download attualmente attive stato attivo del
-     * nodo
+     * Get the number of connections issues by the node that involves the dwonload.
+     * @return number of connections in download.
      */
     public int getActiveDw() {
         return this.active_dw;
     }
 
     /**
-     * Numero di trasmissioni in download attualmente attive stato attivo del
-     * nodo
+     * Add one ot number of active download.
      */
     public void addActiveDw() {
         this.active_dw++;
     }
 
     /**
-     * Rimuove una trasmissione in download a quelle attive stato attivo del
-     * nodo
+     * Remove an active download.
      */
+     
     public void remActiveDw() {
         this.active_dw--;
     }
 
     /**
-     * Reset trasmissione in download attive
+     * Reset the active download.
      */
     public void resetActiveDw() {
         this.active_dw = 0;
     }
 
     /**
-     * Numero di trasmissioni in upload attualmente attive stato passivo del
-     * nodo
+     * Get the number of connections received by the node that involves the upload.
+     * @return number of connections received in upload.
      */
     public int getPassiveUp() {
         return this.passive_up;
     }
 
     /**
-     * Aggiunge una trasmissione in upload attualmente attive stato passivo del
-     * nodo
+     * Add one ot number of passive download.
      */
     public void addPassiveUp() {
         this.passive_up++;
     }
 
     /**
-     * Rimuove una trasmissioni in upload attualmente attive stato passivo del
-     * nodo
+     * Remove a passive upload.
      */
     public void remPassiveUp() {
         this.passive_up--;
     }
 
     /**
-     * Reset trasmissione in upload passive
+     * Reset trasmissione in passive upload.
      */
     public void resetPassiveUp() {
         this.passive_up = 0;
     }
 
     /**
-     * Numero di trasmissioni in download attualmente attive stato passivo del
-     * nodo
+     * Get the number of connections received by the node that involves the download.
+     * @return number of connections received for the download.
      */
     public int getPassiveDw() {
         return this.passive_dw;
     }
 
     /**
-     * Aggiunge uno al numero di trasmissioni in download attualmente attive
-     * stato passivo del nodo
+     * Add one to number of passive download.
      */
     public void addPassiveDw() {
         this.passive_dw++;
     }
 
     /**
-     * Rimuove una trasmissioni in download attualmente attive stato passivo del
-     * nodo
+     * Remove a passive download.
      */
     public void remPassiveDw() {
         this.passive_dw--;
     }
 
     /**
-     * Reset trasmissione in download passive
+     * Reset trasmissione in passive download.
      */
     public void resetPassiveDw() {
         this.passive_dw = 0;
     }
 
     /**
-     * Imposta il numero massimo di trasmissioni in upload attive con stato del
-     * nodo attivo
+     * Set the  maximum number of  active upload
      */
     public void setActiveUpload(int active_upload) {
         this.active_upload = active_upload;
     }
 
     /**
-     * Restituisce il numero massimo di trasmissioni in upload attive con stato
-     * del nodo attivo
+     * Get the  maximum number of active upload
+     * @return maximum number of active download.
      */
     public int getActiveUpload() {
         return this.active_upload;
     }
 
     /**
-     * Imposta il numero massimo di trasmissioni in download attive con stato
-     * del nodo attivo
+     * Set the  maximum number of active download
      */
     public void setActiveDownload(int active_download) {
         this.active_download = active_download;
     }
 
     /**
-     * Restituisce il numero massimo di trasmissioni in download attive con
+     * Get the  maximum number of active download con
      * stato del nodo attivo
      */
     public int getActiveDownload() {
@@ -503,7 +526,7 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
     }
 
     /**
-     * Imposta il numero massimo di trasmissioni in upload attive con stato del
+     * Set the  maximum number of active upload del
      * nodo passivo
      */
     public void setPassiveUpload(int passive_upload) {
@@ -511,7 +534,7 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
     }
 
     /**
-     * Restituisce il numero massimo di trasmissioni in upload attive con stato
+     * Get the  maximum number of active upload
      * del nodo passivo
      */
     public int getPassiveUpload() {
@@ -519,16 +542,14 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
     }
 
     /**
-     * Imposta il numero massimo di trasmissioni in download attive con stato
-     * del nodo passivo
+     * Set the  maximum number of active download
      */
     public void setPassiveDownload(int passive_download) {
         this.passive_download = passive_download;
     }
 
     /**
-     * Restituisce il numero massimo di trasmissioni in download attive con
-     * stato del nodo passivo
+     * Get the  maximum number of active download
      */
     public int getPassiveDownload() {
         return this.passive_download;
@@ -1114,7 +1135,7 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
             vsender = null;
             for (int j = 0; j < elements.size(); j++) {
                 Node bs_src, br_src;
-                bs_src = br_src= null;
+                bs_src = br_src = null;
                 Node bs_dest, br_dest;
                 bs_dest = br_dest = null;
                 BandwidthMessage bs_bwm, br_bwm;
@@ -1126,27 +1147,25 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
                     System.out.println("\tSender Element " + cet + "; ");
                 }
                 sender.getUploadConnections().addConnection(cet);
-//                  BwEvent bs = new BwEvent(cet.getSender(), cet.getReceiver(), new BandwidthMessage(cet.getSender(), cet.getReceiver(), BandwidthMessage.UPD_UP, cet.getBandwidth(), cet.getStart()), mextime);
                 long mextime = cet.getEnd() - CommonState.getTime();
-                        bs_src = cet.getSender();
-                        bs_dest = cet.getReceiver();
-                        bs_bwm = new BandwidthMessage(cet.getSender(), cet.getReceiver(), BandwidthMessage.UPD_UP, cet.getBandwidth(), cet.getStart());
-                        bs_time = mextime;
+                bs_src = cet.getSender();
+                bs_dest = cet.getReceiver();
+                bs_bwm = new BandwidthMessage(cet.getSender(), cet.getReceiver(), BandwidthMessage.UPD_UP, cet.getBandwidth(), cet.getStart());
+                bs_time = mextime;
                 if (this.debug >= 5) {
-                    System.out.println("\t\tBandwidthEvent SRC " + bs_src.getID() + " | RCV "+bs_dest.getID()+" | Mex "+bs_bwm.toString()+" | "+bs_time+".");
+                    System.out.println("\t\tBandwidthEvent SRC " + bs_src.getID() + " | RCV " + bs_dest.getID() + " | Mex " + bs_bwm.toString() + " | " + bs_time + ".");
                 }
                 BandwidthConnectionElement bet = new BandwidthConnectionElement(cet.getSender(), cet.getReceiver(), cet.getBandwidth(), (cet.getStart() + eedelay), (cet.getEnd() + eedelay), cet.getTxId());
                 if (this.debug >= 5) {
                     System.out.println("\tReceiver Element " + bet + "; ");
                 }
                 mextime = bet.getEnd() - CommonState.getTime();
-//                BwEvent br = new BwEvent(bet.getSender(), bet.getReceiver(), new BandwidthMessage(bet.getSender(), bet.getReceiver(), BandwidthMessage.UPD_DOWN, bet.getBandwidth(), bet.getStart()), mextime);
                 br_src = bet.getSender();
                 br_dest = bet.getReceiver();
                 br_bwm = new BandwidthMessage(bet.getSender(), bet.getReceiver(), BandwidthMessage.UPD_DOWN, bet.getBandwidth(), bet.getStart());
                 br_time = mextime;
                 if (this.debug >= 5) {
-                    System.out.println("\t\tBandwidthEvent SRC " + br_src.getID() + " | RCV "+br_dest.getID()+" | Mex "+br_bwm.toString()+" | "+br_time+".");
+                    System.out.println("\t\tBandwidthEvent SRC " + br_src.getID() + " | RCV " + br_dest.getID() + " | Mex " + br_bwm.toString() + " | " + br_time + ".");
                 }
                 receiver.getDownloadConnections().addConnection(bet);
                 if (this.debug >= 5) {
@@ -1167,7 +1186,7 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
                     if (this.debug >= 5) {
                         System.out.println("; MexTime Receiver" + mextime);
                     }
-                    EDSimulator.add(br_time, br_bwm,br_dest, pid);
+                    EDSimulator.add(br_time, br_bwm, br_dest, pid);
                 } else {
                     cs = cet.getStart() - CommonState.getTime();
                     ce = cet.getEnd() - CommonState.getTime();
@@ -1209,41 +1228,6 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
             System.out.println("---------------------------------------------------------- FINE GESTIONE BANDE ---------------------------------------------------------- ");
         }
         return finish;
-    }
-}
-
-class BwEvent {
-
-    private Node src;
-    private Node dest;
-    private Object bwm;
-    private long time;
-
-    public BwEvent(Node src, Node rcv, Object mex, long time) {
-        this.src = src;
-        this.dest = rcv;
-        this.bwm = mex;
-        this.time = time;
-    }
-
-    public Node getsrc() {
-        return this.src;
-    }
-
-    public Node getrcv() {
-        return this.dest;
-    }
-
-    public Object getBWM() {
-        return this.bwm;
-    }
-
-    public long getTime() {
-        return time;
-    }
-
-    public String toString() {
-        return "[ Source " + src.getID() + " | Receiver " + dest.getID() + " | Mex " + bwm.getClass() + " | Time " + time + " ]";
     }
 }
 
