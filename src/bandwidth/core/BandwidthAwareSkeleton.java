@@ -1,15 +1,17 @@
-/*
- * Interface with methods used to initialize the data structure.
- */
 package bandwidth.core;
 
 /**
  *
  * @author ax
  */
-import peersim.core.Node;
 
 public interface BandwidthAwareSkeleton {
+     /**
+     * Skeleton to initialize the data structure of the protocol.
+     *
+     * @author Alessandro Russo
+     * @version $Revision: 0.02$
+     */
 
     /**
      * Set verbosity level.

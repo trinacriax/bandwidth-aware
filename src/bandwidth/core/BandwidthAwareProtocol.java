@@ -92,7 +92,8 @@ public class BandwidthAwareProtocol extends BandwidthAwareTransport implements C
                 }
                 long newDw = receiver.getDownload() + bm.getBandwidth();
                 receiver.setDownload(newDw, det);
-            } else if (sender.getDebug() >= 6) {
+            } 
+            if (det== null && sender.getDebug() >= 6) {
                 System.out.println("\t\tNo connections have been removed: " + cet);
             }
             det = receiver.getDownloadConnections().getRecordT(det.getSender(), det.getReceiver(), det.getTxId());

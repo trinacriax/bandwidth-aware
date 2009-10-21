@@ -159,6 +159,6 @@ public class BandwidthMessage {
      * @return String containing labels and values of current bandwidth message.
      */
     public String toString() {
-        return "Sender " + this.sender.getID() + " | Receiver " + this.receiver.getID() + " | Message " + this.MessageID + " | Banda " + this.bandwidth + " | Start " + this.start + ".";
+        return "Sender " + this.sender.getID() + " | Receiver " + this.receiver.getID() + " | Message " + this.MessageID + " | Bandwidth " + this.bandwidth + " | Start " + this.start + ".";
     }
 }
