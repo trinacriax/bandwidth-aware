@@ -3,7 +3,17 @@ package bandwidth.core;
 import peersim.core.Node;
 
 public class BandwidthConnectionElement {
-
+    /**
+     * Reproduce the bandwidth connection element. 
+     * Each transmission (e.g., chunk transfer)
+     * is made up by one or more connectione elements,
+     * collected in the connection list structure;
+     * these elements cointains several information 
+     * on the current transmission.
+     *
+     * @author Alessandro Russo
+     * @version $Revision: 0.02$
+     */
     /**
      * Sender node.
      */
@@ -140,7 +150,7 @@ public class BandwidthConnectionElement {
     }
 
     /**
-     * Set check value, i.e. there is a pending upload of bandwidth.
+     * Set check value, i.e. there is a pending bandwidth that will be used in the next future.
      */
     public void setCheck() {
         this.check = !check;

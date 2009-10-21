@@ -191,9 +191,14 @@ public class BandwidthAwareProtocol extends BandwidthAwareTransport implements C
         return;
     }
 
+    /**
+     * Schedule the events, delivering the object cointaing the event to the correct protocol instance PID in the node NODE.
+     * @param node Node to invoce.
+     * @param pid Protocol which message refers to.
+     * @param event event threat.
+     */
     public void processEvent(Node node, int pid, Object event) {
-        BandwidthMessage bm = (BandwidthMessage) event;
-        BandwidthAwareProtocol sender, receiver;
+        BandwidthMessage bm = (BandwidthMessage) event;        
         if (bm.getSender() == null) {
             System.err.println("--- Time " + CommonState.getTime() + ": Node " + node.getID() + " receives a message with NULL sender; It will be discarded.");
             return;
@@ -201,9 +206,11 @@ public class BandwidthAwareProtocol extends BandwidthAwareTransport implements C
         switch (bm.getMessage()) {
             case BandwidthMessage.UPD_UP: {
                 this.exUpdateUpload(node, pid, bm);
+                break;
             }
             case BandwidthMessage.UPD_DOWN: {
                 this.exUpdateDownload(node, pid, bm);
+                break;
             }
         }
     }

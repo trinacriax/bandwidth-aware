@@ -1,10 +1,5 @@
 package bandwidth.core;
 
-/**
- *
- * @author ax
- */
-
 public interface BandwidthAwareSkeleton {
      /**
      * Skeleton to initialize the data structure of the protocol.
