@@ -2,7 +2,6 @@
  * NAPA-WINE project
  * www.napa-wine.eu
  */
-
 package bandwidth.core;
 
 import peersim.config.*;
@@ -14,7 +13,7 @@ public class BandwidthAwareInitializer implements Control {
      * Initialize the Bandwidth Aware protocol.
      * This protocol provides a network layer where peers have
      * different resources in term of both up-/down-load bandwidth.
-     * You have to provide the CDF of the bandwidth.
+     * You have to provide the CDF of the bandwidth, using the CDF distribution setter.
      * It uses the methods defined in {@link bandwidth.BandwidthAwareSkeleton}.
      *
      * @author Alessandro Russo
@@ -34,7 +33,6 @@ public class BandwidthAwareInitializer implements Control {
     // ------------------------------------------------------------------------
     // Fields
     // ------------------------------------------------------------------------
-
     /**Protocol Identifier */
     private final int pid;
     /**Value uses for debugging*/
@@ -49,7 +47,7 @@ public class BandwidthAwareInitializer implements Control {
     private int passive_download;
     /**Source upload bandwidth*/
     private int srcup;
-    
+
     // 
     // ------------------------------------------------------------------------
     // Constructor
@@ -64,19 +62,18 @@ public class BandwidthAwareInitializer implements Control {
         active_download = Configuration.getInt(prefix + "." + PAR_ACTIVE_DOWNLOAD, 1);
         passive_upload = Configuration.getInt(prefix + "." + PAR_PASSIVE_UPLOAD, 1);
         passive_download = Configuration.getInt(prefix + "." + PAR_PASSIVE_DOWNLOAD, 1);
-        debug = Configuration.getInt(prefix + "." + PAR_DEBUG, 0);        
-        double bms = Configuration.getDouble(prefix + "." + PAR_BMS,0);        
-        srcup = (int)Math.round(bms *1.0* Configuration.getInt(prefix+"."+PAR_UP_BAND,-1));
+        debug = Configuration.getInt(prefix + "." + PAR_DEBUG, 0);
+        double bms = Configuration.getDouble(prefix + "." + PAR_BMS, 0);
+        srcup = (int) Math.round(bms * 1.0 * Configuration.getInt(prefix + "." + PAR_UP_BAND, -1));
     }
 
     // ------------------------------------------------------------------------
     // Methods
     // ------------------------------------------------------------------------
     /**
-     * Initialize peers' fields.
+     * Initialize peers' fields and the source's resources.
      * @return Always return false.
      */
-
     public boolean execute() {
         for (int i = 0; i < Network.size(); i++) {
             //retrieve node instance
