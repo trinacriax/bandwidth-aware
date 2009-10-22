@@ -44,7 +44,8 @@ public class CDFDistribution extends VectControl {
     // Constructor
     // ------------------------------------------------------------------------
     /**
-     * This consturctore creates a new instance, invoking the super class, and read parameters from the config file.
+     * This constructor creates a new instance of the class,
+     * invoking super and then reading parameters from the config file.
      */
     public CDFDistribution(String prefix) {
         super(prefix);
@@ -59,14 +60,17 @@ public class CDFDistribution extends VectControl {
             this.base_value = new Double(Configuration.getDouble(prefix + "." + PAR_BASE_VAL, -1));
         }
         if (base_value.doubleValue() < 0.0) {
-            System.err.println("You have to define a base value. Current is " + base_value);
+            System.err.println("Warning: the base value is negative .");
         }
+        System.err.println("Current base value is " + base_value);
         this.values_distribution = new double[_val_dist.length];
         this.values_multiplier = new double[_val_multi.length];
         int total = 0;
+        System.err.print("i-th [ Distribution - Multiplier ]\n");
         for (int i = 0; i < values_multiplier.length; i++) {
             values_distribution[i] = Double.parseDouble(_val_dist[i]);
             values_multiplier[i] = Double.parseDouble(_val_multi[i]);
+            System.err.print(i+"-th [" + values_distribution[i]+" - "+ values_multiplier[i]+"]\n");
             if(values_multiplier[i] <0){
                 System.err.println("Multipliers should be only positive! Current is " + values_multiplier[i] +" which is negative.");
             }
@@ -74,6 +78,7 @@ public class CDFDistribution extends VectControl {
                 System.err.println("Distribution have to be positive! Current is " + values_multiplier[i] +" which is negative..cast to positive.");
             }
             total +=Math.abs(values_distribution[i]);
+
             if(total>1){
                 total -=values_distribution[i];
                 values_distribution[i]=1.0-total;
@@ -82,6 +87,7 @@ public class CDFDistribution extends VectControl {
             if(total==1 && i+1<values_multiplier.length)
                 System.err.println("You have to defined a CDF greater than 1. Current is " + total +" till element "+ i);
         }
+        System.err.print("\n");
         System.err.print("#Bandwidth init done\n");
     }
 

@@ -18,9 +18,6 @@ public class UniformRandomTransportTimed implements TransportBandwidthTimed
 	
 private static final String PAR_MINDELAY = "mindelay";	
 private static final String PAR_MAXDELAY = "maxdelay";
-//private static final String PAR_MUDELAY = "mudelay";
-//private static final String PAR_DEVDELAY = "devdelay";
-//private static final String PAR_DELAY = "delay";
 ///**
 //---------------------------------------------------------------------
 //Fields
@@ -34,16 +31,7 @@ private final long min;
 */
 private final long range;
 private final long max;
-//private final double mu;
-//private final double dev;
-//protected static long[][] owd;
-//private final int delay;
-/**
- * Many kinds of delay distributions
- * 0 Uniform between max and min
- * 1 Gaussian with mean
- * 2 Exponential Truncated with mean
- */
+
 
 //---------------------------------------------------------------------
 //Initialization
@@ -60,8 +48,6 @@ private final long max;
 	   throw new IllegalParameterException(prefix+"."+PAR_MAXDELAY, 
 	   "The maximum latency cannot be smaller than the minimum latency");
 	range = max-min+1;
-    
-//	System.out.println("Min delay "+min +", Max delay "+max);
 }
 
 //---------------------------------------------------------------------

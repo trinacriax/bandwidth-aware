@@ -54,7 +54,7 @@ public class BandwidthTester extends BandwidthDataStructure implements CDProtoco
     }
 
     public void send(Node src, Node dest, Object msg, long delay, int pid) {
-        ((UniformRandomTransportTimed) src.getProtocol(FastConfig.getTransport(pid))).sendControl(src, dest, msg, pid);
+        ((UniformRandomTransportTimed) src.getProtocol(FastConfig.getTransport(pid))).sendControl(src, dest, msg, delay, pid);
     }
 
     /**
@@ -75,7 +75,6 @@ public class BandwidthTester extends BandwidthDataStructure implements CDProtoco
             case BandwidthInfo.SWITCH_PUSH: {
                 //**************************** PUSH STATE ****************************\\
                 sender = ((BandwidthTester) (node.getProtocol(pid)));
-                //Each switch message has to be sent from a node to itself
                 if (im.getSender().getID() != node.getID()) {
                     if (sender.getDebug() >= 0) {
                         System.err.println("!!! Time: " + CommonState.getTime() + " Node " + im.getSender().getID() + " tries to change the state of Node " + node.getID() + " in PUSH: NOT ALLOW");
@@ -94,10 +93,7 @@ public class BandwidthTester extends BandwidthDataStructure implements CDProtoco
                 }
                 if (sender.getDebug() >= 1) {
                     System.out.print("\n");
-                }
-                //To do a push a node must be in PUSH :)                
-                //****************************************** S O U R C E    P U S H ******************************************\\
-//                if (node.getIndex() == Network.size()-1) {
+                } 
                     if (sender.getUpload(node) > sender.getUploadMax(node)) {
                         System.err.println(CommonState.getTime() + " errore " + sender.getUpload(node) + " > " + sender.getUploadMax(node));
                     }
@@ -109,120 +105,11 @@ public class BandwidthTester extends BandwidthDataStructure implements CDProtoco
                             BandwidthTesterMessage imm = new BandwidthTesterMessage(chunktopush, node, BandwidthInfo.PUSH);
                             this.send(node, peer, imm, pid);
                             if (sender.getDebug() >= 2) {
-                                System.out.println(CommonState.getTime() + "\t\tNode " + node.getID() + " PUSHes chunk " + imm.getChunkids() + " to Node " + peer.getID() +
+                                System.out.println(CommonState.getTime() + "\tNode " + node.getID() + " PUSHes chunk " + imm.getChunkids() + " to Node " + peer.getID() +
                                         " MexRX " + (delay + CommonState.getTime()));
                             }                                            
                     sender = receiver = null;
                     return;
-//                } //PUSH PERFORMED BY A NORMAL PEER
-//                else {//E' un nodo normale
-//                    if (sender.getSize() == 0) {
-//                        sender.setCycle(Message.PULL_CYCLE);
-//                        long delay = sender.getSwitchTime();
-//                        if (sender.getDebug() >= 3) {
-//                            System.out.println("\tNode " + node.getID() + " switches to PULL because it has no chunks : " + sender.getSize() +
-//                                    " SWITCH to PULL at time " + (CommonState.getTime() + delay));
-//                        }
-//                        sender.resetPushAttempt();
-//                        sender.resetActiveUp(node);
-//                        sender.resetSuccessUpload();
-//                        this.send(node, node, new BandwidthTesterMessage(null, node, Message.SWITCH_PULL), delay, pid);
-//                        sender = receiver = null;
-//                        return;
-//                    } //Sender ha esaurito il numero di connessioni attive in upload permesse
-//                    else if (sender.getActiveUp(node) >= sender.getActiveUpload(node)) {
-//                        if (sender.getDebug() >= 4) {
-//                            System.out.println("\tNode " + node.getID() + " reaches maximum number of ActiveUpload");
-//                        }
-//                        sender = receiver = null;
-//                        return;
-//                    } //sender non ha più banda disponibile
-//                    else if (sender.getUpload(node) < sender.getUploadMin(node)) {
-//                        if (sender.getDebug() >= 3) {
-//                            System.out.print("Node " + node.getID() + " has no upload bandwidth for push: ");
-//                        }
-//                        if (sender.getActiveUp(node) == 0) {//il nodo non ha connessioni attive in upload, sta soddisfando un pull
-//
-//                            long delay = sender.getSwitchTime();
-//                            if (sender.getDebug() >= 3) {
-//                                System.out.println(" SWITCH to PULL at time " + (CommonState.getTime() + delay));
-//                            }
-//                            sender.setCycle(Message.PULL_CYCLE);
-//                            sender.resetPushAttempt();
-//                            sender.resetActiveUp(node);
-//                            sender.resetSuccessUpload();
-//                            this.send(node, node, new BandwidthTesterMessage(null, node, Message.SWITCH_PULL), delay, pid);
-//                        } else if (sender.getDebug() >= 3) {
-//                            System.out.println();
-//                        }
-//                        sender = receiver = null;
-//                        return;
-//                    } //Successful push
-//                    else if (sender.getSuccessUpload() > 0) {
-//                        if (sender.getDebug() >= 4) {
-//                            System.out.print("\tNode " + node.getID() + " has performed " + sender.getSuccessUpload() + " PUSH(es) with success ,");
-//                        }
-//                        if (sender.getActiveUp(node) == 0) {//il nodo non ha connessioni attive in upload e pu cambiare stato
-//
-//                            long delay = sender.getSwitchTime();
-//                            if (sender.getDebug() >= 4) {
-//                                System.out.println(" SWITCH to PULL at time " + (CommonState.getTime() + delay));
-//                            }
-//                            sender.setCycle(Message.PULL_CYCLE);
-//                            sender.resetPushAttempt();
-//                            sender.resetActiveUp(node);
-//                            sender.resetSuccessUpload();
-//                            this.send(node, node, new BandwidthTesterMessage(null, node, Message.SWITCH_PULL), delay, pid);
-//                        } else if (sender.getDebug() >= 4) {
-//                            System.out.println(" has other active transmission which have to be close before switch to pull");
-//                        }
-//                        sender = receiver = null;
-//                        return;
-//                    } //il nodo ha esaurito il numero di tentativi ammessi in push
-//                    else if (sender.getPushAttempt() >= sender.getPushRetry()) {//ha raggiunto il # di tentativi in push
-//                        if (sender.getDebug() >= 4) {
-//                            System.out.print("\tNode " + node.getID() + " reached max number of push attempts (" + sender.getPushAttempt() + "/" + sender.getPushRetry() + ") ");
-//                        }
-//                        if (sender.getActiveUp(node) == 0) {
-//                            long delay = sender.getSwitchTime();
-//                            if (sender.getDebug() >= 4) {
-//                                System.out.println(" SWITCH to PULL al tempo " + (CommonState.getTime() + delay));
-//                            }
-//                            sender.setCycle(Message.PULL_CYCLE);
-//                            sender.resetPushAttempt();
-//                            sender.resetActiveUp(node);
-//                            sender.resetSuccessUpload();
-//                            this.send(node, node, new BandwidthTesterMessage(null, node, Message.SWITCH_PULL), delay, pid);
-//                        } else if (sender.getDebug() >= 4) {
-//                            System.out.println(" has other active transmission which have to be close before switch to pull");
-//                        }
-//                        sender = receiver = null;
-//                        return;
-//                    } else {
-//                        Node peer = null;
-//                        long delay = 0;
-//                        //****************************************** P U S H   G E N E R I C   N O D E ******************************************\\
-//                        int chunks_push[] = sender.getLast(sender.getPushWindow());
-//                        if (sender.getDebug() >= 4) {
-//                            String chunkstring = "Node " + node.getID() + ": ";
-//                            for (int k = 0; k < chunks_push.length; k++) {
-//                                chunkstring += "m:" + chunks_push[k] + " (" + sender.getChunk(chunks_push[k]) + "); ";
-//                            }
-//                            System.out.println(chunkstring);
-//                        }
-//                            peer = Network.get(0);
-//                                receiver = (BandwidthTester) peer.getProtocol(pid);
-//                                sender.addActiveUp(node);
-//                                BandwidthTesterMessage imm = new BandwidthTesterMessage(chunks_push, node, Message.PUSH);
-//                                delay = this.send(node, peer, imm, pid);
-//                                if (sender.getDebug() >= 2) {
-//                                    System.out.println("\t\tNode " + node.getID() + " PUSHes " + imm.getChunkids() + " to Node " + peer.getID() + " MexRX " + (CommonState.getTime() + delay));
-//                                }
-//                        }
-//                    
-//                    sender = receiver = null;
-//                    return;
-//                }
             }
             case BandwidthInfo.PUSH: //************************************* N O D O   R E C E I V E    P U S H   ******************************************
             {
@@ -296,7 +183,7 @@ public class BandwidthTester extends BandwidthDataStructure implements CDProtoco
                 //***********************************SENDER HA IL CHUNK RICHIESTO *************************************			
                 if (response != BandwidthInfo.NOT_OWNED && response != BandwidthInfo.IN_DOWNLOAD) {
                     BandwidthAwareProtocol bap = (BandwidthAwareProtocol) node.getProtocol(sender.getBandwidth());
-                    long eedelay = 0;
+                    long eedelay = 10;
                     long result = bap.sendData(sender.getChunkSize(), node, im.getSender(), eedelay, sender.getBandwidth());
                     if (result == BandwidthMessage.NO_UP || result == BandwidthMessage.NO_DOWN || result == -1) {//|| receiver.getChunk(chunktopush)!= Message.NOT_OWNED) {
                         receiver.resetInDown(chunktopush);
@@ -327,20 +214,21 @@ public class BandwidthTester extends BandwidthDataStructure implements CDProtoco
                         this.send(node, node, new BandwidthTesterMessage(null, node, BandwidthInfo.SWITCH_PUSH), delay, pid);
                         sender.addFailPush();
                     } else {
-                        long delay = this.send(node, im.getSender(), new BandwidthTesterMessage(chunktopush, node, BandwidthInfo.START_PUSH), pid);
-                        delay += result;
+                        long delay = eedelay;
+                        this.send(node, im.getSender(), new BandwidthTesterMessage(chunktopush, node, BandwidthInfo.START_PUSH), pid);
+                        if (sender.getDebug() >= 4) {
+                            System.out.println("\tNode " + node.getID() + " sends START_PUSH m:" + chunktopush + " to " + im.getSender().getID() + " MexRx " + (CommonState.getTime() + delay));
+                        }
+                        delay += result;  
+                        if (sender.getDebug() >= 4) {
+                            System.out.println("\tNode " + node.getID() + " sends FINISH_PUSH m:" + chunktopush + " to " + im.getSender().getID() + " MexRx " + (CommonState.getTime() + delay));
+                        }
                         this.send(node, im.getSender(), new BandwidthTesterMessage(chunktopush, node, BandwidthInfo.FINISH_PUSH), delay, pid);
                         delay += sender.getSwitchTime();
-                        this.send(node, node, new BandwidthTesterMessage(null, node, BandwidthInfo.SWITCH_PUSH), delay, pid);
-                        if (sender.getDebug() >= 4) {
-                            System.out.println("\tNode " + node.getID() + " sends START_PUSH m:" + chunktopush + " to " + im.getSender().getID() + " MexRx " + (CommonState.getTime() + eedelay));
-                        }
-                        if (sender.getDebug() >= 4) {
-                            System.out.println("\tNode " + node.getID() + " sends FINISH_PUSH m:" + chunktopush + " to " + im.getSender().getID() + " MexRx " + (CommonState.getTime() + result + eedelay));
-                        }
                         if (sender.getDebug() >= 4) {
                             System.out.println("\tNode " + node.getID() + " will SWITCH to PUSHb (" + sender.getPushAttempt() + "/" + sender.getPushRetry() + ") al tempo " + (CommonState.getTime() + result + sender.getSwitchTime()));
                         }
+                        this.send(node, node, new BandwidthTesterMessage(null, node, BandwidthInfo.SWITCH_PUSH), delay, pid);
 
                     }
                 } else {
