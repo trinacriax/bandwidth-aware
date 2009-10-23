@@ -33,4 +33,3 @@ run make
 java -cp "peersim.jar:djep-1.0.0.jar:jep-2.3.0.jar:bandwidth-aware.jar" peersim.Simulator config-bandwidth.txt > output.log
 
 look at output.log
-
