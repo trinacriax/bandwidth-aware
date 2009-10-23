@@ -12,3 +12,25 @@ the transfer in milliseconds, otherwise it returns a code reflecting the
 lack of either upload or download bandwidth. These error codes are in
 the BandwidthMessage class, and the module that uses this protocol has to
 know these codes.
+
+How to compile.
+
+1) Place the parent directory (bandwidth-aware) in the same parent direnctory of PeerSim simulator:
+
+.
+..
+peersim
+bandwidth-aware
+myFirstProtocol
+myFavoriteOne
+
+2) copy you version of peersim.jar, djep and jep in the bandwidth-aware direcotry
+
+3) Use the Makefile
+
+run make
+
+java -cp "peersim.jar:djep-1.0.0.jar:jep-2.3.0.jar:bandwidth-aware.jar" peersim.Simulator config-bandwidth.txt > output.log
+
+look at output.log
+
