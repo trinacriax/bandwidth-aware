@@ -5,11 +5,11 @@ import peersim.cdsim.*;
 import peersim.edsim.*;
 
 /**
- * Core protocol for bandwidth management system. 
+ * Core protocol for bandwidth management system. <p>
  * This class implements a priority sharing bandwidth mechanism, 
  * which leads to give as much resource as possible to first 
- * transmission, then to the second and so on.
- * The protocol provides a method {@ling sendDate} which computes
+ * transmission, then to the second and so on.<p>
+ * The protocol provides a method which computes
  * the time needed to perform the transfer or an error code
  * if either the upload or download bandwidth is not available.
  *
@@ -36,7 +36,7 @@ public class BandwidthAwareProtocol extends BandwidthAwareTransport implements C
     }
 
     /**
-     * Method invoked to perform downlink update.
+     * Method invoked to perform downlink update.<p>
      * This method returns the bandwidth used for a past connection
      * or reserve the bandiwdth for a transfer computed in the past.
      * @param node Node that will update its upload.
@@ -118,7 +118,7 @@ public class BandwidthAwareProtocol extends BandwidthAwareTransport implements C
     }
 
     /**
-     * Method invoked to perform uplink update.
+     * Method invoked to perform uplink update.<p>
      * This method returns the bandwidth used for a past connection
      * or reserve the bandiwdth for a transfer computed in the past.
      * @param node Node that will update its upload.

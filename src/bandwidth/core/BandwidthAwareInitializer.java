@@ -8,11 +8,11 @@ import peersim.config.*;
 import peersim.core.*;
 
 /**
- * Initialize the Bandwidth Aware protocol.
+ * Initialize the Bandwidth Aware protocol.<p>
  * This protocol provides a network layer where peers have
- * different resources in term of both up-/down-load bandwidth.
+ * different resources in term of both up-/down-load bandwidth.<p>
  * You have to provide the CDF of the bandwidth, using the CDF distribution setter.
- * It uses the methods defined in {@link bandwidth.BandwidthAwareSkeleton}.
+ * It uses the methods defined in {@link BandwidthAwareSkeleton}.
  *
  * @author Alessandro Russo
  * @version $Revision: 0.02$

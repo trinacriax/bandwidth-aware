@@ -3,12 +3,10 @@ package bandwidth.core;
 import peersim.core.Node;
 
 /**
- * Reproduce the bandwidth connection element.
- * Each transmission (e.g., chunk transfer)
- * is made up by one or more connectione elements,
- * collected in the connection list structure;
- * these elements cointains several information
- * on the current transmission.
+ * Reproduce the bandwidth connection element.<p>
+ * Each transmission (e.g., chunk transfer) is made up by one or more connectione elements,
+ * collected in the connection list structure.<p>
+ * These elements cointains several information on the current transmission.
  *
  * @author Alessandro Russo
  * @version $Revision: 0.02$
@@ -128,7 +126,7 @@ public class BandwidthConnectionElement {
 
     /**
      * Get the transaction identifier for the connection element.
-     * @return
+     * @return The transmission identifier for the current connection.
      */
     public long getTxId() {
         return this.txid;

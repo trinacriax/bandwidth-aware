@@ -17,8 +17,6 @@ public class BandwidthDataStructure implements BandwidthDataSkeleton, Protocol {
     protected int number_of_chunks;
     /**Source identifier*/
     protected int source;
-    /**Cycle of the node : 0 push 1 pull */
-    protected int cycle;
     /**Debug level */
     protected int debug;
     /**# of chunks transmitted correctly via push*/
@@ -69,7 +67,6 @@ public class BandwidthDataStructure implements BandwidthDataSkeleton, Protocol {
         clh.fail_push = new Integer("0");
         clh.chunk_size = new Integer("0");
         clh.push_window = new Integer("0");
-        clh.cycle = new Integer("0");
         clh.source = new Integer("0");
         clh.success_upload = new Integer("0");
         clh.chunkpush = new Integer("0");
@@ -96,7 +93,6 @@ public class BandwidthDataStructure implements BandwidthDataSkeleton, Protocol {
         this.bandwidth = 0;
         this.fail_push = 0;
         this.number_of_chunks = 0;
-        this.cycle = -1;
         this.source = 0;
         this.chunkpush = 0;
         this.max_push_attempts = 0;
@@ -118,30 +114,6 @@ public class BandwidthDataStructure implements BandwidthDataSkeleton, Protocol {
         for (int i = 0; i < items; i++) {
             this.chunk_list[i] = -1;
         }
-    }
-
-    /**
-     *
-     * Set the cycle of the current node {@link interleave.util.Message}
-     * @param cycle The cycle node will switch in
-     *
-     */
-    public void setCycle(int _cycle) {
-        this.cycle = _cycle;
-
-        if (this.getSize() == this.getNumberOfChunks() && this.getCompleted() == 0) {
-            this.setCompleted(CommonState.getTime());
-        }
-    }
-
-    /**
-     * The current cycle of the ndoe
-     * @return an integer tha identify the state, see (@link interleave.util.Message)
-     *
-     *
-     */
-    public int getCycle() {
-        return this.cycle;
     }
 
     /**
@@ -168,7 +140,7 @@ public class BandwidthDataStructure implements BandwidthDataSkeleton, Protocol {
     /**
      *
      * Time needs by the node to switch its state,
-     * @param long time in ms
+     * @param time in ms
      *
      */
     public void setSwitchTime(long time) {
@@ -178,7 +150,7 @@ public class BandwidthDataStructure implements BandwidthDataSkeleton, Protocol {
     /**
      *
      * Return the time needs by the node to switch its state
-     * @returnt the time in ms
+     * @return the time in ms
      *
      */
     public long getSwitchTime() {
@@ -195,7 +167,7 @@ public class BandwidthDataStructure implements BandwidthDataSkeleton, Protocol {
 
     /**
      * Get the debug level
-     * @retunr value the level of verbosity 0 up to 10
+     * @return value the level of verbosity 0 up to 10
      */
     public int getDebug() {
         return this.debug;
@@ -255,7 +227,7 @@ public class BandwidthDataStructure implements BandwidthDataSkeleton, Protocol {
 
     /**
      * Set the number of chunks the node proposes in push
-     * @param int window size for the number of chunks proposed in push
+     * @param window size for the number of chunks proposed in push
      * */
     public void setPushWindow(int window) {
         this.push_window = window;
@@ -658,7 +630,7 @@ public class BandwidthDataStructure implements BandwidthDataSkeleton, Protocol {
      * 
      * Il metodo restituisce il chunk con l'identificativo passato se posseduto
      * dal nodo, se il chunk è in download restituisce la costante
-     * {@value BandwidthInfo.CHUNK_IN_DOWNLOAD}, altrimenti restituisce null;
+     * altrimenti restituisce null;
      * 
      * @param index chunk id
      * @return long time at which the node received this chunk

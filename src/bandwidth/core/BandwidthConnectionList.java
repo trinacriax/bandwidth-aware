@@ -3,9 +3,8 @@ package bandwidth.core;
 import peersim.core.Node;
 
 /**
- * This class implements a collection of connection elements
- * which represents the currrent connections of the current node
- * with its neighbors.
+ * This class implements a collection of connection elements.<p>
+ * Such a collection reflects all connections in the current node with its neighbors.
  *
  * @author Alessandro Russo
  * @version $Revision: 0.02$
@@ -14,7 +13,7 @@ import peersim.core.Node;
 public class BandwidthConnectionList {
 
     /**
-     * This array cointains all the connection element in this protocol instance.
+     * This array cointains all the connection element in this protocol instance.<p>
      * Such an array is increased and reduced in runtime to collect all the connections of the node.
      */
     protected BandwidthConnectionElement[] connection_list;
@@ -49,7 +48,7 @@ public class BandwidthConnectionList {
     }
 
     /**
-     * This methos is used to add a connection element to the current list of connections.
+     * This methos is used to add a connection element to the current list of connections.<p>
      * Connection elemenets are sorted first for start time and then for end time.
      *
      * @param ce Connection element to be added with all paramenters.
@@ -209,7 +208,7 @@ public class BandwidthConnectionList {
      * Return the first connection element with a given Current node, target node, start time and bandwidth used.
      * @param s Current node.
      * @param r Target node.
-     * @param starTime Time in which the connection element started.
+     * @param startTime Time in which the connection element started.
      * @param bandwidth Bandwidth used in the connection element queried.
      * @return The corresponding {@link BandwidthConnectionElement}, null otherwise.
      */
@@ -276,7 +275,7 @@ public class BandwidthConnectionList {
     }
 
     /**
-     * This method is used to sample and get the bandwidth usage in the given time.
+     * This method is used to sample and get the bandwidth usage in the given time.<p>
      * It looks for all connection with (startTime <= time <= endTime), and return the bandwidth usage within these times.
      * @param time Time to sample.
      * @return Bandwidth usage.

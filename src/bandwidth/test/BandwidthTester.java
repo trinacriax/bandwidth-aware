@@ -256,8 +256,7 @@ public class BandwidthTester extends BandwidthDataStructure implements CDProtoco
                 }
                 sender.remActiveUp(im.getSender());
                 sender.addSuccessUpload();
-                if (receiver.getCycle() == -1) {//e` la prima attivazione.
-                    receiver.setCycle(BandwidthInfo.PUSH_CYCLE);
+                if (receiver.getSize()==0) {//e` la prima attivazione.
                     this.send(node, node, new BandwidthTesterMessage(null, node, BandwidthInfo.SWITCH_PUSH), receiver.getSwitchTime(), pid);
                     if (sender.getDebug() >= 4) {
                         System.out.println("\t>>Node " + node.getID() + " has just been ACTIVATED!!! SWITCH PUSH at time " + (CommonState.getTime() + receiver.getSwitchTime()));

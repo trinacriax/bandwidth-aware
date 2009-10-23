@@ -7,14 +7,14 @@ import peersim.core.CommonState;
 import peersim.edsim.EDSimulator;
 
 /**
- * The class implements the data structure for the bandiwdth protocol
- * and the method used to compute the time needed to delivery to set
- * of data from the sender to the receiver, otherwise it returns an
- * error code which reflects the needed of up/down-link bandwidth.
+ * The class implements the data structure for the bandiwdth protocol.<p>
+ * The data structure and the main methods used to provide the bandwdith mechanism
+ * are in this class. <p> In particular the method for computing the transfer time:
+ * it computes the time needed to delivery to set of data from the sender to the
+ * receiver, otherwise it returns an error code which reflects the needed of up/down-link bandwidth.
  *
  * @author Alessandro Russo
  * @version $Revision: 0.02$
- * @see bandwidth.core.BandwidthMessage.
  */
 public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton {
 
@@ -111,7 +111,7 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
 
     /**
      * Clone method implemented for Protocol class.
-     * @return
+     * @return An object which is the clone of the current on.
      */
     public Object clone() {
         BandwidthAwareTransport bat = null;
@@ -218,8 +218,8 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
     }
 
     /**
-     * Updates the current available upload bandwidth:
-     * - adding the resources give back from to (part of) connection which
+     * Updates the current available upload bandwidth.<p>
+     * It adds the resources give back from to (part of) connection which
      * will be used in the next future from the same tranmission.
      * @param _upload Banwidth to update
      * @param bce BandwidthConnectionElement to check.
@@ -318,8 +318,8 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
     }
 
     /**
-     * Updates the current available download bandwidth:
-     * - adding the resources give back from to (part of) connection which
+     * Updates the current available download bandwidth.<p>
+     * It adds the resources give back from to (part of) connection which
      * will be used in the next future from the same tranmission.
      * @param _download Banwidth to update.
      * @param bce BandwidthConnectionElement to check.
@@ -367,7 +367,7 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
 
     /**
      * Set the maximum download.
-     * @param _dwonload_max Maximum download.
+     * @param _download_max Maximum download.
      */
     public void setDownloadMax(long _download_max) {
         this.download_max = _download_max;
@@ -381,7 +381,6 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
         return this.download_max;
     }
 
-    //XXX define what means active/passive up/down-load.
     /**
      * Get the number of connections issues by the node that involves the upload.
      * @return number of connections in upload.
@@ -604,10 +603,16 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
         return this.download_connection_list;
     }
 
-    //XXX to implement
+    //XXX Bandwidth fluctuation to implement
+    /**
+     * Provide bandwidth fluctuation during the simulation. To implement!
+     */
     public void fluctuationUpload() {
     }
 
+    /**
+     * Provide bandwidth fluctuation during the simulation. To implement!
+     */
     public void fluctuationDownload() {
     }
 
@@ -622,9 +627,9 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
 
     /**
      *
-     * This method compute that time needed to transfer to given amount of data in bits, from one sender to one receiver with to given end-to-end delay.
+     * This method compute that time needed to transfer to given amount of data in bits, from one sender to one receiver with to given end-to-end delay.<p>
      * This mechanism uses the priority sharingUtilizza il priority sharing, i.e. the first transmission takes as much resources as possibile,
-     * the next one takes also as much resources as possible and so on with the same policy.
+     * the next one takes also as much resources as possible and so on with the same policy.<p>
      * A transmission and the corresponding allocation will be placed only when enough bandwidth is available and is greater than the minimum,
      * otherwise the transmission could take long time to end. The time is expresse in milliseconds.
      *
