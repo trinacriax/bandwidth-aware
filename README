@@ -1,0 +1,14 @@
+The bandwidth aware protocol is a module for PeerSim simulator.
+The author is Alessandro Russo (DISI - University  of Trento),
+and this module was written under Napa-Wine project (www.napa-wine.eu)
+For further information please mail the author.
+
+This module is useful to simulate real networks with bandwidth knowledge;
+it implements a priority sharing bandwidth allocation which servers the
+transmissions with FIFO policies, reserving as much resources as possibile
+for each connection. The amount of data to transmit is given in bits,
+and when a transmission is feasible it returns the time needed to perform
+the transfer in milliseconds, otherwise it returns a code reflecting the
+lack of either upload or download bandwidth. These error codes are in
+the BandwidthMessage class, and the module that uses this protocol has to
+know these codes.
