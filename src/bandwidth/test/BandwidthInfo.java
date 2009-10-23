@@ -1,5 +1,10 @@
 package bandwidth.test;
 
+/**
+ * TEST CLASS
+ * @author Alessandro Russo
+ * @version 1.0
+ */
 public interface BandwidthInfo {
 
     public final int PUSH_CYCLE = 0;

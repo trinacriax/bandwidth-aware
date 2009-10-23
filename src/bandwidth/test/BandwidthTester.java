@@ -1,12 +1,3 @@
-/**
- * This class implements the core protocol ALTERNATE: each node alternates push and pull states.
- * In PUSH each node pushes the latest chunk it possesses to a target peer selected randomly.
- * In PULL each node pulls the oldes chunk not owned to a target peer selected randomly.
- * No signaling a part from push/pull proposes.
- *
- * @author Alessandro Russo
- * @version 1.1
- */
 package bandwidth.test;
 
 import bandwidth.core.BandwidthMessage;
@@ -16,8 +7,11 @@ import peersim.core.*;
 import peersim.cdsim.*;
 import peersim.edsim.*;
 
-import peersim.transport.*;
-
+/**
+ * TEST CLASS
+ * @author Alessandro Russo
+ * @version 1.0
+ */
 public class BandwidthTester extends BandwidthDataStructure implements CDProtocol, EDProtocol {
 //--------------------------------------------------------------------------
 // Initialization
@@ -93,23 +87,23 @@ public class BandwidthTester extends BandwidthDataStructure implements CDProtoco
                 }
                 if (sender.getDebug() >= 1) {
                     System.out.print("\n");
-                } 
-                    if (sender.getUpload(node) > sender.getUploadMax(node)) {
-                        System.err.println(CommonState.getTime() + " errore " + sender.getUpload(node) + " > " + sender.getUploadMax(node));
-                    }
-                    Node peer = null;
-                    long delay = 0;                    
-                        int chunktopush = sender.getLast();//source select latest chunk                        
-                            peer = Network.get(0);
-                            receiver = ((BandwidthTester) (peer.getProtocol(pid)));
-                            BandwidthTesterMessage imm = new BandwidthTesterMessage(chunktopush, node, BandwidthInfo.PUSH);
-                            this.send(node, peer, imm, pid);
-                            if (sender.getDebug() >= 2) {
-                                System.out.println(CommonState.getTime() + "\tNode " + node.getID() + " PUSHes chunk " + imm.getChunkids() + " to Node " + peer.getID() +
-                                        " MexRX " + (delay + CommonState.getTime()));
-                            }                                            
-                    sender = receiver = null;
-                    return;
+                }
+                if (sender.getUpload(node) > sender.getUploadMax(node)) {
+                    System.err.println(CommonState.getTime() + " errore " + sender.getUpload(node) + " > " + sender.getUploadMax(node));
+                }
+                Node peer = null;
+                long delay = 0;
+                int chunktopush = sender.getLast();//source select latest chunk
+                peer = Network.get(0);
+                receiver = ((BandwidthTester) (peer.getProtocol(pid)));
+                BandwidthTesterMessage imm = new BandwidthTesterMessage(chunktopush, node, BandwidthInfo.PUSH);
+                this.send(node, peer, imm, pid);
+                if (sender.getDebug() >= 2) {
+                    System.out.println(CommonState.getTime() + "\tNode " + node.getID() + " PUSHes chunk " + imm.getChunkids() + " to Node " + peer.getID() +
+                            " MexRX " + (delay + CommonState.getTime()));
+                }
+                sender = receiver = null;
+                return;
             }
             case BandwidthInfo.PUSH: //************************************* N O D O   R E C E I V E    P U S H   ******************************************
             {
@@ -219,7 +213,7 @@ public class BandwidthTester extends BandwidthDataStructure implements CDProtoco
                         if (sender.getDebug() >= 4) {
                             System.out.println("\tNode " + node.getID() + " sends START_PUSH m:" + chunktopush + " to " + im.getSender().getID() + " MexRx " + (CommonState.getTime() + delay));
                         }
-                        delay += result;  
+                        delay += result;
                         if (sender.getDebug() >= 4) {
                             System.out.println("\tNode " + node.getID() + " sends FINISH_PUSH m:" + chunktopush + " to " + im.getSender().getID() + " MexRx " + (CommonState.getTime() + delay));
                         }

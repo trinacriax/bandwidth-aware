@@ -1,16 +1,21 @@
 package bandwidth.core;
+
 import peersim.core.Node;
 
+/**
+ * This class implements a collection of connection elements
+ * which represents the currrent connections of the current node
+ * with its neighbors.
+ *
+ * @author Alessandro Russo
+ * @version $Revision: 0.02$
+ *
+ */
 public class BandwidthConnectionList {
 
     /**
-     * This class implements a collection of connection elements
-     * which represents the currrent connections of the current node
-     * with its neighbors.
-     *
-     * @author Alessandro Russo
-     * @version $Revision: 0.02$
-     * 
+     * This array cointains all the connection element in this protocol instance.
+     * Such an array is increased and reduced in runtime to collect all the connections of the node.
      */
     protected BandwidthConnectionElement[] connection_list;
 
@@ -21,21 +26,26 @@ public class BandwidthConnectionList {
         connection_list = new BandwidthConnectionElement[16];
     }
 
-
     /**
      * Get the number of elements in the list of connections.
      * @return The number of elements in the list.
      */
-    public int getSize(){
+    public int getSize() {
         int size = 0;
-        for(int i = 0; i < this.connection_list.length;i++)
-            if(this.connection_list[i]!=null)
+        for (int i = 0; i < this.connection_list.length; i++) {
+            if (this.connection_list[i] != null) {
                 size++;
+            }
+        }
         return size;
     }
 
-    public boolean  isEmpty(){
-        return (this.getSize()==0);
+    /**
+     * Checks whether the list is empty or not.
+     * @return True if the list is empty, false otherwise.
+     */
+    public boolean isEmpty() {
+        return (this.getSize() == 0);
     }
 
     /**
@@ -46,43 +56,42 @@ public class BandwidthConnectionList {
      */
     public void addConnection(BandwidthConnectionElement ce) {
         if (this.isEmpty()) {
-            this.connection_list[this.getSize()]= ce;
-        } else if(this.connection_list.length == this.getSize()){
-            int lez = (int)Math.ceil(this.getSize()*2.0);
+            this.connection_list[this.getSize()] = ce;
+        } else if (this.connection_list.length == this.getSize()) {
+            int lez = (int) Math.ceil(this.getSize() * 2.0);
             BandwidthConnectionElement[] _connection_list = new BandwidthConnectionElement[lez];
             System.arraycopy(connection_list, 0, _connection_list, 0, this.getSize());
             connection_list = _connection_list;
             _connection_list = null;
-        }
-        else{
+        } else {
             BandwidthConnectionElement tmp;
             long finish_ce = ce.getEnd();
             long start_ce = ce.getStart();
-            long actual_fe, actual_se;            
-            this.connection_list[this.getSize()]=(ce);
+            long actual_fe, actual_se;
+            this.connection_list[this.getSize()] = (ce);
             for (int i = 0; i < this.getSize(); i++) {
                 actual_fe = ((BandwidthConnectionElement) this.connection_list[i]).getEnd();
                 actual_se = ((BandwidthConnectionElement) this.connection_list[i]).getStart();
                 if (finish_ce < actual_fe) {
                     for (int j = this.getSize() - 1; j > i; j--) {
                         tmp = ((BandwidthConnectionElement) this.connection_list[(j - 1)]);
-                        this.connection_list[j]=tmp;
+                        this.connection_list[j] = tmp;
                     }
-                    this.connection_list[i]= ce;
+                    this.connection_list[i] = ce;
                     return;
                 } else if (finish_ce == actual_fe) {
                     for (; start_ce > actual_se && i < this.getSize(); i++) {
                         actual_fe = ((BandwidthConnectionElement) this.connection_list[(i)]).getEnd();
                         actual_se = ((BandwidthConnectionElement) this.connection_list[(i)]).getStart();
                     }
-                    for (int j = this.getSize()- 1; j > i; j--) {
+                    for (int j = this.getSize() - 1; j > i; j--) {
                         tmp = ((BandwidthConnectionElement) this.connection_list[(j - 1)]);
-                        this.connection_list[j]=tmp;
+                        this.connection_list[j] = tmp;
                     }
                     if (i >= this.getSize()) {
                         i--;
                     }
-                    this.connection_list[i]=ce;
+                    this.connection_list[i] = ce;
                     return;
                 }
             }
@@ -113,7 +122,11 @@ public class BandwidthConnectionList {
         }
         return null;
     }
-        public void cleanList() {
+
+    /**
+     * Remove all the null element in the connection list.
+     */
+    public void cleanList() {
         int current = 0;
         int tmp = 0;
         while (current <= this.getSize()) {
@@ -128,12 +141,11 @@ public class BandwidthConnectionList {
         }
     }
 
-
     /**
      * Return the first connection element with a given Current node and target node.
      * @param s Current node
      * @param r Target node.
-     * @return The corresponding connection element, null otherwise.
+     * @return The corresponding {@link BandwidthConnectionElement}, null otherwise.
      */
     public BandwidthConnectionElement getRecord(Node s, Node r) {
         BandwidthConnectionElement bce = null;
@@ -154,7 +166,7 @@ public class BandwidthConnectionList {
      * @param s Current node.
      * @param r Target node.
      * @param txid long value which identify the transaction.
-     * @return The corresponding connection element, null otherwise.
+     * @return The corresponding {@link BandwidthConnectionElement}, null otherwise.
      */
     public BandwidthConnectionElement getRecordT(Node s, Node r, long txid) {
         BandwidthConnectionElement bce = null;
@@ -176,7 +188,7 @@ public class BandwidthConnectionList {
      * @param r Target node.
      * @param txid long value which identify the transaction.
      * @param end end time of the connection queried
-     * @return The corresponding connection element, null otherwise.
+     * @return The corresponding {@link BandwidthConnectionElement}, null otherwise.
      */
     public BandwidthConnectionElement getRecord(Node s, Node r, long txid, long end) {
         BandwidthConnectionElement bce = null;
@@ -199,7 +211,7 @@ public class BandwidthConnectionList {
      * @param r Target node.
      * @param starTime Time in which the connection element started.
      * @param bandwidth Bandwidth used in the connection element queried.
-     * @return The corresponding connection element, null otherwise.
+     * @return The corresponding {@link BandwidthConnectionElement}, null otherwise.
      */
     public BandwidthConnectionElement getRecordE(Node s, Node r, long startTime, long bandwidth) {
         BandwidthConnectionElement bce = null;
@@ -217,7 +229,7 @@ public class BandwidthConnectionList {
 
     /**
      * This method looks for the first connection element in the list.
-     * @return The first {@see #BandwidthConnectionElement} in the list of connection elements.
+     * @return The first {@link BandwidthConnectionElement} in the list of connection elements.
      */
     public BandwidthConnectionElement getFirstEnd() {
         BandwidthConnectionElement tmp;
@@ -245,7 +257,6 @@ public class BandwidthConnectionList {
             return ce;
         }
     }
-
 
     /**
      * Gives a printable version of the connection list.

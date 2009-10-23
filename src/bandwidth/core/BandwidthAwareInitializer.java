@@ -7,18 +7,18 @@ package bandwidth.core;
 import peersim.config.*;
 import peersim.core.*;
 
+/**
+ * Initialize the Bandwidth Aware protocol.
+ * This protocol provides a network layer where peers have
+ * different resources in term of both up-/down-load bandwidth.
+ * You have to provide the CDF of the bandwidth, using the CDF distribution setter.
+ * It uses the methods defined in {@link bandwidth.BandwidthAwareSkeleton}.
+ *
+ * @author Alessandro Russo
+ * @version $Revision: 0.02$
+ */
 public class BandwidthAwareInitializer implements Control {
 
-    /**
-     * Initialize the Bandwidth Aware protocol.
-     * This protocol provides a network layer where peers have
-     * different resources in term of both up-/down-load bandwidth.
-     * You have to provide the CDF of the bandwidth, using the CDF distribution setter.
-     * It uses the methods defined in {@link bandwidth.BandwidthAwareSkeleton}.
-     *
-     * @author Alessandro Russo
-     * @version $Revision: 0.02$
-     */
     // ------------------------------------------------------------------------
     // Constants
     // ------------------------------------------------------------------------
@@ -53,7 +53,7 @@ public class BandwidthAwareInitializer implements Control {
     // Constructor
     // ------------------------------------------------------------------------
     /**
-     * Creates a new instance and read parameters from the config file.
+     * Creates a new instance and reads parameters from the config file.
      */
     public BandwidthAwareInitializer(String prefix) {
         System.err.println("Init Bandwidth");

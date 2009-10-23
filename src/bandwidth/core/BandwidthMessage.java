@@ -1,13 +1,15 @@
-/**
- * Reproduce the message used in the bandwidth management protocol
- */
 package bandwidth.core;
 
-/**
- *
- * @author ax
- */
 import peersim.core.Node;
+
+/**
+ * Cointains the messages used in the bandwidth management protocol and
+ * the error codes for data trasnfer.
+ *
+ * @author Alessandro Russo
+ * @version $Revision: 0.02$
+ */
+
 
 public class BandwidthMessage {
 

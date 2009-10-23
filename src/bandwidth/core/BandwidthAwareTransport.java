@@ -6,18 +6,18 @@ import peersim.core.Node;
 import peersim.core.CommonState;
 import peersim.edsim.EDSimulator;
 
+/**
+ * The class implements the data structure for the bandiwdth protocol
+ * and the method used to compute the time needed to delivery to set
+ * of data from the sender to the receiver, otherwise it returns an
+ * error code which reflects the needed of up/down-link bandwidth.
+ *
+ * @author Alessandro Russo
+ * @version $Revision: 0.02$
+ * @see bandwidth.core.BandwidthMessage.
+ */
 public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton {
 
-    /**
-     * The class implements the data structure for the bandiwdth protocol
-     * and the method used to compute the time needed to delivery to set
-     * of data from the sender to the receiver, otherwise it returns an
-     * error code which reflects the needed of up/down-link bandwidth.
-     *
-     * @author Alessandro Russo
-     * @version $Revision: 0.02$
-     * @see bandwidth.core.BandwidthMessage.
-     */
     private long upload;
     /**
      * Minimum upload bandiwdth.
@@ -904,7 +904,7 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
                             uploadNextTime = cupload.getEnd();
                             uploadResidualTime = uploadNextTime - baseTime;
                             if (this.debug >= 5) {
-                                System.out.println("upload Start " + uploadStartTime + " UpNext " + uploadNextTime + " currentTime " + CommonState.getTime()+ " " +  up_i + " - updating upload " + cupload);
+                                System.out.println("upload Start " + uploadStartTime + " UpNext " + uploadNextTime + " currentTime " + CommonState.getTime() + " " + up_i + " - updating upload " + cupload);
                             }
                             if (banda_up <= 0) {
                                 if (this.debug >= 5) {

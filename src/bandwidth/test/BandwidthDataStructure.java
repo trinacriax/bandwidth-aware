@@ -1,14 +1,13 @@
 package bandwidth.test;
 
-
 import bandwidth.core.BandwidthAwareProtocol;
 import peersim.config.FastConfig;
 import peersim.core.*;
 
 /**
- * This class is a useful and common data structure
- * that may be used for all kinds of protocols.
- *
+ * TEST CLASS
+ * @author Alessandro Russo
+ * @version 1.0
  */
 public class BandwidthDataStructure implements BandwidthDataSkeleton, Protocol {
 
@@ -64,7 +63,7 @@ public class BandwidthDataStructure implements BandwidthDataSkeleton, Protocol {
         } // never happens
         clh.chunk_list = null;// new long[1];
         clh.bandwidth = new Integer(0);
-        clh.number_of_chunks = new Integer("0");        
+        clh.number_of_chunks = new Integer("0");
         clh.completed = new Long("0");
         clh.debug = new Integer("0");
         clh.fail_push = new Integer("0");
@@ -202,7 +201,6 @@ public class BandwidthDataStructure implements BandwidthDataSkeleton, Protocol {
         return this.debug;
     }
 
-
     /**
      * Set the max number of push retries
      * @param push_retries max number of push attempts
@@ -211,7 +209,6 @@ public class BandwidthDataStructure implements BandwidthDataSkeleton, Protocol {
         this.max_push_attempts = push_retries;
     }
 
-
     /**
      * Get the current number of push attempts
      * @return the number of push attempts
@@ -219,8 +216,6 @@ public class BandwidthDataStructure implements BandwidthDataSkeleton, Protocol {
     public int getPushRetry() {
         return this.max_push_attempts;
     }
-
-  
 
     /**
      * Add one to the number of push attempts
@@ -250,7 +245,6 @@ public class BandwidthDataStructure implements BandwidthDataSkeleton, Protocol {
         this.push_attempts = 0;
     }
 
-
     /**
      * Return the time spent in push transmission by the node
      * @return the time spent in push
@@ -274,8 +268,6 @@ public class BandwidthDataStructure implements BandwidthDataSkeleton, Protocol {
     public int getPushWindow() {
         return this.push_window;
     }
-
-       
 
     /**
      * Return the number of active uploads
@@ -402,8 +394,6 @@ public class BandwidthDataStructure implements BandwidthDataSkeleton, Protocol {
         this.success_upload = 0;
     }
 
-  
-
     /**
      * Aggiunge 1 al numero di chunk ottenuti mediante push
      * */
@@ -466,10 +456,11 @@ public class BandwidthDataStructure implements BandwidthDataSkeleton, Protocol {
     public long getUploadMin(Node node) {
         return ((BandwidthAwareProtocol) node.getProtocol(this.getBandwidth())).getUploadMin();
     }
-    
+
     public long getUploadMax(Node node) {
         return ((BandwidthAwareProtocol) node.getProtocol(this.getBandwidth())).getUploadMax();
     }
+
     /**
      * Restituisce la banda minima in download
      * */
@@ -527,24 +518,22 @@ public class BandwidthDataStructure implements BandwidthDataSkeleton, Protocol {
         return this.fail_push;
     }
 
-
     public void addTimeInPush(long timeinpush) {
         this.time_in_push += timeinpush;
     }
+
     public String getConnections() {
         String result = "]] " + this.getSize();// + " : " + this.bitmap();
         return result;
     }
 
-    
     public int getLastsrc() {
         return this.nk;
     }
 
-    public void addLastsrc(){
+    public void addLastsrc() {
         this.nk++;
     }
-
 
     /**
      * Set a chunk in download
@@ -559,13 +548,15 @@ public class BandwidthDataStructure implements BandwidthDataSkeleton, Protocol {
      * Set a chunk in download
      */
     public void setInDown(long index) {
-        if(this.chunk_list[(int) (index)] == BandwidthInfo.NOT_OWNED)
+        if (this.chunk_list[(int) (index)] == BandwidthInfo.NOT_OWNED) {
             this.chunk_list[(int) (index)] = BandwidthInfo.IN_DOWNLOAD;
+        }
     }
 
     public void resetInDown(long index) {
-        if(this.chunk_list[(int) (index)] == BandwidthInfo.IN_DOWNLOAD)
+        if (this.chunk_list[(int) (index)] == BandwidthInfo.IN_DOWNLOAD) {
             this.chunk_list[(int) (index)] = BandwidthInfo.NOT_OWNED;
+        }
     }
 
     public String bitmap() {
@@ -587,7 +578,7 @@ public class BandwidthDataStructure implements BandwidthDataSkeleton, Protocol {
         }
 //        System.out.println("Adding new  "+index);
         this.addChunk(index, BandwidthInfo.PUSH_CYCLE);
-       
+
         return true;
     }
 
@@ -609,9 +600,9 @@ public class BandwidthDataStructure implements BandwidthDataSkeleton, Protocol {
     }
 
     public int getLastSRC() {
-       int index = this.getLast();
+        int index = this.getLast();
 
-        
+
 //        int index = -1;
 //        if(this.lastsrc.isEmpty())
 //            return index;
@@ -623,6 +614,7 @@ public class BandwidthDataStructure implements BandwidthDataSkeleton, Protocol {
 //        }
         return index;
     }
+
     /**
      * 
      * Il metodo restituisce gli ultimi chunks posseduti dal nodo
@@ -724,7 +716,7 @@ public class BandwidthDataStructure implements BandwidthDataSkeleton, Protocol {
      * Stampa le informazioni sul nodo
      * */
     public String toString(Node node) {
-        String result = "Nodo " + node.getID() + ", Time " + CommonState.getTime() + " , Fail Push " + this.fail_push  + ", Lista " + this.getSize();
+        String result = "Nodo " + node.getID() + ", Time " + CommonState.getTime() + " , Fail Push " + this.fail_push + ", Lista " + this.getSize();
         if (this.getSize() == this.getNumberOfChunks()) {
             result += " >>> ha tutti i chunks.";
         } else {
@@ -742,6 +734,7 @@ public class BandwidthDataStructure implements BandwidthDataSkeleton, Protocol {
         results += " ]";
         return results;
     }
+
     public Node getNeighbor(Node node, int pid) {
         Linkable linkable = (Linkable) node.getProtocol(FastConfig.getLinkable(pid));
         return linkable.getNeighbor(CommonState.r.nextInt(linkable.degree()));

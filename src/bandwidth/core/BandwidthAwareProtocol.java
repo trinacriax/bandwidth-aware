@@ -92,8 +92,8 @@ public class BandwidthAwareProtocol extends BandwidthAwareTransport implements C
                 }
                 long newDw = receiver.getDownload() + bm.getBandwidth();
                 receiver.setDownload(newDw, det);
-            } 
-            if (det== null && sender.getDebug() >= 6) {
+            }
+            if (det == null && sender.getDebug() >= 6) {
                 System.out.println("\t\tNo connections have been removed: " + cet);
             }
             det = receiver.getDownloadConnections().getRecordT(det.getSender(), det.getReceiver(), det.getTxId());
@@ -198,7 +198,7 @@ public class BandwidthAwareProtocol extends BandwidthAwareTransport implements C
      * @param event event threat.
      */
     public void processEvent(Node node, int pid, Object event) {
-        BandwidthMessage bm = (BandwidthMessage) event;        
+        BandwidthMessage bm = (BandwidthMessage) event;
         if (bm.getSender() == null) {
             System.err.println("--- Time " + CommonState.getTime() + ": Node " + node.getID() + " receives a message with NULL sender; It will be discarded.");
             return;

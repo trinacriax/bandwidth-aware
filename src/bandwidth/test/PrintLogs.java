@@ -4,6 +4,11 @@ import java.io.*;
 import java.util.zip.GZIPOutputStream;
 import peersim.core.*;
 
+/**
+ * TEST CLASS
+ * @author Alessandro Russo
+ * @version 1.0
+ */
 public class PrintLogs extends PrintStream {
 
     private String dirname;

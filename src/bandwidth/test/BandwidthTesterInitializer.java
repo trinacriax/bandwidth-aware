@@ -4,14 +4,12 @@ import peersim.config.*;
 import peersim.core.*;
 import peersim.edsim.*;
 
+/**
+ * TEST CLASS
+ * @author Alessandro Russo
+ * @version 1.0
+ */
 public class BandwidthTesterInitializer implements Control {
-
-    /**
-     * Initialize the protocol using parameter given in the configuration file.
-     * 
-     * @author Alessandro Russo
-     * @version 1.0
-     */
 
     // ------------------------------------------------------------------------
     // Constants
@@ -24,8 +22,8 @@ public class BandwidthTesterInitializer implements Control {
     // ------------------------------------------------------------------------
     // Fields
     // ------------------------------------------------------------------------         
-    private final int number_of_chunks;    
-    private final int pid;    
+    private final int number_of_chunks;
+    private final int pid;
     private final int debug;
     private int bandwidthp;
     private long chunksize;
@@ -34,7 +32,6 @@ public class BandwidthTesterInitializer implements Control {
     // ------------------------------------------------------------------------
     // Constructor
     // ------------------------------------------------------------------------
-
     /**
      * Creates a new instance and read parameters from the config file.
      */
@@ -43,7 +40,7 @@ public class BandwidthTesterInitializer implements Control {
         pid = Configuration.getPid(prefix + "." + PAR_PROT);
         debug = Configuration.getInt(prefix + "." + PAR_DEBUG);
         bandwidthp = Configuration.getPid(prefix + "." + PAR_BANDWIDTH);
-        chunksize = Configuration.getLong(prefix+"."+PAR_CHUNKSIZE,0);
+        chunksize = Configuration.getLong(prefix + "." + PAR_CHUNKSIZE, 0);
     }
 
     // ------------------------------------------------------------------------
@@ -51,27 +48,26 @@ public class BandwidthTesterInitializer implements Control {
     // ------------------------------------------------------------------------
     public boolean execute() {
         System.err.print("- >> Alternate Initializer: Start...");
-//        Node source = Network.get(Network.size() - 1);//the source is always the last node.
         for (int i = 0; i < Network.size(); i++) {
             Node aNode = Network.get(i);
             BandwidthDataSkeleton prot = (BandwidthDataSkeleton) aNode.getProtocol(pid);
             prot.resetAll();
             prot.Initialize(number_of_chunks);
             prot.setChunkSize(chunksize);
-            prot.setBandwidth(bandwidthp);            
+            prot.setBandwidth(bandwidthp);
             prot.setDebug(debug);
         }
         BandwidthTester zbt = null;
-        for(int p = 0; p < Network.size(); p++){
+        for (int p = 0; p < Network.size(); p++) {
             zbt = (BandwidthTester) Network.get(p).getProtocol(pid);
-        for(int i = 0; i < 10-p; i++){
-            if(p==0)
-                zbt.chunk_list[i] = BandwidthInfo.NOT_OWNED;
-                else
-
+            for (int i = 0; i < 10 - p; i++) {
+                if (p == 0) {
+                    zbt.chunk_list[i] = BandwidthInfo.NOT_OWNED;
+                } else {
                     zbt.chunk_list[i] = 1000;
-        }
-            System.out.println("Node "+p+" > " +zbt.bitmap());
+                }
+            }
+            System.out.println("Node " + p + " > " + zbt.bitmap());
         }
         //the receiver is the node 0
         EDSimulator.add(10, new BandwidthTesterMessage(null, Network.get(1), BandwidthInfo.SWITCH_PUSH, 0L), Network.get(1), pid);

@@ -2,18 +2,19 @@ package bandwidth.core;
 
 import peersim.core.Node;
 
+/**
+ * Reproduce the bandwidth connection element.
+ * Each transmission (e.g., chunk transfer)
+ * is made up by one or more connectione elements,
+ * collected in the connection list structure;
+ * these elements cointains several information
+ * on the current transmission.
+ *
+ * @author Alessandro Russo
+ * @version $Revision: 0.02$
+ */
 public class BandwidthConnectionElement {
-    /**
-     * Reproduce the bandwidth connection element. 
-     * Each transmission (e.g., chunk transfer)
-     * is made up by one or more connectione elements,
-     * collected in the connection list structure;
-     * these elements cointains several information 
-     * on the current transmission.
-     *
-     * @author Alessandro Russo
-     * @version $Revision: 0.02$
-     */
+
     /**
      * Sender node.
      */
@@ -165,7 +166,7 @@ public class BandwidthConnectionElement {
     }
 
     /**
-     * Check the connection element is the same of the one give.
+     * Check if the connection element is the same of the one given or not.
      * @param ce Connection element to compare.
      * @return True if thery are the same, false otherwise.
      */
