@@ -17,12 +17,13 @@ public class BandwidthConnectionList {
      * Such an array is increased and reduced in runtime to collect all the connections of the node.
      */
     protected BandwidthConnectionElement[] connection_list;
+    private final static int INITIAL_CAPACITY =16;
 
     /**
      * Constructor method to initialize the list of connection elements.
      */
     public BandwidthConnectionList() {
-        connection_list = new BandwidthConnectionElement[16];
+        connection_list = new BandwidthConnectionElement[INITIAL_CAPACITY];
     }
 
     /**
@@ -57,6 +58,7 @@ public class BandwidthConnectionList {
         if (this.isEmpty()) {
             this.connection_list[this.getSize()] = ce;
         } else if (this.connection_list.length == this.getSize()) {
+            //double teh array size
             int lez = (int) Math.ceil(this.getSize() * 2.0);
             BandwidthConnectionElement[] _connection_list = new BandwidthConnectionElement[lez];
             System.arraycopy(connection_list, 0, _connection_list, 0, this.getSize());

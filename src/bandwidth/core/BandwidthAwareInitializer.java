@@ -23,7 +23,7 @@ public class BandwidthAwareInitializer implements Control {
     // Constants
     // ------------------------------------------------------------------------
     private static final String PAR_PROT = "protocol";//associated protocol
-    private static final String PAR_UP_BAND = "uplink";//uplink resources  
+    private static final String PAR_UP_BAND = "base_uplink";//uplink resources
     private static final String PAR_ACTIVE_UPLOAD = "active_upload"; //connection initilizied by the current node which involve the uplink
     private static final String PAR_ACTIVE_DOWNLOAD = "active_download";//connection initilizied by the current node which involve the downlink
     private static final String PAR_PASSIVE_UPLOAD = "passive_upload";//connection received by another node which involve the uplink
@@ -63,7 +63,7 @@ public class BandwidthAwareInitializer implements Control {
         passive_upload = Configuration.getInt(prefix + "." + PAR_PASSIVE_UPLOAD, 1);
         passive_download = Configuration.getInt(prefix + "." + PAR_PASSIVE_DOWNLOAD, 1);
         debug = Configuration.getInt(prefix + "." + PAR_DEBUG, 0);
-        double bms = Configuration.getDouble(prefix + "." + PAR_BMS, 0);
+        double bms = Configuration.getDouble(prefix + "." + PAR_BMS, -1);        
         srcup = (int) Math.round(bms * 1.0 * Configuration.getInt(prefix + "." + PAR_UP_BAND, -1));
     }
 

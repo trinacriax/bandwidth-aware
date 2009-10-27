@@ -21,13 +21,10 @@ public class CDFDistribution extends VectControl {
     // ------------------------------------------------------------------------    
     private static final String PAR_BASE_VAL = "base_value";//uplink resources
     private static final String PAR_VAL_MUL = "value_multiplier";//peers' bandwidth multiplicator
-    private static final String PAR_VAL_DIS = "cdf_distribution";//bandiwdth distribution
-    private static final String PAR_DEBUG = "debug";//debug level    
+    private static final String PAR_VAL_DIS = "cdf_distribution";//bandiwdth distribution    
     // ------------------------------------------------------------------------
     // Fields
     // ------------------------------------------------------------------------    
-    /**Level of verbosity */
-    private final int debug;
     /**Base value*/
     private final Number base_value;
     /**Value Distribution*/
@@ -46,10 +43,9 @@ public class CDFDistribution extends VectControl {
     public CDFDistribution(String prefix) {
         super(prefix);
         System.err.print("Init. Distribution by CDF ");
-        debug = Integer.valueOf(Configuration.getInt(prefix + "." + PAR_DEBUG, 0));
         String _val_multi[] = Configuration.getString(prefix + "." + PAR_VAL_MUL, "1").split(",");
         String _val_dist[] = Configuration.getString(prefix + "." + PAR_VAL_DIS, "1").split(",");
-        System.err.println("on " + _val_multi.length + " elements: ");
+        System.err.println("on " + _val_multi.length + " element(s): ");
         //get base value.
         if (setter.isInteger()) {
             this.base_value = Integer.valueOf(Configuration.getInt(prefix + "." + PAR_BASE_VAL, -1));
@@ -63,32 +59,42 @@ public class CDFDistribution extends VectControl {
         }
         System.err.println("Base value: " + base_value);
         this.values_distribution = new double[_val_dist.length];
-        this.value_multipliers = new double[_val_multi.length];
-        double last_distribution = 0;
+        this.value_multipliers = new double[_val_multi.length];        
         System.err.print("i-th [ Distribution - Multiplier ]\n");
+        if(this.value_multipliers.length!= this.values_distribution.length){
+                System.err.println("Error. The number of multipliers ("+this.value_multipliers.length +") has be equal to the moment of the CDF distribution (" + this.values_distribution.length +
+                        "). Please check.");
+                 System.exit(1);
+        }
         for (int i = 0; i < value_multipliers.length; i++) {
             values_distribution[i] = Double.parseDouble(_val_dist[i]);
             value_multipliers[i] = Double.parseDouble(_val_multi[i]);
             System.err.print(i + "-th [" + values_distribution[i] + " - " + value_multipliers[i] + "]\n");
             //Check multipliers > 0
             if (value_multipliers[i] <= 0) {
-                System.err.println("Error. Multipliers has be positive while the " + i +"-th is negative (" + value_multipliers[i] + ").");
+                System.err.println("Error. Multipliers has be positive while the " + (i+1) +"-th is negative (" + value_multipliers[i] + ").");
                  System.exit(1);
             }
-            if (values_distribution[i] < 0) {
-                System.err.println("Error. Distribution has be positive while the " + i +"-th is negative (" + values_distribution[i] + ").");
+            if (i+1 == values_distribution.length && values_distribution[i] < 1.0) {
+                System.err.println("Error. The last value of a CDF distribution has to be 1.0, now is (" + values_distribution[values_distribution.length-1] + ").");
                 System.exit(1);
             }
-            if(last_distribution == 0)
-                last_distribution = values_distribution[i];
-            if(last_distribution >values_distribution[i]){
+            else if (values_distribution[i] < 0) {
+                System.err.println("Error. Distribution has be positive while the " + (i+1) +"-th is negative (" + values_distribution[i] + ").");
+                System.exit(1);
+            }
+            else if(i>0 && values_distribution[i-1]>values_distribution[i]){
                 System.err.println("You have to defined the distribution in increasing order (e.g. 0.3,0.4,0.89,0.94,1.0) as a CDF where the last value is 1.0.");
+                System.exit(1);
+            }
+            else if(i>0 && value_multipliers[i-1]>value_multipliers[i]){
+                System.err.println("You have to defined the multipliers in increasing order (e.g. 0.6,1.2,3.1,4.0)");
                 System.exit(1);
             }
             else if(values_distribution[i]>1){
                 System.err.println("You have defined a value in the distribution greater than 1.0, it could not be possible because the maximum value in a CDF is 1.0");
                 System.exit(1);
-            }
+            }            
         }
         System.err.print("\n");
     }
@@ -101,9 +107,6 @@ public class CDFDistribution extends VectControl {
      * @return Always return false.
      */
     public boolean execute() {
-        if (debug >= 6) {
-            System.out.println("Executing the setter CDF Distribution.");
-        }
         if (setter.isInteger()) {
             long set_value = 0;
             for (int i = 0; i < Network.size(); ++i) {
@@ -117,9 +120,6 @@ public class CDFDistribution extends VectControl {
                         j = this.values_distribution.length;
                     }
                 }
-                if (debug >= 6) {
-                    System.out.println("Setting value > " + set_value + " in node " + i + ";");
-                }
                 setter.set(i, set_value);
 
             }
@@ -128,11 +128,7 @@ public class CDFDistribution extends VectControl {
             for (int i = 0; i < Network.size(); ++i) {
                 double val_max = this.base_value.intValue() * this.value_multipliers[this.value_multipliers.length - 1];
                 double _value = CommonState.r.nextLong(((long) (val_max)));
-
                 for (int j = 0; j < this.values_distribution.length - 1; j++) {
-                    if (debug >= 6) {
-                        System.out.println("\t" + j + ") " + _value + " > " + (val_max * this.values_distribution[j]));
-                    }
                     if (_value > val_max * this.values_distribution[j]) {
                         set_value = base_value.intValue() * values_distribution[j + 1];
 
