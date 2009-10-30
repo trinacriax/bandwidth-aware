@@ -59,16 +59,27 @@ public class CDFDistribution extends VectControl {
         }
         System.err.println("Base value: " + base_value);
         this.values_distribution = new double[_val_dist.length];
-        this.value_multipliers = new double[_val_multi.length];        
+        this.value_multipliers = new double[_val_multi.length];
         System.err.print("i-th [ Distribution - Multiplier ]\n");
-        if(this.value_multipliers.length!= this.values_distribution.length){
-                System.err.println("Error. The number of multipliers ("+this.value_multipliers.length +") has be equal to the moment of the CDF distribution (" + this.values_distribution.length +
-                        "). Please check.");
-                 System.exit(1);
+        if (this.value_multipliers.length != this.values_distribution.length) {
+            System.err.println("Error. The number of multipliers (" + this.value_multipliers.length + ") has be equal to the moment of the CDF distribution (" + this.values_distribution.length +
+                    "). Please check.");
+            System.exit(1);
         }
         for (int i = 0; i < value_multipliers.length; i++) {
-            values_distribution[i] = Double.parseDouble(_val_dist[i]);
-            value_multipliers[i] = Double.parseDouble(_val_multi[i]);
+            Double one = null;
+            try {
+                one = Double.parseDouble(_val_dist[i]);
+            } catch (Exception e) {
+                one = Configuration.getDouble(_val_dist[i]);
+            }
+            values_distribution[i] = one.doubleValue();
+            try {
+                one = Double.parseDouble(_val_multi[i]);
+            } catch (Exception e) {
+                one = Configuration.getDouble(_val_multi[i]);
+            }
+            value_multipliers[i] = one.doubleValue();
             System.err.print(i + "-th [" + values_distribution[i] + " - " + value_multipliers[i] + "]\n");
             //Check multipliers > 0
             if (value_multipliers[i] <= 0) {
