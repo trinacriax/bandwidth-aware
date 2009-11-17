@@ -47,10 +47,12 @@ public class BandwidthAwareProtocol extends BandwidthAwareTransport implements C
         BandwidthAwareProtocol sender, receiver;
         sender = (BandwidthAwareProtocol) bm.sender.getProtocol(pid);
         receiver = (BandwidthAwareProtocol) bm.receiver.getProtocol(pid);
-
+        if (sender.getDebug() >= 6) {
+            System.out.println("\n\t>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+        }
         if (bm.getBandwidth() < 0) {
             if (sender.getDebug() >= 6) {
-                System.out.println("\t>>>>>>>>> " + CommonState.getTime() + " >>>>>>>>>   UPDATING DOWNLOAD (REMOVING) > RECEIVER " + bm.receiver.getID() + " Download " + receiver.getDownload() + " (" + receiver.getDownloadBUF() + ")");
+                System.out.println("\t>>>>> TIME " + CommonState.getTime() + " >>>>>>>>>   UPDATING DOWNLOAD (REMOVING) > RECEIVER " + bm.receiver.getID() + " Download " + receiver.getDownload() + " (" + receiver.getDownloadBUF() + ")");
             }
             BandwidthConnectionElement cet = new BandwidthConnectionElement(bm.sender, bm.receiver, bm.getBandwidth(), bm.getStart(), CommonState.getTime(), -1);
             cet = receiver.getDownloadConnections().getRecordE(bm.sender, bm.receiver, bm.getStart(), Math.abs(bm.getBandwidth()));
@@ -63,11 +65,11 @@ public class BandwidthAwareProtocol extends BandwidthAwareTransport implements C
             long newDw = receiver.getDownload() + bm.getBandwidth();
             receiver.setDownload(newDw);
             if (sender.getDebug() >= 6) {
-                System.out.println("\t>>>>>>>>> " + CommonState.getTime() + " >>>>>>>>>   UPDATING DONE < RECEIVER " + bm.receiver.getID() + " Download " + receiver.getDownload() + " (" + receiver.getDownloadBUF() + ")");
+                System.out.println("\t>>>>> TIME " + CommonState.getTime() + " >>>>>>>>>   UPDATING DONE < RECEIVER " + bm.receiver.getID() + " Download " + receiver.getDownload() + " (" + receiver.getDownloadBUF() + ")");
             }
         } else {
             if (sender.getDebug() >= 6) {
-                System.out.println("\t>>>>>>>>> " + CommonState.getTime() + " >>>>>>>>>   UPDATING DOWNLOAD (ADDING) > RECEIVER " + bm.receiver.getID() + " Download " + receiver.getDownload() + " (" + receiver.getDownloadBUF() + ")");
+                System.out.println("\t>>>>> TIME " + CommonState.getTime() + " >>>>>>>>>   UPDATING DOWNLOAD (ADDING) > RECEIVER " + bm.receiver.getID() + " Download " + receiver.getDownload() + " (" + receiver.getDownloadBUF() + ")");
             }
             BandwidthConnectionElement cet = new BandwidthConnectionElement(bm.sender, bm.receiver, bm.getBandwidth(), bm.getStart(), CommonState.getTime(), -1);
             if (sender.getDebug() >= 6) {
@@ -111,7 +113,7 @@ public class BandwidthAwareProtocol extends BandwidthAwareTransport implements C
             System.err.println(CommonState.getTime() + " error download: ID " + bm.getReceiver().getID() + ", Download " + receiver.getDownload() + " (" + receiver.getDownloadMax() + ")");
         }
         if (sender.getDebug() >= 6) {
-            System.out.println();
+            System.out.println("\t>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
         }
         return;
 
@@ -129,9 +131,12 @@ public class BandwidthAwareProtocol extends BandwidthAwareTransport implements C
         BandwidthAwareProtocol sender, receiver;
         sender = (BandwidthAwareProtocol) bm.sender.getProtocol(pid);
         receiver = (BandwidthAwareProtocol) bm.receiver.getProtocol(pid);
+        if (sender.getDebug() >= 6) {
+            System.out.println("\n\t>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+        }
         if (bm.getBandwidth() < 0) {
             if (sender.getDebug() >= 6) {
-                System.out.println("\t>>>>>>>>> " + CommonState.getTime() + " >>>>>>>>>  UPDATING UPLOAD (REMOVING) > SENDER " + bm.sender.getID() + " Upload " + sender.getUpload() + " (" + sender.getUploadBUF() + ")");
+                System.out.println("\t>>>>> TIME " + CommonState.getTime() + " >>>>>>>>>  UPDATING UPLOAD (REMOVING) > SENDER " + bm.sender.getID() + " Upload " + sender.getUpload() + " (" + sender.getUploadBUF() + ")");
             }
             BandwidthConnectionElement cet = new BandwidthConnectionElement(bm.sender, bm.receiver, bm.getBandwidth(), bm.getStart(), CommonState.getTime(), -1);
             cet = receiver.getUploadConnections().getRecordE(bm.sender, bm.receiver, bm.getStart(), Math.abs(bm.getBandwidth()));
@@ -148,7 +153,7 @@ public class BandwidthAwareProtocol extends BandwidthAwareTransport implements C
             }
         } else {
             if (sender.getDebug() >= 6) {
-                System.out.println("\t>>>>>>>>> " + CommonState.getTime() + " >>>>>>>>>   UPDATING UPLOAD (ADDING) > SENDER " + bm.sender.getID() + " Upload " + sender.getUpload() + " (" + sender.getUploadBUF() + ")");
+                System.out.println("\t>>>>> TIME " + CommonState.getTime() + " >>>>>>>>>   UPDATING UPLOAD (ADDING) > SENDER " + bm.sender.getID() + " Upload " + sender.getUpload() + " (" + sender.getUploadBUF() + ")");
             }
             if (sender.getUploadConnections().getSize() == 0) {
                 if (sender.getDebug() >= 6) {
@@ -186,7 +191,7 @@ public class BandwidthAwareProtocol extends BandwidthAwareTransport implements C
             System.err.println(CommonState.getTime() + " error upload: ID " + bm.getSender().getID() + ", upload " + sender.getUpload() + " (" + sender.getUploadMax() + ")");
         }
         if (sender.getDebug() >= 6) {
-            System.out.println();
+            System.out.println("\t>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
         }
         return;
     }
