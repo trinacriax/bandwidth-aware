@@ -56,7 +56,7 @@ public class BandwidthAwareInitializer implements Control {
      * Creates a new instance and reads parameters from the config file.
      */
     public BandwidthAwareInitializer(String prefix) {
-        System.err.println("Init Bandwidth");
+        System.err.print("Init Bandwidth: ");
         pid = Configuration.getPid(prefix + "." + PAR_PROT);
         active_upload = Configuration.getInt(prefix + "." + PAR_ACTIVE_UPLOAD, 1);
         active_download = Configuration.getInt(prefix + "." + PAR_ACTIVE_DOWNLOAD, 1);
@@ -65,6 +65,8 @@ public class BandwidthAwareInitializer implements Control {
         debug = Configuration.getInt(prefix + "." + PAR_DEBUG, 0);
         double bms = Configuration.getDouble(prefix + "." + PAR_BMS, -1);        
         srcup = (int) Math.round(bms * 1.0 * Configuration.getInt(prefix + "." + PAR_UP_BAND, -1));
+        System.err.println("Pid "+pid+", Active upload " + active_upload+", active download "+active_download+", passive upload "+passive_upload+
+                ", passive download "+ passive_download+ ", Debug "+ debug+", SrcUp "+srcup );
     }
 
     // ------------------------------------------------------------------------
