@@ -250,7 +250,7 @@ public class BandwidthTester extends BandwidthDataStructure implements CDProtoco
             {
                 sender = ((BandwidthTester) (im.getSender().getProtocol(pid)));
                 receiver = ((BandwidthTester) (node.getProtocol(pid)));
-                int chunktopush = (int) im.getChunks()[0];
+                int chunktopush = im.getChunks()[0];
                 if (receiver.getDebug() >= 2) {
                     System.out.println(CommonState.getTime() + "\tNode " + node.getID() + " recFINISH_PUSH " + im.getChunkids() + " from " + im.getSender().getID());
                 }

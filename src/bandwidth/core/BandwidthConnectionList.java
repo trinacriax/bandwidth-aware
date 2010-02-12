@@ -71,22 +71,22 @@ public class BandwidthConnectionList {
             long actual_fe, actual_se;
             this.connection_list[this.getSize()] = (ce);
             for (int i = 0; i < this.getSize(); i++) {
-                actual_fe = ((BandwidthConnectionElement) this.connection_list[i]).getEnd();
-                actual_se = ((BandwidthConnectionElement) this.connection_list[i]).getStart();
+                actual_fe = (this.connection_list[i]).getEnd();
+                actual_se = (this.connection_list[i]).getStart();
                 if (finish_ce < actual_fe) {
                     for (int j = this.getSize() - 1; j > i; j--) {
-                        tmp = ((BandwidthConnectionElement) this.connection_list[(j - 1)]);
+                        tmp = (this.connection_list[(j - 1)]);
                         this.connection_list[j] = tmp;
                     }
                     this.connection_list[i] = ce;
                     return;
                 } else if (finish_ce == actual_fe) {
                     for (; start_ce > actual_se && i < this.getSize(); i++) {
-                        actual_fe = ((BandwidthConnectionElement) this.connection_list[(i)]).getEnd();
-                        actual_se = ((BandwidthConnectionElement) this.connection_list[(i)]).getStart();
+                        actual_fe = ( this.connection_list[(i)]).getEnd();
+                        actual_se = ( this.connection_list[(i)]).getStart();
                     }
                     for (int j = this.getSize() - 1; j > i; j--) {
-                        tmp = ((BandwidthConnectionElement) this.connection_list[(j - 1)]);
+                        tmp = (this.connection_list[(j - 1)]);
                         this.connection_list[j] = tmp;
                     }
                     if (i >= this.getSize()) {
@@ -112,9 +112,9 @@ public class BandwidthConnectionList {
         } else {
             BandwidthConnectionElement actual;
             for (int i = 0; i < this.getSize(); i++) {
-                actual = ((BandwidthConnectionElement) this.connection_list[(i)]);
+                actual = (this.connection_list[(i)]);
                 if (ce.equals(actual)) {
-                    actual = ((BandwidthConnectionElement) this.connection_list[(i)]);
+                    actual = (this.connection_list[(i)]);
                     this.connection_list[i] = null;
                     this.cleanList();
                     return actual;
@@ -154,7 +154,7 @@ public class BandwidthConnectionList {
             return bce;
         }
         for (int i = 0; i < this.getSize(); i++) {
-            bce = (BandwidthConnectionElement) this.connection_list[(i)];
+            bce = this.connection_list[(i)];
             if (bce.getSender() == s && bce.getReceiver() == r) {
                 return bce;
             }
@@ -175,7 +175,7 @@ public class BandwidthConnectionList {
             return bce;
         }
         for (int i = 0; i < this.getSize(); i++) {
-            bce = (BandwidthConnectionElement) this.connection_list[(i)];
+            bce = this.connection_list[(i)];
             if (bce.getSender() == s && bce.getReceiver() == r && bce.getTxId() == txid) {
                 return bce;
             }
@@ -197,7 +197,7 @@ public class BandwidthConnectionList {
             return bce;
         }
         for (int i = 0; i < this.getSize(); i++) {
-            bce = (BandwidthConnectionElement) this.connection_list[(i)];
+            bce = this.connection_list[(i)];
             this.cleanList();
             if (bce.getSender() == s && bce.getReceiver() == r && bce.getTxId() == txid && bce.getStart() == end) {
                 return bce;
@@ -220,7 +220,7 @@ public class BandwidthConnectionList {
             return bce;
         }
         for (int i = 0; i < this.getSize(); i++) {
-            bce = (BandwidthConnectionElement) this.connection_list[(i)];
+            bce = this.connection_list[(i)];
             if (bce.getSender() == s && bce.getReceiver() == r && bce.getStart() == startTime && bce.getBandwidth() == bandwidth) {
                 return bce;
             }
@@ -237,7 +237,7 @@ public class BandwidthConnectionList {
         if (this.isEmpty()) {
             return null;
         } else {
-            tmp = ((BandwidthConnectionElement) this.connection_list[0]);
+            tmp = (this.connection_list[0]);
             return tmp;
         }
     }
@@ -253,7 +253,7 @@ public class BandwidthConnectionList {
         } else if (this.getSize() < i) {
             return null;
         } else {
-            BandwidthConnectionElement ce = (BandwidthConnectionElement) this.connection_list[(i)];
+            BandwidthConnectionElement ce = this.connection_list[(i)];
 
             return ce;
         }
@@ -267,7 +267,7 @@ public class BandwidthConnectionList {
         String result = "";
         BandwidthConnectionElement ce = null;
         for (int i = 0; i < this.getSize(); i++) {
-            ce = (BandwidthConnectionElement) this.connection_list[(i)];
+            ce = this.connection_list[(i)];
             if (i == 0) {
                 result += ce.getLabels() + "\n";
             }
@@ -285,7 +285,7 @@ public class BandwidthConnectionList {
     public long getBandwidthUsage(long time) {
         long band_use = 0;
         for (int i = 0; i < this.getSize(); i++) {
-            BandwidthConnectionElement bce = (BandwidthConnectionElement) this.getElement(i);
+            BandwidthConnectionElement bce = this.getElement(i);
             if (bce.getStart() <= time && bce.getEnd() <= time) {
                 band_use += bce.bandwidth;
             }

@@ -122,7 +122,7 @@ public class CDFDistribution extends VectControl {
             long set_value = 0;
             for (int i = 0; i < Network.size(); ++i) {
                 long val_max = (int) Math.round(this.base_value.intValue() * this.value_multipliers[this.value_multipliers.length - 1]);
-                long _value = CommonState.r.nextLong(((long) (val_max)));
+                long _value = CommonState.r.nextLong(val_max);
                 for (int j = 0; j < this.values_distribution.length - 1 || (j == 0 && this.values_distribution.length == 1); j++) {
                     if (_value > val_max * this.values_distribution[j]) {
                         set_value = (int) Math.round(base_value.intValue() * value_multipliers[j + 1]);

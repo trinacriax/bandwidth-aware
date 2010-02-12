@@ -60,21 +60,21 @@ public class BandwidthDataStructure implements BandwidthDataSkeleton, Protocol {
         } catch (CloneNotSupportedException e) {
         } // never happens
         clh.chunk_list = null;// new long[1];
-        clh.bandwidth = new Integer(0);
-        clh.number_of_chunks = new Integer("0");
-        clh.completed = new Long("0");
-        clh.debug = new Integer("0");
-        clh.fail_push = new Integer("0");
-        clh.chunk_size = new Integer("0");
-        clh.push_window = new Integer("0");
-        clh.source = new Integer("0");
-        clh.success_upload = new Integer("0");
-        clh.chunkpush = new Integer("0");
-        clh.max_push_attempts = new Integer("0");
-        clh.push_attempts = new Integer("0");
-        clh.time_in_push = new Long("0");
-        clh.switchtime = new Long("0");
-        clh.nk = new Integer("0");
+        clh.bandwidth = 0;
+        clh.number_of_chunks = 0;
+        clh.completed = 0L;
+        clh.debug = 0;
+        clh.fail_push = 0;
+        clh.chunk_size = 0;
+        clh.push_window = 0;
+        clh.source = 0;
+        clh.success_upload = 0;
+        clh.chunkpush = 0;
+        clh.max_push_attempts = 0;
+        clh.push_attempts = 0;
+        clh.time_in_push = 0L;
+        clh.switchtime = 0L;
+        clh.nk = 0;
         return clh;
     }
 

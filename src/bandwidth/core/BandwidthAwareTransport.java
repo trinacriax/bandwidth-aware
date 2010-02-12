@@ -99,7 +99,7 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
      * Data structure used to collect elements produced during the process of
      * time delivery computation.
      */
-    private ArrayList elements;
+    private ArrayList<BandwidthConnectionElement> elements;
 
     /**
      * Constructore is emepty
@@ -664,7 +664,7 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
             }
             return BandwidthMessage.NO_DOWN;
         }
-        elements = new ArrayList();
+        elements = new ArrayList<BandwidthConnectionElement>();
         long bandwidth;
         bandwidth = 0;
         int up_i, dw_i;
@@ -1077,12 +1077,12 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
             BandwidthConnectionElement cet = null;
             long olds, olde, oldb, cs, ce, cb;
             olds = olde = oldb = cs = ce = cb = -1;
-            ArrayList vsender = new ArrayList();
+            ArrayList<BandwidthConnectionElement> vsender = new ArrayList<BandwidthConnectionElement>();
             for (int j = 0; j < elements.size(); j++) {
                 if (this.debug >= 5) {
                     System.out.println("\tConnectionElement # " + j);
                 }
-                cet = ((BandwidthConnectionElement) elements.get(j));
+                cet =  elements.get(j);
                 if (j == 0) {
                     olds = cet.getStart();
                     olde = cet.getEnd();
@@ -1133,7 +1133,7 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
                 bs_bwm = br_bwm = null;
                 long bs_time, br_time;
                 bs_time = br_time = 0;
-                cet = ((BandwidthConnectionElement) elements.get(j));
+                cet =  elements.get(j);
                 if (this.debug >= 5) {
                     System.out.println("\tSender Element " + cet + "; ");
                 }
