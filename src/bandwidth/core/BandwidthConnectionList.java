@@ -57,14 +57,16 @@ public class BandwidthConnectionList {
     public void addConnection(BandwidthConnectionElement ce) {
         if (this.isEmpty()) {
             this.connection_list[this.getSize()] = ce;
-        } else if (this.connection_list.length == this.getSize()) {
-            //double teh array size
-            int lez = (int) Math.ceil(this.getSize() * 2.0);
+        } else
+        {
+          if (this.connection_list.length == this.getSize()) {
+            //double the array size
+            int lez = (int)Math.round(connection_list.length * 2.0);           
             BandwidthConnectionElement[] _connection_list = new BandwidthConnectionElement[lez];
             System.arraycopy(connection_list, 0, _connection_list, 0, this.getSize());
             connection_list = _connection_list;
             _connection_list = null;
-        } else {
+        } 
             BandwidthConnectionElement tmp;
             long finish_ce = ce.getEnd();
             long start_ce = ce.getStart();

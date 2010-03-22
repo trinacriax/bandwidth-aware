@@ -30,6 +30,7 @@ public class BandwidthAwareInitializer implements Control {
     private static final String PAR_PASSIVE_DOWNLOAD = "passive_download";//connection received by another node which involve the downlink
     private static final String PAR_DEBUG = "debug";//debug level
     private static final String PAR_BMS = "bms";//source's bandwidth multiplicaotr
+    private static final String PAR_RATIODU = "ratiodu";//source's bandwidth multiplicaotr
     // ------------------------------------------------------------------------
     // Fields
     // ------------------------------------------------------------------------
@@ -47,6 +48,8 @@ public class BandwidthAwareInitializer implements Control {
     private int passive_download;
     /**Source upload bandwidth*/
     private int srcup;
+    /**Ratio between download and uplaod */
+    private int ratiodu;
 
     // 
     // ------------------------------------------------------------------------
@@ -65,6 +68,7 @@ public class BandwidthAwareInitializer implements Control {
         debug = Configuration.getInt(prefix + "." + PAR_DEBUG, 0);
         double bms = Configuration.getDouble(prefix + "." + PAR_BMS, -1);        
         srcup = (int) Math.round(bms * 1.0 * Configuration.getInt(prefix + "." + PAR_UP_BAND, -1));
+        ratiodu = Configuration.getInt(prefix + "." + PAR_RATIODU, -1);
         System.err.println("Pid "+pid+", Active upload " + active_upload+", active download "+active_download+", passive upload "+passive_upload+
                 ", passive download "+ passive_download+ ", Debug "+ debug+", SrcUp "+srcup );
     }
@@ -97,9 +101,10 @@ public class BandwidthAwareInitializer implements Control {
             //set number of passive connections in download
             bwa.setPassiveDownload(passive_download);
             //set upload and download for the source
+            bwa.setDownload(ratiodu);
             if (i == Network.size() - 1 && this.srcup != -1) {//set source bandwidth                
-                bwa.initUpload(srcup);
-            }
+                bwa.initUpload(srcup);                
+            }            
         }
         return false;
     }

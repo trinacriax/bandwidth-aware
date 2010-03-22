@@ -14,8 +14,18 @@ know these codes.
 
 For further information please send an e-mail to the author.
 
+**** HOW TO COMPILE ***
+Before start....
 
-**** How to compile
+!!! This modules REQUIRES JAVA 1.6 or later !!!
+check 
+$ java -version
+$ javac -version
+
+PLEASE use the latest version of PeerSim available at
+http://peersim.sourceforge.net/
+
+...let's go!
 
 1) Place the parent directory (bandwidth-aware) in the same parent direnctory of PeerSim simulator:
 

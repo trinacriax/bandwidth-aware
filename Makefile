@@ -1,26 +1,21 @@
+TRG=bandwidth-module
+
 .PHONY: all clean doc release
 
-all:
-	javac -classpath .:peersim.jar `find -name *.java`
-	rm -f bandwidth-aware.jar
-	jar cf bandwidth-aware.jar `find -name *.class`
 
+copy: clean
+	mkdir $(TRG)
+	cp -r src/bandwidth/ $(TRG)
+	cp *.jar dist/lib/*.jar config-bandwidth.txt README $(TRG)
+	cp Makefilebm $(TRG)/Makefile
+	rm -rf `find $(TRG) -iname ".svn"`
 
 clean:
 	rm -f `find -name "*.class"`
 	rm -rf doc
 	rm -f output.log
 	rm -f bandwidth-aware.jar
+	rm -rf $(TRG)
 
-doc:
-	rm -rf doc/*
-	javadoc -classpath "peersim.jar" -d doc -subpackages bandwidth:banwidth.core:bandiwdth.test -group "Bandwidth" "bandwidth" \
-	 -windowtitle "Bandwidth Aware Module Documentation" `find . -name "*.java"`
-
-release: clean all
-	rm -f bandwidth-aware.jar
-	rm -rf `find -name *.class`
-
-run: all
-	java -cp "peersim.jar:djep-1.0.0.jar:jep-2.3.0.jar:bandwidth-aware.jar" peersim.Simulator config-bandwidth.txt > output.log
-	less output.log
+pack: clean copy
+	tar -czvvf bandwidth-aware.tar.gz $(TRG)
