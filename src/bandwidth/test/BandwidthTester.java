@@ -95,6 +95,7 @@ public class BandwidthTester extends BandwidthDataStructure implements CDProtoco
                 long delay = 0;
                 int chunktopush = sender.getLast();//source select latest chunk
                 peer = Network.get(0);
+                sender.addActiveUp(node);
                 receiver = ((BandwidthTester) (peer.getProtocol(pid)));
                 BandwidthTesterMessage imm = new BandwidthTesterMessage(chunktopush, node, BandwidthInfo.PUSH);
                 this.send(node, peer, imm, pid);

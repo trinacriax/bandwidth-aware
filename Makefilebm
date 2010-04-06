@@ -1,0 +1,25 @@
+.PHONY: all clean doc release
+
+all: clean  
+	javac -classpath .:peersim-1.0.2.jar `find -name *.java`
+
+clean:
+	rm -f `find -name "*.class"`
+	rm -rf doc
+	rm -f output.log
+	rm -f bandwidth-aware.jar
+	rm -f *~
+	rm -f *.*~
+
+doc:
+	rm -rf doc/*
+	javadoc -classpath "peersim.jar" -d doc -subpackages bandwidth:banwidth.core:bandiwdth.test -group "Bandwidth" "bandwidth" \
+	 -windowtitle "Bandwidth Aware Module Documentation" `find . -name "*.java"`
+
+release: clean all 
+	rm -f bandwidth-aware.jar
+	jar cf bandwidth-aware.jar `find -name *.class`
+
+run: release
+	java -cp "peersim-1.0.2.jar:djep-1.0.0.jar:jep-2.3.0.jar:bandwidth-aware.jar" peersim.Simulator config-bandwidth.txt > output.log
+	less output.log
