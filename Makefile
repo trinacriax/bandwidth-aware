@@ -14,8 +14,8 @@ copy: clean base
 	cp -r src/bandwidth/ $(TRG)
 	mv *.jar $(TRG)
 	cp config-bandwidth.txt README $(TRG)
-	javac -cp "$(TRG)/djep-1.0.0.jar:$(TRG)/jep-2.3.0.jar:$(TRG)/peersim-1.0.2.jar" `find $(TRG)/bandwidth -iname "*.java"`
-	jar cf $(TRG)/bandwidth-aware.jar `find $(TRG)/bandwidth/ -name "*.class"`
+	javac -cp "$(TRG)/djep-1.0.0.jar:$(TRG)/jep-2.3.0.jar:$(TRG)/peersim-1.0.2.jar" `find $(TRG)/bandwidth/ -iname "*.java"`
+	cd $(TRG) && jar cf bandwidth-aware.jar `find bandwidth/ -name "*.class"`
 	cp Makefilebm $(TRG)/Makefile
 	rm -rf `find $(TRG) -iname ".svn"`	
 	
