@@ -2,6 +2,7 @@ package bandwidth.core;
 
 import peersim.config.*;
 import peersim.core.*;
+import peersim.dynamics.NodeInitializer;
 import peersim.vector.VectControl;
 
 /**
@@ -11,10 +12,10 @@ import peersim.vector.VectControl;
  * You have to provide the base value, the multipliers separated
  * by a comma, and the CDF of the values.
  *
- * @author Alessandro Russo
- * @version $Revision: 0.01$
+ * @author Alessandro Russo <russo@disi.unitn.it> <p> DISI - University of Trento (Italy) <p> Napa-Wine <www.napa-wine.eu>.
+ * @version $Revision: 0.2$
  */
-public class CDFDistribution extends VectControl {
+public class CDFDistribution extends VectControl implements NodeInitializer{
 
     // ------------------------------------------------------------------------
     // Constants
@@ -39,6 +40,7 @@ public class CDFDistribution extends VectControl {
     /**
      * This constructor creates a new instance of the class,
      * invoking super and then reading parameters from the config file.
+     * @param prefix
      */
     public CDFDistribution(String prefix) {
         super(prefix);
@@ -117,6 +119,7 @@ public class CDFDistribution extends VectControl {
      * Initialize peers' fields.
      * @return Always return false.
      */
+  @Override
     public boolean execute() {
         if (setter.isInteger()) {
             long set_value = 0;
@@ -153,4 +156,35 @@ public class CDFDistribution extends VectControl {
         }
         return false;
     }
+
+  public void initialize(Node n) {
+    if (setter.isInteger()) {
+      long set_value = 0;
+      long val_max = (int) Math.round(this.base_value.intValue() * this.value_multipliers[this.value_multipliers.length - 1]);
+      long _value = CommonState.r.nextLong(val_max);
+      for (int j = 0; j < this.values_distribution.length - 1 || (j == 0 && this.values_distribution.length == 1); j++) {
+        if (_value > val_max * this.values_distribution[j]) {
+          set_value = (int) Math.round(base_value.intValue() * value_multipliers[j + 1]);
+        } else {
+          set_value = (int) Math.round(base_value.intValue() * value_multipliers[j]);
+          j = this.values_distribution.length;
+        }
+      }
+      setter.set(n, set_value);
+    } else {
+      double set_value = 0;
+      double val_max = this.base_value.intValue() * this.value_multipliers[this.value_multipliers.length - 1];
+      double _value = CommonState.r.nextLong(((long) (val_max)));
+      for (int j = 0; j < this.values_distribution.length - 1; j++) {
+        if (_value > val_max * this.values_distribution[j]) {
+          set_value = base_value.intValue() * values_distribution[j + 1];
+
+        } else {
+          set_value = base_value.intValue() * values_distribution[j];
+          j = this.values_distribution.length;
+        }
+      }
+      setter.set(n, set_value);
+    }
+  }
 }

@@ -684,23 +684,34 @@ public class BandwidthDataStructure implements BandwidthDataSkeleton, Protocol {
         return size;
     }
 
-    /**
-     * Stampa le informazioni sul nodo
-     * */
-    public String toString(Node node) {
-        String result = "Nodo " + node.getID() + ", Time " + CommonState.getTime() + " , Fail Push " + this.fail_push + ", Lista " + this.getSize();
-        if (this.getSize() == this.getNumberOfChunks()) {
-            result += " >>> ha tutti i chunks.";
-        } else {
-            result += ".";
-        }
-        return result;
+  /**
+   * Stampa le informazioni sul nodo
+   *
+   * @param node current node
+   * @return printable version of the bandwidth in this node.
+   */
+  public String toString(Node node) {
+    StringBuilder sbuf = new StringBuilder();
+    sbuf.append("Nodo ");
+    sbuf.append(node.getID());
+    sbuf.append(", Time ");
+    sbuf.append(CommonState.getTime());
+    sbuf.append(" , Fail Push ");
+    sbuf.append(this.fail_push);
+    sbuf.append(", Lista ");
+    sbuf.append(this.getSize());
+    if (this.getSize() == this.getNumberOfChunks()) {
+      sbuf.append(" >>> ha tutti i chunks.");
+    } else {
+      sbuf.append(".");
     }
+    return sbuf.toString();
+  }
 
-    public String getNeighborhood(Node node, int pid) {
-        Linkable linkable = (Linkable) node.getProtocol(FastConfig.getLinkable(pid));
-        String results = "Node " + node.getID() + ": " + linkable.degree() + " [ ";
-        for (int i = 0; i < linkable.degree(); i++) {
+  public String getNeighborhood(Node node, int pid) {
+    Linkable linkable = (Linkable) node.getProtocol(FastConfig.getLinkable(pid));
+    String results = "Node " + node.getID() + ": " + linkable.degree() + " [ ";
+    for (int i = 0; i < linkable.degree(); i++) {
             results += linkable.getNeighbor(i).getID() + ", ";
         }
         results += " ]";
