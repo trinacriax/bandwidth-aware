@@ -76,7 +76,7 @@ public class BandwidthAwareProtocol extends BandwidthAwareTransport implements C
 //            }
       BandwidthConnectionElement det = receiver.getDownloadConnections().remConnection(cet);
       if (det != null && cet.equals(det)) {
-//                //logMexln(6,"\tRemoving download connections: " + det);
+      //logMexln(6,"\tRemoving download connections: " + det);
         long newDw = receiver.getDownload() + bm.getBandwidth();
         receiver.setDownload(newDw, det);
       }

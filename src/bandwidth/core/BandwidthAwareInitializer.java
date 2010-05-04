@@ -84,17 +84,17 @@ public class BandwidthAwareInitializer implements Control, NodeInitializer {
    */
   @Override
   public boolean execute() {
+    Node aNode = null;
+    BandwidthAwareSkeleton bwa = null;
     for (int i = 0, len = Network.size(); i < len; i++) {
       //retrieve node instance
-      Node aNode = Network.get(i);
+      aNode = Network.get(i);
       //retrieve protocol skeleton
-      BandwidthAwareSkeleton bwa = (BandwidthAwareSkeleton) aNode.getProtocol(pid);
+      bwa = (BandwidthAwareSkeleton) aNode.getProtocol(pid);
       //reset object
       bwa.reset();
       //initilize the data structures in the node
       bwa.initialize();
-      //set debug in the object,
-      bwa.setDebug(debug);
       //set number of active connections in upload
       bwa.setActiveUpload(active_upload);
       //set number of active connections in download
@@ -109,6 +109,8 @@ public class BandwidthAwareInitializer implements Control, NodeInitializer {
         bwa.initUpload(srcup);
       }
     }
+    //set debug in the object,
+    bwa.setDebug(debug);
     return false;
   }
 
@@ -120,7 +122,7 @@ public class BandwidthAwareInitializer implements Control, NodeInitializer {
     //initilize the data structures in the node
     bwa.initialize();
     //set debug in the object,
-    bwa.setDebug(debug);
+    //bwa.setDebug(debug);
     //set number of active connections in upload
     bwa.setActiveUpload(active_upload);
     //set number of active connections in download

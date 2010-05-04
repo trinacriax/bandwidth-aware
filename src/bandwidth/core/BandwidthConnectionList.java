@@ -1,6 +1,6 @@
 package bandwidth.core;
 
-import java.lang.reflect.Array;
+import java.util.Iterator;
 import peersim.core.Node;
 
 /**
