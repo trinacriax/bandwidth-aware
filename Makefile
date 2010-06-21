@@ -1,29 +1,30 @@
 TRG=bandwidth-module
 BASE=$(HOME)/NetBeansProjects/
-
+PSDIR=$(BASE)/peersim/source/
 .PHONY: all clean doc release
 
 all: pack
 
-base:
-	cd $(BASE)/peersim/source/ && make release && cp *.jar $(BASE)/bandwidth-aware/
-	echo "Current dir is " `pwd`
+peersim:
+	make -C $(PSDIR) release
 
-copy: clean base
+module: clean peersim jar
 	mkdir $(TRG)
-	cp -r src/bandwidth/ $(TRG)
-	mv *.jar $(TRG)
+	cp bandwidth-aware.jar $(TRG)
+	cp -r src/bandwidth $(TRG)
+	cp $(PSDIR)/*.jar $(TRG)
 	cp config-bandwidth.txt README $(TRG)
-	javac -g -cp "$(TRG)/djep-1.0.0.jar:$(TRG)/jep-2.3.0.jar:$(TRG)/peersim-1.0.2.jar" `find $(TRG)/bandwidth/ -iname "*.java"`
-	cd $(TRG) && jar cf bandwidth-aware.jar `find bandwidth/ -name "*.class"`
 	cp Makefilebm $(TRG)/Makefile
 	rm -rf `find $(TRG) -iname ".svn"`	
-	
+
+jar: clean peersim
+	cd src && javac -g -cp "$(PSDIR)/djep-1.0.0.jar:$(PSDIR)/jep-2.3.0.jar:$(PSDIR)/peersim-1.0.2.jar" `find bandwidth -iname "*.java"` && 	jar -cf ../bandwidth-aware.jar `find bandwidth/ -name "*.class"`
+
 clean:
 	rm -f `find -name "*.class"`
 	rm -rf doc
 	rm -f output.log
-	rm -f bandwidth-aware.jar
+	rm -f *.jar
 	rm -rf $(TRG)
 
 pack: copy
