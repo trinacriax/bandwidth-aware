@@ -711,6 +711,9 @@ public class BandwidthAwareTransport implements Protocol, BandwidthAwareSkeleton
     if (data_to_send_bits == 0) {
       //logOutln(4, "The application layer request to send ZERO bits");
       return 1;
+    }else if (data_to_send_bits < 0) {
+      logErr(0, "The application layer request to send negative bits " + data_to_send_bits+"\n");
+      return -1;
     }
     BandwidthAwareTransport sender = ((BandwidthAwareTransport) (src.getProtocol(pid)));
     BandwidthAwareTransport receiver = ((BandwidthAwareTransport) (rcv.getProtocol(pid)));
