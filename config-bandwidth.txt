@@ -8,7 +8,7 @@ CYCLE 5000
 DEBUG 100
 
 ### Number of nodes in the network
-NETSIZE 10
+NETSIZE 11
 
 ### Number of chunks to transmit
 CHUNKS 10
@@ -119,6 +119,8 @@ init.bwi bandwidth.core.BandwidthAwareInitializer
     passive_upload PI_up
     ## Involving download bandwidth
     passive_download PI_down
+    ## Ratio download-upload
+    ratiodu 4
 }
 
 init.bandUP bandwidth.core.CDFDistribution
