@@ -63,6 +63,7 @@ public class BandwidthTesterMessage {
         return this.bandwidth;
     }
 
+    @Override
     public String toString() {
         String result = "Sender " + this.sender.getID() + ", Chunk [" + this.getChunkids() + "], Message " + this.getConstantName(this.MessageID) + ", Banda " + this.bandwidth + ".";
         return result;
@@ -93,26 +94,22 @@ public class BandwidthTesterMessage {
         } else if (clazz.indexOf("String") != -1) {
             clazz = " String ";
         }
-//		System.out.println("Obj class "+ clazz);
         try {
             for (int i = 0; i < myfields.length; i++) {
                 if (myfields[i].toString().indexOf(clazz) != -1) {
                     if (clazz.equals(" int ")) {
                         int valuez = myfields[i].getInt(myfields[i]);
-                        if (((Integer) obj).intValue() == valuez) //						System.out.println("int "+ valuez+" "+myfields[i].getName());
-                        {
+                        if (((Integer) obj).intValue() == valuez) {
                             return myfields[i].getName();
                         }
                     } else if (clazz.equals(" long ")) {
                         long valuez = myfields[i].getLong(myfields[i]);
-                        if (((Long) obj).longValue() == valuez) //						System.out.println("Long "+ valuez+" "+myfields[i].getName());
-                        {
+                        if (((Long) obj).longValue() == valuez) {
                             return myfields[i].getName();
                         }
                     } else if (clazz.equals(" String ")) {
                         String valuez = (String) myfields[i].get(myfields[i]);
-                        if (((String) obj).equals(valuez)) //						System.out.println("String "+ valuez+" "+myfields[i].getName());
-                        {
+                        if (((String) obj).equals(valuez)) {
                             return myfields[i].getName();
                         }
                     }

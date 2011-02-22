@@ -46,6 +46,7 @@ public class BandwidthTesterInitializer implements Control {
     // ------------------------------------------------------------------------
     // Methods
     // ------------------------------------------------------------------------
+    @Override
     public boolean execute() {
         System.err.print("- >> Alternate Initializer: Start...");
         for (int i = 0; i < Network.size(); i++) {
@@ -58,18 +59,25 @@ public class BandwidthTesterInitializer implements Control {
             prot.setDebug(debug);
         }
         BandwidthTester zbt = null;
-        for (int p = 0; p < Network.size(); p++) {
+        zbt = (BandwidthTester) Network.get(0).getProtocol(pid);
+        // thus, the node zero has no chunks, it's the "sink"
+        for (int i = 0; i < 10; i++) {
+            zbt.chunk_list[i] = BandwidthInfo.NOT_OWNED;
+        }
+        System.out.println("Sink Node " + 0 + " > " + zbt.bitmap());
+        for (int p = 1; p < Network.size(); p++) {//for each node
             zbt = (BandwidthTester) Network.get(p).getProtocol(pid);
-            for (int i = 0; i < 10 - p; i++) {
-                if (p == 0) {
-                    zbt.chunk_list[i] = BandwidthInfo.NOT_OWNED;
-                } else {
-                    zbt.chunk_list[i] = 1000;
-                }
+            for (int i = 0; i < 10 - p + 1; i++) {
+                zbt.chunk_list[i] = 1000;//the p-th node has the i-th chunk                
             }
             System.out.println("Node " + p + " > " + zbt.bitmap());
+
+            // the first node has all the chunks exept the last
+            // the second node has all the chunks exept the last two
+            // the third node has all the chunks exept the last three, and so on
         }
-        //the receiver is the node 0
+        //here we schedule some pushes
+        EDSimulator.add(2, new BandwidthTesterMessage(null, Network.get(10), BandwidthInfo.SWITCH_PUSH, 0L), Network.get(10), pid);
         EDSimulator.add(5, new BandwidthTesterMessage(null, Network.get(9), BandwidthInfo.SWITCH_PUSH, 0L), Network.get(9), pid);
         EDSimulator.add(10, new BandwidthTesterMessage(null, Network.get(8), BandwidthInfo.SWITCH_PUSH, 0L), Network.get(8), pid);
         EDSimulator.add(20, new BandwidthTesterMessage(null, Network.get(7), BandwidthInfo.SWITCH_PUSH, 0L), Network.get(7), pid);

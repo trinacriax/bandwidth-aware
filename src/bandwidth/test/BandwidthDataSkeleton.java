@@ -17,4 +17,3 @@ public interface BandwidthDataSkeleton {
 
     public void setChunkSize(long chunk_size);
 }
-

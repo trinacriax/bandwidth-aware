@@ -9,7 +9,6 @@ import peersim.transport.Transport;
  * @author Alessandro Russo
  * @version 1.0
  */
-
 public class UnreliableTransportTimed implements Transport {
 
 //---------------------------------------------------------------------
@@ -61,9 +60,9 @@ public class UnreliableTransportTimed implements Transport {
                 t.send(src, dest, msg, pid);
             }
         } catch (ClassCastException e) {
-            throw new IllegalArgumentException("Protocol " +
-                    Configuration.lookupPid(transport) +
-                    " does not implement Transport");
+            throw new IllegalArgumentException("Protocol "
+                    + Configuration.lookupPid(transport)
+                    + " does not implement Transport");
         }
     }
 

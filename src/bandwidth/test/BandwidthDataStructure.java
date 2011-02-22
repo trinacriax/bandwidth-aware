@@ -41,7 +41,7 @@ public class BandwidthDataStructure implements BandwidthDataSkeleton, Protocol {
     protected long time_in_push;
     /**Time needed to change state*/
     protected long switchtime;
-    /**Total neightbor knowledge*/
+    /**Total neighbor knowledge*/
     private int nk;
 
     public BandwidthDataStructure(String prefix) {
@@ -53,6 +53,7 @@ public class BandwidthDataStructure implements BandwidthDataSkeleton, Protocol {
      * Clone method
      * 
      */
+    @Override
     public Object clone() {
         BandwidthDataStructure clh = null;
         try {
@@ -84,6 +85,7 @@ public class BandwidthDataStructure implements BandwidthDataSkeleton, Protocol {
      * Invoked in the Initializer
      * 
      */
+    @Override
     public void resetAll() {
         this.chunk_list = null;
         this.chunk_size = 0;
@@ -108,6 +110,7 @@ public class BandwidthDataStructure implements BandwidthDataSkeleton, Protocol {
      * @param items The number of chunks that will be distributed
      *
      * */
+    @Override
     public void Initialize(int items) {
         this.resetAll();
         this.chunk_list = new long[items];
@@ -123,14 +126,15 @@ public class BandwidthDataStructure implements BandwidthDataSkeleton, Protocol {
      * implements the bandwidth mechanism
      *
      */
+    @Override
     public void setBandwidth(int bw) {
         this.bandwidth = bw;
     }
 
     /**
      *
-     * Returnt he PID of the protocol that identify the bandwidth mechanism.
-     * @return int PID of the bandwidth protocol
+     * Return he PID of the protocol that identify the bandwidth mechanism.
+     * @return PID of the bandwidth protocol
      *
      */
     public int getBandwidth() {
@@ -161,6 +165,7 @@ public class BandwidthDataStructure implements BandwidthDataSkeleton, Protocol {
      * Set the debug level
      * @param value the level of verbosity 0 up to 10
      */
+    @Override
     public void setDebug(int value) {
         this.debug = value;
     }
@@ -360,155 +365,204 @@ public class BandwidthDataStructure implements BandwidthDataSkeleton, Protocol {
     }
 
     /**
-     * Reset il numero di upload finiti con successo
+     * Reset the number of success upload
      * */
     public void resetSuccessUpload() {
         this.success_upload = 0;
     }
 
     /**
-     * Aggiunge 1 al numero di chunk ottenuti mediante push
+     * add the number of chunk in push
      * */
     public void addChunkInPush() {
         this.chunkpush++;
     }
 
     /**
-     * Restituisce il numero di chunk ottenuti in push
-     * */
+     * Get the number of chunks in push.
+     * @return chunk in push.
+     */
     public int getChunkInPush() {
         return this.chunkpush;
     }
 
     /**
-     * Imposta la sorgente della trasmissione
-     * */
+     * Set the source node.
+     * @param _source source node.
+     */
     public void setSource(int _source) {
         this.source = _source;
     }
 
     /**
-     * Restituisce la sorgente della trasmissione
-     * */
+     * Get the source.
+     * @return source node for testing protocol.
+     */
     public int getSource() {
         return this.source;
     }
 
     /**
-     * Imposta il numero totale di chunks della trasmissione
-     * */
+     * Set the number of chunks to distribute.
+     * @param _number_of_chunks chunks to distribute.
+     */
     public void setNumberOfChunks(int _number_of_chunks) {
         this.number_of_chunks = _number_of_chunks;
     }
 
     /**
-     * Restituisce il numero totale di chunks della trasmissione
-     * */
+     * Get the number of chunks to distribute.
+     * @return chunks to distribute.
+     */
     public int getNumberOfChunks() {
         return this.number_of_chunks;
     }
 
     /**
-     * Imposta il tempo in cui il nodo ha completato la ricezione di tutti i chunks
-     * */
+     * set the node as completed
+     * @param value time in which the node completes the reception of chunks.
+     */
     public void setCompleted(long value) {
         this.completed = value;
     }
 
     /**
-     * Restituisce il tempo in chui il nodo ha completato la ricezione di tutti i chunks
-     * */
+     * get the time in which the node has completed to receive chunks.
+     * @return completion time.
+     */
     public long getCompleted() {
         return this.completed;
     }
 
     /**
-     * Restituisce la banda minima in upload
-     * */
+     * 
+     * @param node
+     * @return 
+     */
     public long getUploadMin(Node node) {
         return ((BandwidthAwareProtocol) node.getProtocol(this.getBandwidth())).getUploadMin();
     }
 
+    /** 
+     * 
+     * @param node
+     * @return 
+     */
     public long getUploadMax(Node node) {
         return ((BandwidthAwareProtocol) node.getProtocol(this.getBandwidth())).getUploadMax();
     }
 
     /**
-     * Restituisce la banda minima in download
-     * */
+     * 
+     * @param node
+     * @return 
+     */
     public long getDownloadMin(Node node) {
         return ((BandwidthAwareProtocol) node.getProtocol(this.getBandwidth())).getUploadMin();
     }
 
+    /**
+     * 
+     * @param node
+     * @return 
+     */
     public long getDownloadMax(Node node) {
         return ((BandwidthAwareProtocol) node.getProtocol(this.getBandwidth())).getUploadMax();
     }
 
     /**
-     * Restiuisce la banda attuale in upload
-     * */
+     * 
+     * @param node
+     * @return 
+     */
     public long getUpload(Node node) {
         return ((BandwidthAwareProtocol) node.getProtocol(this.getBandwidth())).getUpload();
     }
 
     /**
-     * Restituisce la banda attuale in download
-     * */
+     * 
+     * @param node
+     * @return 
+     */
     public long getDownload(Node node) {
         return ((BandwidthAwareProtocol) node.getProtocol(this.getBandwidth())).getDownload();
     }
 
+    /**
+     * 
+     * @param node
+     * @return 
+     */
     public String getBwInfo(Node node) {
         return ((BandwidthAwareProtocol) node.getProtocol(this.getBandwidth())).toString();
     }
 
     /**
-     * Imposta la dimensione in bit del chunk
-     * */
+     * 
+     * @param chunk_size 
+     */
     public void setChunkSize(long chunk_size) {
         this.chunk_size = chunk_size;
     }
 
     /**
-     * Restituisce la dimensione del chunk
-     * */
+     * 
+     * @return 
+     */
     public long getChunkSize() {
         return this.chunk_size;
     }
 
     /**
-     * Aggiunge 1 al numero di push falliti
-     * */
+     * 
+     */
     public void addFailPush() {
         this.fail_push++;
     }
 
     /**
-     * Restituisce il numero di push falliti
-     * */
+     * 
+     * @return 
+     */
     public int getFailPush() {
         return this.fail_push;
     }
 
+    /**
+     * 
+     * @param timeinpush 
+     */
     public void addTimeInPush(long timeinpush) {
         this.time_in_push += timeinpush;
     }
 
+    /**
+     * 
+     * @return 
+     */
     public String getConnections() {
         String result = "]] " + this.getSize();// + " : " + this.bitmap();
         return result;
     }
 
+    /**
+     * 
+     * @return 
+     */
     public int getLastsrc() {
         return this.nk;
     }
 
+    /**
+     * 
+     */
     public void addLastsrc() {
         this.nk++;
     }
 
     /**
-     * Set a chunk in download
+     * 
+     * @param chunk 
      */
     public void setInDown(String chunk) {
         long index = Long.parseLong(chunk.substring(chunk.indexOf(":") + 1,
@@ -517,7 +571,8 @@ public class BandwidthDataStructure implements BandwidthDataSkeleton, Protocol {
     }
 
     /**
-     * Set a chunk in download
+     * 
+     * @param index 
      */
     public void setInDown(long index) {
         if (this.chunk_list[(int) (index)] == BandwidthInfo.NOT_OWNED) {
@@ -525,12 +580,20 @@ public class BandwidthDataStructure implements BandwidthDataSkeleton, Protocol {
         }
     }
 
+    /**
+     * 
+     * @param index 
+     */
     public void resetInDown(long index) {
         if (this.chunk_list[(int) (index)] == BandwidthInfo.IN_DOWNLOAD) {
             this.chunk_list[(int) (index)] = BandwidthInfo.NOT_OWNED;
         }
     }
 
+    /**
+     * 
+     * @return 
+     */
     public String bitmap() {
         String res = "";
         for (int i = 0; i < this.chunk_list.length; i++) {
@@ -539,6 +602,10 @@ public class BandwidthDataStructure implements BandwidthDataSkeleton, Protocol {
         return res;
     }
 
+    /**
+     * 
+     * @return 
+     */
     public boolean produce() {
         int index = 0;
         if (this.getSize() == 0) {
@@ -548,7 +615,6 @@ public class BandwidthDataStructure implements BandwidthDataSkeleton, Protocol {
         } else {
             index = this.getLast() + 1;
         }
-//        System.out.println("Adding new  "+index);
         this.addChunk(index, BandwidthInfo.PUSH_CYCLE);
 
         return true;
@@ -556,10 +622,7 @@ public class BandwidthDataStructure implements BandwidthDataSkeleton, Protocol {
 
     /**
      * 
-     * Il metodo restituisce l'ultimo chunk che il nodo possiede il lista se la
-     * lista è vuota restituisce -1; Non vengono presi in considerazione i
-     * chunks in download
-     * 
+     * @return 
      */
     public int getLast() {
         int last = -1;
@@ -571,30 +634,20 @@ public class BandwidthDataStructure implements BandwidthDataSkeleton, Protocol {
         return last;
     }
 
+    /**
+     * 
+     * @return 
+     */
     public int getLastSRC() {
         int index = this.getLast();
-
-
-//        int index = -1;
-//        if(this.lastsrc.isEmpty())
-//            return index;
-//        else 
-//            if (this.getCompleted() > 0) {
-//            index = this.getNumberOfChunks() - 1;
-//        } else {
-//            index = (Integer) this.lastsrc.getFirst();
-//        }
         return index;
     }
 
     /**
      * 
-     * Il metodo restituisce gli ultimi chunks posseduti dal nodo
-     * @param elements numero di chunk con id più alto posseduti dal nodo
-     * 
-     * @return array di interi di dimensione minore o uguale ad @elements contenente gli id più alti
-     * 
-     * */
+     * @param elements
+     * @return 
+     */
     public int[] getLast(int elements) {
         if (this.getSize() < elements) {
             elements = this.getSize();
@@ -618,6 +671,11 @@ public class BandwidthDataStructure implements BandwidthDataSkeleton, Protocol {
         return result;
     }
 
+    /**
+     * 
+     * @param chunktime
+     * @return 
+     */
     public long normalize(long chunktime) {
         if (chunktime != BandwidthInfo.OWNED && chunktime != BandwidthInfo.NOT_OWNED && chunktime != BandwidthInfo.IN_DOWNLOAD) {
             return Math.abs(chunktime);
@@ -628,17 +686,18 @@ public class BandwidthDataStructure implements BandwidthDataSkeleton, Protocol {
 
     /**
      * 
-     * Il metodo restituisce il chunk con l'identificativo passato se posseduto
-     * dal nodo, se il chunk è in download restituisce la costante
-     * altrimenti restituisce null;
-     * 
-     * @param index chunk id
-     * @return long time at which the node received this chunk
+     * @param index
+     * @return 
      */
     public long getChunk(int index) {
         return this.chunk_list[index];
     }
 
+    /**
+     * 
+     * @param index
+     * @return 
+     */
     public int getChunks(int[] index) {
         int owned = 0;
         for (int i = 0; i < index.length; i++) {
@@ -651,14 +710,9 @@ public class BandwidthDataStructure implements BandwidthDataSkeleton, Protocol {
 
     /**
      * 
-     * Il metodo aggiunge un chunk alla lista di chunks che il nodo
-     * possiede, restituisce vero se il chunk non si possedeva già, false se il
-     * chunk si possedeva
-     * 
-     * @param chunk indice del chunks
-     * @param method metodo in cui riceve il chunk
-     * @return true se il chunk viene aggiungo, false se si possedeva già
-     * 
+     * @param chunk
+     * @param method
+     * @return 
      */
     public boolean addChunk(int chunk, int method) {
         if ((this.chunk_list[chunk] == BandwidthInfo.NOT_OWNED) || (this.chunk_list[chunk] == BandwidthInfo.IN_DOWNLOAD)) {
@@ -669,14 +723,11 @@ public class BandwidthDataStructure implements BandwidthDataSkeleton, Protocol {
 
     /**
      * 
-     * Restituisce il numero di chunk posseduti dal nodo, sono esclusi i chunks
-     * in Download
-     * 
+     * @return 
      */
     public int getSize() {
         int size = 0;
         for (int i = 0; i < this.chunk_list.length; i++) {
-//            System.out.println(normalize(chunk_list[i]) + " i "+i);
             if (normalize(this.chunk_list[i]) > BandwidthInfo.OWNED) {
                 size++;
             }
@@ -684,48 +735,61 @@ public class BandwidthDataStructure implements BandwidthDataSkeleton, Protocol {
         return size;
     }
 
-  /**
-   * Stampa le informazioni sul nodo
-   *
-   * @param node current node
-   * @return printable version of the bandwidth in this node.
-   */
-  public String toString(Node node) {
-    StringBuilder sbuf = new StringBuilder();
-    sbuf.append("Nodo ");
-    sbuf.append(node.getID());
-    sbuf.append(", Time ");
-    sbuf.append(CommonState.getTime());
-    sbuf.append(" , Fail Push ");
-    sbuf.append(this.fail_push);
-    sbuf.append(", Lista ");
-    sbuf.append(this.getSize());
-    if (this.getSize() == this.getNumberOfChunks()) {
-      sbuf.append(" >>> ha tutti i chunks.");
-    } else {
-      sbuf.append(".");
+    /**
+     * 
+     * @param node
+     * @return 
+     */
+    public String toString(Node node) {
+        StringBuilder sbuf = new StringBuilder();
+        sbuf.append("Nodo ");
+        sbuf.append(node.getID());
+        sbuf.append(", Time ");
+        sbuf.append(CommonState.getTime());
+        sbuf.append(" , Fail Push ");
+        sbuf.append(this.fail_push);
+        sbuf.append(", Lista ");
+        sbuf.append(this.getSize());
+        if (this.getSize() == this.getNumberOfChunks()) {
+            sbuf.append(" >>> ha tutti i chunks.");
+        } else {
+            sbuf.append(".");
+        }
+        return sbuf.toString();
     }
-    return sbuf.toString();
-  }
 
-  public String getNeighborhood(Node node, int pid) {
-    Linkable linkable = (Linkable) node.getProtocol(FastConfig.getLinkable(pid));
-    String results = "Node " + node.getID() + ": " + linkable.degree() + " [ ";
-    for (int i = 0; i < linkable.degree(); i++) {
+    /**
+     * 
+     * @param node
+     * @param pid
+     * @return 
+     */
+    public String getNeighborhood(Node node, int pid) {
+        Linkable linkable = (Linkable) node.getProtocol(FastConfig.getLinkable(pid));
+        String results = "Node " + node.getID() + ": " + linkable.degree() + " [ ";
+        for (int i = 0; i < linkable.degree(); i++) {
             results += linkable.getNeighbor(i).getID() + ", ";
         }
         results += " ]";
         return results;
     }
 
+    /**
+     * 
+     * @param node
+     * @param pid
+     * @return 
+     */
     public Node getNeighbor(Node node, int pid) {
         Linkable linkable = (Linkable) node.getProtocol(FastConfig.getLinkable(pid));
         return linkable.getNeighbor(CommonState.r.nextInt(linkable.degree()));
     }
 
     /**
-     * Restituisce per ogni chunk, il tempo in cui è stato ricevuto
-     * */
+     * 
+     * @param id
+     * @return 
+     */
     public long getChunkInfo(long id) {
         int idi = (int) id;
         return this.chunk_list[idi];
