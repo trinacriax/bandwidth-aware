@@ -68,70 +68,69 @@ public class BandwidthAwareInitializer implements Control, NodeInitializer {
         passive_upload = Configuration.getInt(prefix + "." + PAR_PASSIVE_UPLOAD, 1);
         passive_download = Configuration.getInt(prefix + "." + PAR_PASSIVE_DOWNLOAD, 1);
         debug = Configuration.getInt(prefix + "." + PAR_DEBUG, 0);
-        double bms = Configuration.getDouble(prefix + "." + PAR_BMS, -1);        
+        double bms = Configuration.getDouble(prefix + "." + PAR_BMS, -1);
         srcup = (int) Math.round(bms * 1.0 * Configuration.getInt(prefix + "." + PAR_UP_BAND, -1));
         ratiodu = Configuration.getInt(prefix + "." + PAR_RATIODU, -1);
-        System.err.println("Pid "+pid+", Active upload " + active_upload+", active download "+active_download+", passive upload "+passive_upload+
-                ", passive download "+ passive_download+ ", Debug "+ debug+", SrcUp "+srcup );
+        System.err.println("Pid " + pid + ", Active upload " + active_upload + ", active download " + active_download + ", passive upload " + passive_upload
+                + ", passive download " + passive_download + ", Debug " + debug + ", SrcUp " + srcup);
     }
 
-  // ------------------------------------------------------------------------
-  // Methods
-  // ------------------------------------------------------------------------
-  /**
-   * Initialize peers' fields and the source's resources.
-   * @return Always return false.
-   */
-  @Override
-  public boolean execute() {
-    Node aNode = null;
-    BandwidthAwareSkeleton bwa = null;
-    for (int i = 0, len = Network.size(); i < len; i++) {
-      //retrieve node instance
-      aNode = Network.get(i);
-      //retrieve protocol skeleton
-      bwa = (BandwidthAwareSkeleton) aNode.getProtocol(pid);
-      //reset object
-      bwa.reset();
-      //initilize the data structures in the node
-      bwa.initialize();
-      //set number of active connections in upload
-      bwa.setActiveUpload(active_upload);
-      //set number of active connections in download
-      bwa.setActiveDownload(active_download);
-      //set number of passive connections in upload
-      bwa.setPassiveUpload(passive_upload);
-      //set number of passive connections in download
-      bwa.setPassiveDownload(passive_download);
-      //set upload and download for the source
-      bwa.setDownload(ratiodu);
-      if (i == (len - 1) && this.srcup != -1) {//set source bandwidth
-        bwa.initUpload(srcup);
-      }
+    // ------------------------------------------------------------------------
+    // Methods
+    // ------------------------------------------------------------------------
+    /**
+     * Initialize peers' fields and the source's resources.
+     * @return Always return false.
+     */
+    @Override
+    public boolean execute() {
+        Node aNode = null;
+        BandwidthAwareSkeleton bwa = null;
+        for (int i = 0, len = Network.size(); i < len; i++) {
+            //retrieve node instance
+            aNode = Network.get(i);
+            //retrieve protocol skeleton
+            bwa = (BandwidthAwareSkeleton) aNode.getProtocol(pid);
+            //reset object
+            bwa.reset();
+            //initilize the data structures in the node
+            bwa.initialize();
+            //set number of active connections in upload
+            bwa.setActiveUpload(active_upload);
+            //set number of active connections in download
+            bwa.setActiveDownload(active_download);
+            //set number of passive connections in upload
+            bwa.setPassiveUpload(passive_upload);
+            //set number of passive connections in download
+            bwa.setPassiveDownload(passive_download);
+            //set upload and download for the source
+            bwa.setDownload(ratiodu);
+            if (i == (len - 1) && this.srcup != -1) {//set source bandwidth
+                bwa.initUpload(srcup);
+            }
+        }
+        //set debug in the object,
+        bwa.setDebug(debug);
+        return false;
     }
-    //set debug in the object,
-    bwa.setDebug(debug);
-    return false;
-  }
 
-  public void initialize(Node node) {
-    //retrieve protocol skeleton
-    BandwidthAwareSkeleton bwa = (BandwidthAwareSkeleton) node.getProtocol(pid);
-    //reset object
-    bwa.reset();
-    //initilize the data structures in the node
-    bwa.initialize();
-    //set debug in the object,
-    //bwa.setDebug(debug);
-    //set number of active connections in upload
-    bwa.setActiveUpload(active_upload);
-    //set number of active connections in download
-    bwa.setActiveDownload(active_download);
-    //set number of passive connections in upload
-    bwa.setPassiveUpload(passive_upload);
-    //set number of passive connections in download
-    bwa.setPassiveDownload(passive_download);
-    //set upload and download for the source
-    bwa.setDownload(ratiodu);   
-  }
+    @Override
+    public void initialize(Node node) {
+        //retrieve protocol skeleton
+        BandwidthAwareSkeleton bwa = (BandwidthAwareSkeleton) node.getProtocol(pid);
+        //reset object
+        bwa.reset();
+        //initilize the data structures in the node
+        bwa.initialize();
+        //set number of active connections in upload
+        bwa.setActiveUpload(active_upload);
+        //set number of active connections in download
+        bwa.setActiveDownload(active_download);
+        //set number of passive connections in upload
+        bwa.setPassiveUpload(passive_upload);
+        //set number of passive connections in download
+        bwa.setPassiveDownload(passive_download);
+        //set upload and download for the source
+        bwa.setDownload(ratiodu);
+    }
 }
