@@ -2,7 +2,7 @@
 SEED 9381048245
 
 ### MAX Simulation time
-CYCLE 5000
+CYCLE 3200
 
 ### Verbosity level
 DEBUG 100
@@ -37,7 +37,7 @@ DROP 0
 ALPHA_up 1
 ALPHA_down 1
 
-## Maximum number of passice connections in upload and download
+## Maximum number of passive connections in upload and download
 ## Passive means that the node is the target node which receives either a push or pull request
 ## therefor it will either receive a chunk via push or satisfy a pull request.
 PI_up 1
