@@ -41,12 +41,13 @@ public class BandwidthTesterMessage {
 
     @Override
     public String toString() {
-        String result = "Sender " + this.sender.getID() + ", Chunk [" + this.getChunkids() + "], Message " + this.getConstantName(this.MessageID) + ", Banda " + this.bandwidth + ".";
+        String result = "Sender " + this.sender.getID() + ", Chunk [" + this.getChunkids()
+                + "], Message " + this.getConstantName(this.MessageID) + ", Banda " + this.bandwidth + ".";
         return result;
     }
 
-    public String getChunkids() {       
-        return "m: "+ this.getChunk();
+    public String getChunkids() {
+        return "m:" + this.getChunk();
     }
 
     public String getMessageID() {
@@ -83,14 +84,10 @@ public class BandwidthTesterMessage {
                         }
                     }
                 }
-
-
             }
         } catch (Exception e) {
             System.err.println(e.toString());
         }
-
         return "";
-
     }
 }
