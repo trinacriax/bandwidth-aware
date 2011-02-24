@@ -26,6 +26,6 @@ module: clean peersim jar
 	rm -rf `find $(TRG) -iname ".svn"`
 	
 pack: module
-	tar -czvvf bandwidth-aware.tar.gz $(TRG)
+	tar -czvvf bandwidth-module.tar.gz $(TRG)
 
 all: pack
