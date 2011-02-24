@@ -1,7 +1,7 @@
 package bandwidth.test;
 
 /**
- * TEST CLASS
+ * Skeleton with methods definition for the initializer class.
  * @author Alessandro Russo
  * @version 1.0
  */
