@@ -5,7 +5,7 @@ import peersim.core.*;
 import peersim.edsim.*;
 
 /**
- * TEST CLASS
+ * Initialize the protocol using the values provided in the configuration file, and schedules some events in the simulator.
  * @author Alessandro Russo
  * @version 1.0
  */
@@ -59,12 +59,14 @@ public class BandwidthTesterInitializer implements Control {
             prot.setDebug(debug);
         }
         BandwidthTester zbt = null;
+        // pick node 0 that we usually us as sink in the test protocol
         zbt = (BandwidthTester) Network.get(0).getProtocol(pid);
         // thus, the node zero has no chunks, it's the "sink"
         for (int i = 0; i < 10; i++) {
             zbt.chunk_list[i] = BandwidthInfo.NOT_OWNED;
         }
         System.out.println("Sink Node " + 0 + " > " + zbt.bitmap());
+        // fill the chunk buffer of the other nodes
         for (int p = 1; p < Network.size(); p++) {//for each node
             zbt = (BandwidthTester) Network.get(p).getProtocol(pid);
             for (int i = 0; i < 10 - p + 1; i++) {
@@ -77,16 +79,16 @@ public class BandwidthTesterInitializer implements Control {
             // the third node has all the chunks exept the last three, and so on
         }
         //here we schedule some pushes
-        EDSimulator.add(2, new BandwidthTesterMessage(null, Network.get(10), BandwidthInfo.SWITCH_PUSH, 0L), Network.get(10), pid);
-        EDSimulator.add(5, new BandwidthTesterMessage(null, Network.get(9), BandwidthInfo.SWITCH_PUSH, 0L), Network.get(9), pid);
-        EDSimulator.add(10, new BandwidthTesterMessage(null, Network.get(8), BandwidthInfo.SWITCH_PUSH, 0L), Network.get(8), pid);
-        EDSimulator.add(20, new BandwidthTesterMessage(null, Network.get(7), BandwidthInfo.SWITCH_PUSH, 0L), Network.get(7), pid);
-        EDSimulator.add(30, new BandwidthTesterMessage(null, Network.get(6), BandwidthInfo.SWITCH_PUSH, 0L), Network.get(6), pid);
-        EDSimulator.add(40, new BandwidthTesterMessage(null, Network.get(5), BandwidthInfo.SWITCH_PUSH, 0L), Network.get(5), pid);
-        EDSimulator.add(54, new BandwidthTesterMessage(null, Network.get(4), BandwidthInfo.SWITCH_PUSH, 0L), Network.get(4), pid);
-        EDSimulator.add(60, new BandwidthTesterMessage(null, Network.get(3), BandwidthInfo.SWITCH_PUSH, 0L), Network.get(3), pid);
-        EDSimulator.add(70, new BandwidthTesterMessage(null, Network.get(2), BandwidthInfo.SWITCH_PUSH, 0L), Network.get(2), pid);
-        EDSimulator.add(80, new BandwidthTesterMessage(null, Network.get(1), BandwidthInfo.SWITCH_PUSH, 0L), Network.get(1), pid);
+        EDSimulator.add(2, new BandwidthTesterMessage(0, Network.get(10), BandwidthInfo.SWITCH_PUSH), Network.get(10), pid);
+        EDSimulator.add(11, new BandwidthTesterMessage(0, Network.get(9), BandwidthInfo.SWITCH_PUSH), Network.get(9), pid);
+        EDSimulator.add(15, new BandwidthTesterMessage(0, Network.get(8), BandwidthInfo.SWITCH_PUSH), Network.get(8), pid);
+        EDSimulator.add(20, new BandwidthTesterMessage(0, Network.get(7), BandwidthInfo.SWITCH_PUSH), Network.get(7), pid);
+        EDSimulator.add(30, new BandwidthTesterMessage(0, Network.get(6), BandwidthInfo.SWITCH_PUSH), Network.get(6), pid);
+        EDSimulator.add(40, new BandwidthTesterMessage(0, Network.get(5), BandwidthInfo.SWITCH_PUSH), Network.get(5), pid);
+        EDSimulator.add(54, new BandwidthTesterMessage(0, Network.get(4), BandwidthInfo.SWITCH_PUSH), Network.get(4), pid);
+        EDSimulator.add(60, new BandwidthTesterMessage(0, Network.get(3), BandwidthInfo.SWITCH_PUSH), Network.get(3), pid);
+        EDSimulator.add(70, new BandwidthTesterMessage(0, Network.get(2), BandwidthInfo.SWITCH_PUSH), Network.get(2), pid);
+        EDSimulator.add(80, new BandwidthTesterMessage(0, Network.get(1), BandwidthInfo.SWITCH_PUSH), Network.get(1), pid);
         System.err.print("finished\n");
         return false;
     }
