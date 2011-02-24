@@ -13,38 +13,14 @@ public class BandwidthTesterMessage {
     protected final Node sender;
     protected final int MessageID;
     protected final long bandwidth;
-    protected final int[] chunkids;
-
-    public BandwidthTesterMessage(int[] chunkids, Node sender, int MessageID) {
-        this.chunkids = chunkids;
-        this.sender = sender;
-        this.MessageID = MessageID;
-        this.bandwidth = 0;
-
-    }
-
-    public BandwidthTesterMessage(int[] chunkids, Node sender, int MessageID, long bandwidth) {
-        this.chunkids = chunkids;
-        this.sender = sender;
-        this.MessageID = MessageID;
-        this.bandwidth = bandwidth;
-    }
+    protected final int chunkid;
 
     public BandwidthTesterMessage(int chunkid, Node sender, int MessageID) {
-        this.chunkids = new int[1];
-        this.chunkids[0] = chunkid;
+        this.chunkid = chunkid;
         this.sender = sender;
         this.MessageID = MessageID;
         this.bandwidth = 0;
 
-    }
-
-    public BandwidthTesterMessage(int chunkid, Node sender, int MessageID, long bandwidth) {
-        this.chunkids = new int[1];
-        this.chunkids[0] = chunkid;
-        this.sender = sender;
-        this.MessageID = MessageID;
-        this.bandwidth = bandwidth;
     }
 
     public Node getSender() {
@@ -55,8 +31,8 @@ public class BandwidthTesterMessage {
         return this.MessageID;
     }
 
-    public int[] getChunks() {
-        return this.chunkids;
+    public int getChunk() {
+        return this.chunkid;
     }
 
     public long getBandwidth() {
@@ -69,15 +45,8 @@ public class BandwidthTesterMessage {
         return result;
     }
 
-    public String getChunkids() {
-        String result = "";
-        if (this.chunkids == null) {
-            return result;
-        }
-        for (int i = 0; i < this.chunkids.length; i++) {
-            result += "m:" + this.chunkids[i] + "; ";
-        }
-        return result;
+    public String getChunkids() {       
+        return "m: "+ this.getChunk();
     }
 
     public String getMessageID() {
