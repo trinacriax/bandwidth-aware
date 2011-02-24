@@ -80,7 +80,7 @@ public class BandwidthTester extends BandwidthDataStructure implements CDProtoco
                 //**************************** PUSH STATE ****************************\\
                 sender = ((BandwidthTester) (node.getProtocol(pid)));
                 if (sender.getDebug() >= 1) {
-                    System.out.print(CommonState.getTime() + "\tNode " + node.getID() + " PUSH CYCLE. ChunksBitmap " + sender.bitmap() + " ");
+                    System.out.print(CommonState.getTime() + "\tNode " + node.getID() + " PUSH CYCLE. ChunksBitmap |" + sender.bitmap() + "|");
                     System.out.println(" #Chunks " + sender.getSize() + " " + sender.getBwInfo(node));
                 }
                 Node peer = null;
