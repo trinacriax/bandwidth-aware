@@ -1,7 +1,7 @@
 package bandwidth.test;
 
 /**
- * TEST CLASS
+ * Collection of constants for the protocol.
  * @author Alessandro Russo
  * @version 1.0
  */
